@@ -1,0 +1,40 @@
+{
+  "name": "narrative-mooc",
+  "description": "A Vue.js project",
+  "version": "1.0.0",
+  "author": "lizhen <me@patpat.net>",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+  },
+  "dependencies": {
+    "axios": "^0.17.1",
+    "bootstrap": "^4.0.0-beta.2",
+    "bootstrap-vue": "^1.2.0",
+    "c3.js": "^1.0.0",
+    "d3": "^4.12.2",
+    "eagle.js": "^0.1.3",
+    "jquery": "^3.2.1",
+    "plottable": "^3.7.0",
+    "popper.js": "^1.12.9",
+    "sass-loader": "^6.0.6",
+    "vue": "^2.5.3",
+    "vue-resource": "^1.3.5",
+    "vuedraggable": "^2.16.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^6.0.0",
+    "babel-preset-env": "^1.6.1",
+    "cross-env": "^5.1.1",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.5",
+    "style-loader": "^0.19.0",
+    "vue-loader": "^13.5.0",
+    "vue-template-compiler": "^2.5.3",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
+  }
+}
