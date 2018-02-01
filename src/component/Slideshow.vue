@@ -2,12 +2,16 @@
   <div class="slideshow-outbox">
     <div class="slideshow-content">
     </div>
+    <b-table class="small fixed" v-if="false && logdata && logdata.peaks.length" striped hover :items="items" :fields="fields"></b-table>
   </div>
 </template>
 
 <script>
 import Plottable from "plottable";
 import d3 from "d3";
+
+const entropyDeltaThreshold = 0.3;
+const topEntropyDeltaNum = 3;
 
 function sum(vec) {
   var ret = 0;
@@ -19,13 +23,55 @@ function sum(vec) {
 
 export default {
   data() {
-    return {};
+    return {
+      peakColor: ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a'],
+    };
   },
   props: ["logdata", "entropyRange"],
+  computed: {
+    fields() {
+      const ret = [
+        {
+          key: 'action',
+          sortable: true,
+        },
+        {
+          key: 'entropy_delta',
+          sortable: true,
+        },
+      ];
+      for (var i = 0; i < 10; ++i) {
+        ret.push({
+          key: `d${i}`,
+          label: `${i * 10}~${(i + 1) * 10}`,
+          sortable: true,
+        });
+      }
+      return ret;
+    },
+    items() {
+      const ret = [];
+      const peaks = this.logdata.peaks;
+      for (var i = 0; i < peaks.length && i < 5; ++i) {
+        if (peaks[i].entropyDelta < entropyDeltaThreshold) {
+          break;
+        }
+        const currentSum = sum(peaks[i].gradeDistribution);
+        const item = {
+          action: peaks[i].action,
+          entropy_delta: Number(peaks[i].entropyDelta).toFixed(3),
+        };
+        for (var k = 0; k < peaks[k].gradeDistribution.length; ++k) {
+          item[`d${k}`] = '' + 
+            Number(peaks[i].gradeDistribution[k] / currentSum * 100).toFixed(1) + '%';
+        }
+        ret.push(item);
+      }
+      return ret;
+    }
+  },
   watch: {
     logdata(data) {
-      const entropyDeltaThreshold = 0.3;
-      const topEntropyDeltaNum = 3;
 
       var xScale = new Plottable.Scales.Linear();
       var yScale = new Plottable.Scales.Linear();
@@ -36,8 +82,7 @@ export default {
       scoreScale.domain([0, 100]);
       var areaPlot = new Plottable.Plots.StackedArea();
       var dColorScale = new Plottable.Scales.Color();
-      var colorCategory10 = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a'];
-      dColorScale.range(colorCategory10);
+      dColorScale.range(this.peakColor);
 
       var duration = 0;
       for (const action in data.logs) {
@@ -127,8 +172,8 @@ export default {
         () => "AVERAGE SCORE"
       );
       var plots = new Plottable.Components.Group([
-        peakPlot,
         areaPlot,
+        peakPlot,
         peakCirclePlot,
         zLabel,
         gridlines
