@@ -1,27 +1,47 @@
 <template>
   <div id="app">
-    <b-nav tabs>
+    <b-navbar toggleable="md" type="dark" variant="dark">
+      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+  
+      <b-navbar-brand href="#">Narrative MOOC</b-navbar-brand>
+      <b-collapse is-nav id="nav_collapse">
+        <!--
       <b-nav-item active><h5>Narrative MOOC</h5><hr/>Dashboard</b-nav-item>
       <b-nav-item><h5>01</h5><hr/>Assumed Pattern</b-nav-item>
       <b-nav-item><h5>02</h5><hr/>Uncertain Pattern</b-nav-item>
-      <b-nav-item><h5>03</h5><hr/>Conclusion</b-nav-item>
-    </b-nav>
+      <b-nav-item><h5>03</h5><hr/>Conclusion</b-nav-item>-->
+
+
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item-dropdown :text="`Video: ${current_video && current_video.name}`" right>
+            <b-dropdown-item v-for="video in videos" @click="videoDropdownClick(video)">
+              {{video.name}}
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item-dropdown :text="`Problem: ${current_problem && current_problem.name}`" right>
+            <b-dropdown-item v-for="problem in problems" @click="problemDropdownClick(problem)">
+              {{problem.name}}
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item-dropdown :text="`Chapter: ${current_chapter && current_chapter.name}`" right>
+            <b-dropdown-item v-for="chapter in chapters" @click="chapterDropdownClick(chapter)">
+              {{chapter.name}}
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
     <b-container fluid>
       <b-form-row>
         <b-col cols="10">
           <div class="slideshow-container">
-            <slideshow :logdata="this.currentVideoLogs"
-              :entropyRange="[this.minEntropyDelta, this.maxEntropyDelta]">
+            <slideshow :context="this.context" :slide="this.slide" :index="this.slide_index">
             </slideshow>
           </div>
           <div class="thumbnail-container">
-            <div v-for="item in videos" class="thumbnail" @click="onThumbnailClick(item)"
-              :class="{ active: item == currentVideo }" >
+            <div v-for="item in slides" class="thumbnail" @click="onThumbnailClick(item)" :class="{ active: item == slide }">
               <div class="thumbnail-text">
                 {{`${item.name}`}}
-              </div>
-              <div class="thumbnail-percentage" :style="
-                { width: (item.maxEntropyDelta || 0) / maxEntropyDelta * 100 + '%'}">
               </div>
             </div>
           </div>
@@ -34,7 +54,7 @@
             <b-collapse id="accordion1" visible accordion="my-accordion" role="tabpanel">
               <b-card-body>
                 <p class="card-text">
-                  {{ text }}
+                  The current video is {{ current_video }}
                 </p>
               </b-card-body>
             </b-collapse>
@@ -46,7 +66,6 @@
             <b-collapse id="accordion2" visible accordion="my-accordion2" role="tabpanel">
               <b-card-body>
                 <p class="card-text">
-                  {{ text }}
                 </p>
               </b-card-body>
             </b-collapse>
@@ -76,79 +95,117 @@
                       tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
                       assumenda shoreditch et. Nihil ani
                     `,
+        slides: [],
+        slide: null,
         videos: [],
-        currentVideo: null,
-        currentVideoLogs: null,
-        currentVideoPeaks: null,
-        maxEntropyDelta: 0,
-        minEntropyDelta: 2.718,
+        problems: [],
+        chapters: [],
+        logs: [],
+        users: [],
+        current_video: null,
+        current_problem: null,
+        current_chapter: null,
+        slide_index: 0,
       }
     },
     components: {
       slideshow,
     },
     mounted() {
-      axios.get(`${serverUrl}getVideoList`, { params: { courseId: courseId} }).then((response) => {
+      axios.get(`${serverUrl}getVideoList`, { params: { courseId: courseId } }).then((response) => {
         this.videos = response.data;
-        for (var i = 0; i < this.videos.length; ++i) {
-          const videoId = this.videos[i].originalId;
-          const video = this.videos[i];
-          video.index = i;
-          axios.get(`${serverUrl}getVideoLogs`, { params: { videoId: videoId} }).then((response) => {
-            const videoLogs = response.data;
-            axios.get(`${serverUrl}getVideoPeaks`, { params: { videoId: videoId} }).then((response) => {
-              const actionPeaks = response.data;
-              const peaks = [];
-              for (const action in actionPeaks.peaks) {
-                for (const peak of actionPeaks.peaks[action]) {
-                  peaks.push(peak);
-                }
-              }
-              videoLogs.peaks = peaks.sort((a, b) => b.entropyDelta - a.entropyDelta);
-              videoLogs.peaks.forEach((peak, index) => { peak.index = index; });    
-              this.videos[video.index].logs = videoLogs;
-              if (videoLogs.peaks.length) {
-                this.videos[video.index].maxEntropyDelta = videoLogs.peaks[0].entropyDelta;
-                if (videoLogs.peaks[0].entropyDelta > this.maxEntropyDelta) {
-                  this.maxEntropyDelta = videoLogs.peaks[0].entropyDelta;
-                } else if (videoLogs.peaks[0].entropyDelta < this.minEntropyDelta) {
-                  this.minEntropyDelta = videoLogs.peaks[0].entropyDelta;
-                }
-              }
-            }).catch();
+        this.slides.push({
+          name: 'Peaks in a Video',
+          type: 'video_peaks',
+          data: ['video_peaks', 'video_logs'],
+        });
+      }).then(() => {
+        axios.get(`${serverUrl}getProblemList`, { params: { courseId: courseId } }).then((response) => {
+          this.problems = response.data;
+          this.slides.push({
+            name: 'Activies in a Problem',
+            type: 'problem_activies',
+            data: ['problem_activies'],
           });
+          this.slides.push({
+            name: 'Attempts in a Problem',
+            type: 'problem_attempts',
+            data: ['problem_activies'],
+          });
+        });
+      }).then(() => {
+        axios.get(`${serverUrl}getChapterList`, { params: { courseId: courseId } }).then((response) => {
+          this.chapters = response.data;
+          return;
+          this.slides.push({
+            name: 'Problem Overview in a Chapter',
+            type: 'problem_overview',
+            data: [],
+          });
+          this.slides.push({
+            name: 'Video overview in a Chapter',
+            type: 'video_overview',
+            data: [],
+          });
+        });
+      });
+    },
+    computed: {
+      context() {
+        return {
+          current_video: this.current_video,
+          current_chapter: this.current_chapter,
+          current_problem: this.current_problem,
+          videos: this.videos,
+          chapters: this.chapters,
+          problems: this.problems,
         }
-      }).catch();
+      },
     },
     methods: {
       onThumbnailClick(item) {
-        this.currentVideo = item;
+        Promise.all(item.data.map((type) => {
+          if (type == 'video_peaks' && this.current_video && !this.current_video.video_peaks) {
+            return axios.get(`${serverUrl}getVideoPeaks`, { params: { videoId: this.current_video.id } }).then((response) => {
+              this.current_video.video_peaks = response.data;
+            });
+          } else if (type == 'video_logs' && this.current_video && !this.current_video.video_logs) {
+            return axios.get(`${serverUrl}getVideoLogs`, { params: { videoId: this.current_video.id } }).then((response) => {
+              this.current_video.video_logs = response.data;
+            });
+          } else if (type == 'problem_activies' && this.current_problem && !this.current_problem.problem_activies) {
+            return axios.get(`${serverUrl}getProblemActivies`, { params: { id: this.current_problem.id } }).then((response) => {
+              this.current_problem.activies = response.data;
+              console.log(this.current_problem.id, response.data);
+            });
+          } else {
+            return '';
+          }
+        })).then(() => {
+          this.slide = item;
+          this.slide_index += 1;
+        });
+      },
+      videoDropdownClick(video) {
+        this.current_video = video;
+        if (this.slide) {
+          this.onThumbnailClick(this.slide);
+        }
+      },
+      problemDropdownClick(problem) {
+        this.current_problem = problem;
+        if (this.slide) {
+          this.onThumbnailClick(this.slide);
+        }
+      },
+      chapterDropdownClick(chapter) {
+        this.current_chapter = chapter;
+        if (this.slide) {
+          this.onThumbnailClick(this.slide);
+        }
       },
     },
     watch: {
-      currentVideo() {
-        const videoId = this.currentVideo.originalId;
-        if (this.currentVideo.logs == null) {
-          axios.get(`${serverUrl}getVideoLogs`, { params: { videoId: videoId} }).then((response) => {
-            const videoLogs = response.data;// .slice(0, maxPeakNum);
-            axios.get(`${serverUrl}getVideoPeaks`, { params: { videoId: videoId} }).then((response) => {
-              const actionPeaks = response.data;
-              const peaks = [];
-              for (const action in actionPeaks.peaks) {
-                for (const peak of actionPeaks.peaks[action]) {
-                  peaks.push(peak);
-                }
-              }
-              videoLogs.peaks = peaks.sort((a, b) => b.entropyDelta - a.entropyDelta);
-              this.currentVideoPeaks = peaks;
-              this.currentVideoLogs = videoLogs;
-            }).catch();
-          });
-        } else {
-          this.currentVideoLogs = this.currentVideo.logs;
-          this.currentVideoPeaks = this.currentVideo.logs.peaks;
-        }
-      }
     }
   }
 </script>
@@ -161,55 +218,38 @@
     color: #333333;
     max-height: 100%;
   }
-  
+
   .bd-sidebar {
     overflow-y: hidden;
     max-height: 86.5vh;
     background: #f1f1f1;
   }
 
-  .nav-link {
-    padding-left: 0px;
-    padding-right: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
-    color: #333333;
-    font-size: 10px;
-    width: 15vw;
-  }
-
-  .nav-item {
-    padding-left: 0px;
-    padding-right: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
-  }
-
   hr {
-      height: 6px;
-      border: 0;
-      box-shadow: inset 0 2px 2px -2px rgba(0,0,0,0.5);
+    height: 6px;
+    border: 0;
+    box-shadow: inset 0 2px 2px -2px rgba(0, 0, 0, 0.5);
   }
-  
+
   h1,
   h2 {
     font-weight: normal;
   }
-  
+
   ul {
     list-style-type: none;
     padding: 0;
   }
-  
+
   li {
     display: inline-block;
     margin: 0 10px;
   }
-  
+
   a {
     color: #42b983;
   }
-  
+
   .thumbnail {
     height: 11vh;
     width: 11vw;
@@ -221,20 +261,20 @@
     background: rgb(243, 245, 242);
     white-space: normal;
     font-size: 14px;
-    position:relative;
+    position: relative;
   }
 
   .thumbnail.active {
     background: rgb(249, 248, 246);
     box-shadow: 3px -3px 0.5px 0.5px rgb(152, 193, 192);
   }
-  
+
   .thumbnail:hover {
     background: rgb(249, 248, 246);
   }
 
   .thumbnail-percentage {
-    position:absolute;
+    position: absolute;
     height: 100%;
     background: rgb(175, 201, 201);
     opacity: 0.5;
@@ -246,10 +286,10 @@
   }
 
   .thumbnail-text {
-    position:absolute;
+    position: absolute;
     z-index: 0;
   }
-  
+
   .thumbnail-container {
     height: 15.5vh;
     max-width: 100%;
@@ -262,15 +302,17 @@
     white-space: nowrap;
     background: rgb(233, 234, 236);
   }
-  
+
   .slideshow-container {
     height: 70vh;
     width: 100%;
     display: inline-block;
     background: rgb(255, 255, 255);
+    margin-top: 5px;
   }
-  
+
   .bd-sidebar {
+    margin-top: 5px;
     color: white;
   }
 </style>
