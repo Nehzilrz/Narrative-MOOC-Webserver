@@ -15,6 +15,16 @@ export function createTemplate(name, type, resources, follow_ups, chart_type, re
 export function createTemplatesOnChapter(chapter) {
     const chapter_id = chapter.id;
     const chapter_templates = [
+        createTemplate(
+            'How often do learners access materials?',
+            'student',
+            'activies_summary',
+            'student2',
+            'barchart',
+            chapter_id,
+            'O0',
+        ),
+
         // What are the activeness of student on different materials?
         createTemplate(
             'What are the popularity of different materials?',
@@ -30,7 +40,7 @@ export function createTemplatesOnChapter(chapter) {
         createTemplate(
             'How often do learners access different materials?',
             'student',
-            'chapter_activies',
+            'chapter_video_activies chapter_problem_activies',
             'student2',
             'barchart',
             chapter_id,

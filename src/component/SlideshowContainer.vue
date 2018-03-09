@@ -3,6 +3,8 @@
         <template v-for="item, index in page">
             <material-popularity-slide v-if="item.id.includes('O1')" :context="context" :item="item">
             </material-popularity-slide>
+            <material-frequency-slide v-else-if="item.id.includes('O2')" :context="context" :item="item">
+            </material-frequency-slide>
             <video-time-spend-slide v-else-if="item.id.includes('V2')" :context="context" :item="item">
             </video-time-spend-slide>
             <video-peaks-slide v-else-if="item.id.includes('V5')" :context="context" :item="item">
@@ -18,6 +20,7 @@ import VideoPopularitySlide from "./Slideshow/VideoPopularity.vue";
 import AssignmentPopularitySlide from "./Slideshow/AssignmentPopularity.vue";
 import VideoPeaksSlide from "./Slideshow/VideoPeaks.vue";
 import VideoTimeSpendSlide from "./Slideshow/VideoTimeSpend.vue";
+import MaterialFrequencySlide from "./Slideshow/MaterialFrequency.vue"
 
 export default {
   data() {
@@ -27,6 +30,7 @@ export default {
   props: ["page", "context", "trigger"],
   components: {
     MaterialPopularitySlide,
+    MaterialFrequencySlide,
     VideoPopularitySlide,
     AssignmentPopularitySlide,
     VideoPeaksSlide,

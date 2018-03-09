@@ -271,6 +271,7 @@ export default {
               this.slides.push(slide);
             }
             loadSlide(this, this.slides.find(d => d.id.includes("O1")));
+            loadSlide(this, this.slides.find(d => d.id.includes("O2")));
             loadSlide(this, this.slides.find(d => d.id.includes("V2")));
             loadSlide(this, this.slides.find(d => d.id.includes("V5")));
           });
