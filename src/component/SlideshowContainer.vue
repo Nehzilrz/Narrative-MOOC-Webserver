@@ -5,10 +5,14 @@
             </material-popularity-slide>
             <material-frequency-slide v-else-if="item.id.includes('O2')" :context="context" :item="item">
             </material-frequency-slide>
+            <assignment-time-spend-slide v-else-if="item.id.includes('A0')" :context="context" :item="item">
+            </assignment-time-spend-slide>
             <video-time-spend-slide v-else-if="item.id.includes('V2')" :context="context" :item="item">
             </video-time-spend-slide>
             <video-peaks-slide v-else-if="item.id.includes('V5')" :context="context" :item="item">
             </video-peaks-slide>
+            <video-time-spend-distribution-slide v-else-if="item.id.includes('S4')" :context="context" :item="item">
+            </video-time-spend-distribution-slide>
         </template>
     </div>
 </template>
@@ -20,6 +24,8 @@ import VideoPopularitySlide from "./Slideshow/VideoPopularity.vue";
 import AssignmentPopularitySlide from "./Slideshow/AssignmentPopularity.vue";
 import VideoPeaksSlide from "./Slideshow/VideoPeaks.vue";
 import VideoTimeSpendSlide from "./Slideshow/VideoTimeSpend.vue";
+import VideoTimeSpendDistributionSlide from "./Slideshow/VideoTimeSpendDistribution.vue";
+import AssignmentTimeSpendSlide from "./Slideshow/AssignmentTimeSpend.vue";
 import MaterialFrequencySlide from "./Slideshow/MaterialFrequency.vue"
 
 export default {
@@ -35,6 +41,8 @@ export default {
     AssignmentPopularitySlide,
     VideoPeaksSlide,
     VideoTimeSpendSlide,
+    AssignmentTimeSpendSlide,
+    VideoTimeSpendDistributionSlide,
   },
   methods: {
   },
@@ -59,19 +67,28 @@ export default {
   padding-bottom: 10vh;
 }
 
+.slideshow-page {
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+}
+
 .slideshow-content {
   width: 90%;
   left: 3vw;
   position: relative;
   transition: 0.2s;
+  padding-top: 0.5vh;
+  padding-bottom: 0.5vh;
+  margin-top: 0.5vh;
+  margin-bottom: 0.5vh;
   transition-timing-function: ease-in-out;
 }
 
 .slideshow-content.title {
   font-weight: 800;
   text-align: center;
-  padding-top: 5vh;
-  padding-bottom: 2vh;
 }
 
 .slideshow-content.title h1,
@@ -84,13 +101,9 @@ h4 {
 .slideshow-content.graph {
   perspective: 200px;
   background-attachment: fixed;
-  padding-top: 1vh;
-  padding-bottom: 1vh;
 }
 
 .slideshow-content.text {
-  padding-top: 1vh;
-  padding-bottom: 1vh;
   font-size: 15px;
   font-weight: 500;
   font-family: inherit;

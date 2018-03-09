@@ -8,14 +8,14 @@
         <div class="slideshow-content text">
             <ul>
                 <li>
-                    The video with highest watch time on average is
-                    <entity-link :id="most_watch[0].id" :context="context"></entity-link>
-                    , which has been watched {{ Number(most_watch[0].watch_time).toFixed(1) }} minutes.
+                    The assignment with highest working time on average is
+                    <entity-link :id="most_work[0].id" :context="context"></entity-link>
+                    , which has been spent {{ Number(most_work[0].work_time / 60).toFixed(1) }} minutes.
                 </li>
                 <li>
-                    The video with lowest watch time on average is
-                    <entity-link :id="least_watch[0].id" :context="context"></entity-link>
-                    , which has been watched {{ Number(least_watch[0].watch_time).toFixed(1) }} minutes.
+                    The assignment with lowest working time on average is
+                    <entity-link :id="least_work[0].id" :context="context"></entity-link>
+                    , which has been spent {{ Number(least_work[0].work_time / 60).toFixed(1) }} minutes.
                 </li>
             </ul>
         </div>
@@ -44,20 +44,20 @@
             });
         },
         computed: {
-            most_watch() {
-                return this.item.data.video_activies.map(d => ({ name: d.name, id: d.id, watch_time: d.video_watch_time / 60 }))
-                    .sort((a, b) => b.watch_time - a.watch_time)
+            most_work() {
+                return this.item.data.problem_activies.slice(0)
+                    .sort((a, b) => b.work_time - a.work_time)
                     .slice(0, 3);
             },
-            least_watch() {
-                return this.item.data.video_activies.map(d => ({ name: d.name, id: d.id, watch_time: d.video_watch_time / 60 }))
-                    .sort((a, b) => a.watch_time - b.watch_time)
+            least_work() {
+                return this.item.data.problem_activies.slice(0)
+                    .sort((a, b) => a.work_time - b.work_time)
                     .slice(0, 3);
             }
         },
         methods: {
             render(data, context) {
-                const video_activies = data.video_activies;
+                const assignment_activies = data.problem_activies;
 
                 var xScale = new Plottable.Scales.Category();
                 var xAxis = new Plottable.Axes.Category(xScale, "bottom").yAlignment("bottom");
@@ -66,15 +66,15 @@
                 var watchTimeAxis = new Plottable.Axes.Numeric(watchTimeScale, "left").xAlignment("left");
                 watchTimeAxis.formatter((d) => Number(d / 60).toFixed(1))
                 var watchTimePlot = new Plottable.Plots.Bar()
-                    .y(d => d.video_watch_time, watchTimeScale)
+                    .y(d => d.work_time, watchTimeScale)
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
-                    .attr("fill", context.color_schema[7])
+                    .attr("fill", context.color_schema[5])
                     .animated(true)
-                    .addDataset(new Plottable.Dataset(video_activies));
+                    .addDataset(new Plottable.Dataset(assignment_activies));
 
                 var watchTimeLabel = new Plottable.Components.AxisLabel("minutes", "0");
-                var watchTimePlotLabel = new Plottable.Components.AxisLabel("video watch time", "0");
+                var watchTimePlotLabel = new Plottable.Components.AxisLabel("time", "0");
 
                 var table = new Plottable.Components.Table([
                     [watchTimeLabel, null],

@@ -38,11 +38,12 @@
                 </li>
             </ul>
         </div>
-        <div class="slideshow-content text">
-            <b-form-row v-show="show_video">
+        <div class="slideshow-content text" v-show="show_video">
+            <b-form-row>
                 <b-col cols="5">
                     <h6 style="font-weight: 600"> Screenshot of this peak: </h6>
-                    <b-embed type="video"
+                    <b-embed v-if="item.data.video"
+                            type="video"
                             aspect="16by9"
                             :src= "item.data.video.html5_sources"
                             class="peak_embed_video"
@@ -301,13 +302,9 @@
 .slideshow-content.graph {
     perspective: 200px;
     background-attachment: fixed;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
 }
 
 .slideshow-content.text {
-    padding-top: 1vh;
-    padding-bottom: 1vh;
     font-size: 15px;
     font-weight: 500;
     font-family: inherit;

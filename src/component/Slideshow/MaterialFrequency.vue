@@ -3,7 +3,7 @@
         <div class="slideshow-content title">
             <h4> {{ item.name }} </h4>
         </div>
-        <div class="slideshow-content graph">
+        <div class="slideshow-content graph" style="height: 40vh">
         </div>
         <div class="slideshow-content text">
             <h6> 
@@ -13,22 +13,22 @@
                 <li v-if="max_video_activies">
                     The most tried video was 
                     <entity-link :id="max_video_activies.id" :context="context"></entity-link>
-                    , each students visited the video {{ max_video_activies.attempts }} times.
+                    , each students visited the video {{ Number(max_video_activies.attempts).toFixed(1) }} times.
                 </li>
                 <li v-if="min_video_activies">
                     The least tried video was 
                     <entity-link :id="min_video_activies.id" :context="context"></entity-link>
-                    , each students visited the video {{ min_video_activies.attempts }} times.
+                    , each students visited the video {{ Number(min_video_activies.attempts).toFixed(1) }} times.
                 </li>
                 <li style="margin-top: 1.5vh" v-if="max_assignment_activies">
                     The most tried assignment was 
                     <entity-link :id="max_assignment_activies.id" :context="context"></entity-link>
-                    , each students submitted this assignment {{ max_assignment_activies.attempts }} times.
+                    , each students submitted this assignment {{ Number(max_assignment_activies.attempts).toFixed(1) }} times.
                 </li>
                 <li v-if="min_assignment_activies">
                     The least tried assignment was 
                     <entity-link :id="min_assignment_activies.id" :context="context"></entity-link>
-                    , each students submitted this assignment {{ min_assignment_activies.attempts }} times.
+                    , each students submitted this assignment {{ Number(min_assignment_activies.attempts).toFixed(1) }} times.
                 </li>
             </ul>
         </div>
@@ -120,13 +120,8 @@
 </script>
 
 <style scope>
-.slideshow-content.graph {
-    height: 40vh;
-}
 
 .slideshow-content.text h6 {
     font-weight: 600;
-    padding-top: 1vh;
-    padding-bottom: 0.5vh;
 }
 </style>

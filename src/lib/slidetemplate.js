@@ -61,7 +61,7 @@ export function createTemplatesOnChapter(chapter) {
             'When do students start or finish the course materials?',
             'student',
             'chapter_problem_activies chapter_video_activies',
-            'student4',
+            'S4',
             'barchart',
             chapter_id,
             'O3',
@@ -73,7 +73,7 @@ export function createTemplatesOnChapter(chapter) {
             '',
             'barchart',
             chapter_id,
-            'student4',
+            'S4',
         ),
 
         createTemplate(
@@ -102,6 +102,15 @@ export function createTemplatesOnChapter(chapter) {
             'barchart',
             chapter_id,
             'V2'
+        ),
+        createTemplate(
+            'How much time do students spend on each assignment?',
+            'assignment',
+            'chapter_problem_activies',
+            'assignment1',
+            'barchart',
+            chapter_id,
+            'A0',
         ),
         createTemplate(
             'How many assignments do students finish?',

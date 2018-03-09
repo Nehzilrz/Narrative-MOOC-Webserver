@@ -3,7 +3,7 @@
         <div class="slideshow-content title">
             <h4> {{ item.name }} </h4>
         </div>
-        <div class="slideshow-content graph">
+        <div class="slideshow-content graph" style="height: 40vh">
         </div>
         <div class="slideshow-content text">
             <h6> 
@@ -129,10 +129,6 @@
 </script>
 
 <style scope>
-.slideshow-content.graph {
-    height: 40vh;
-}
-
 .slideshow-content.text h6 {
     font-weight: 600;
     padding-top: 1vh;
