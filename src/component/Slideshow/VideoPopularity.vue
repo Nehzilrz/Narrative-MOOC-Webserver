@@ -1,36 +1,48 @@
 <template>
-    <div class="slideshow-content container">
+    <div class="slideshow-page">
         <div class="slideshow-content title">
-            <h4 style="font-weight: 800"> {{ item.name }} </h4>
+            <h4> {{ item.name }} </h4>
         </div>
-        <div class="slideshow-content graph" style="height: 40vh">
+        <div class="slideshow-content graph">
         </div>
         <div class="slideshow-content text">
-            <h6 style="font-weight: 600; padding-top: 1vh; padding-bottom: 0.5vh;"> 
+            <h6> 
                 Activies in this week:
             </h6>
             <ul>
-                <li>
+                <li v-if="max_video_activies">
                     The most visited video was 
-                    <b-link href="javascript:void(0);" @click="onSelectVideo(item.data.max_video_activies.id)">
-                        <span class="step" :style="{background: context.colorSchema[1]}">
+                    <b-link href="javascript:void(0);" @click="context.selectVideo(max_video_activies.id)">
+                        <span class="step" :style="{background: context.video_color}">
                             V
                         </span>            
-                        {{ item.data.max_video_activies.name }}
+                        {{ max_video_activies.name }}
                     </b-link>
-                    , {{ item.data.max_video_activies.activeness }} 
+                    , {{ max_video_activies.activeness }} 
                     students visited the video.
                 </li>
-                <li>
+                <li v-if="min_video_activies">
                     The least visited video was 
-                    <b-link href="javascript:void(0);" @click="onSelectVideo(item.data.min_video_activies.id)">
-                        <span class="step" :style="{background: context.colorSchema[1]}">
+                    <b-link href="javascript:void(0);" @click="context.selectVideo(min_video_activies.id)">
+                        <span class="step" :style="{background: context.video_color}">
                             V
                         </span>            
-                        {{ item.data.min_video_activies.name }}
+                        {{ min_video_activies.name }}
                     </b-link>
-                    , {{ item.data.min_video_activies.activeness }} 
+                    , {{ min_video_activies.activeness }} 
                     students visited the video.
+                </li>
+            </ul>
+        </div>
+        <div class="slideshow-content text" v-if="item.follow_ups.length > 0">
+            <h6>
+                Related questions:
+            </h6>
+            <ul>
+                <li v-for="q in context.followupSlides(item)">
+                    <b-link href="javascript:void(0);" @click="context.moveto(q)">
+                        {{ q.name }}
+                    </b-link>
                 </li>
             </ul>
         </div>
@@ -57,25 +69,32 @@
                 viewFactor: 0.4,
                 rotate: { x: 65 },
             });
-            this.$forceUpdate();
+        },
+        computed: {
+            max_video_activies() {
+                const video_activies = this.item.data.video_activies;
+                const t = Math.max(...video_activies.map(d => d.activeness));
+                return video_activies.find(d => d.activeness == t);
+            },
+            min_video_activies() {
+                const video_activies = this.item.data.video_activies;
+                const t = Math.min(...video_activies.map(d => d.activeness));
+                return video_activies.find(d => d.activeness == t);
+            },
         },
         methods: {
             render(data, context) {
                 const video_activies = data.video_activies;
-                if (!video_activies) return null;
+                const problem_activies = data.problem_activies;
 
                 var xScale = new Plottable.Scales.Category();
                 var xAxis = new Plottable.Axes.Category(xScale, "bottom").yAlignment("bottom");
 
                 var colorScale = new Plottable.Scales.Color();
                 colorScale.domain(['video']);
-                data.video_color = context.colorSchema[1];
+                data.video_color = context.video_color;
+                data.assignment_color = context.assignment_color;
                 colorScale.range([data.video_color]);
-
-                const max_video_activies = Math.max(...video_activies.map(d => d.activeness));
-                const min_video_activies = Math.min(...video_activies.map(d => d.activeness));
-                data.max_video_activies = video_activies.find(d => d.activeness == max_video_activies);
-                data.min_video_activies = video_activies.find(d => d.activeness == min_video_activies);
 
                 var activenessScale = new Plottable.Scales.Linear();
                 var activenessAxis = new Plottable.Axes.Numeric(activenessScale, "left").xAlignment("left");
@@ -85,7 +104,8 @@
                     .attr("stroke", "none")
                     .attr("fill", (d, i, dataset) => dataset.metadata(), colorScale)
                     .animated(true)
-                    .addDataset(new Plottable.Dataset(video_activies).metadata('video'));
+                    .addDataset(new Plottable.Dataset(video_activies).metadata('video'))
+                    .addDataset(new Plottable.Dataset(problem_activies).metadata('assignment'));
 
                 var legend = new Plottable.Components.Legend(colorScale);
                     legend.maxEntriesPerRow(1);
@@ -103,9 +123,6 @@
 
                 return table;
             },
-            onSelectVideo() {
-
-            },
         },
         props: ["item", "context"],
     };
@@ -113,18 +130,12 @@
 
 <style scope>
 .slideshow-content.graph {
-    perspective: 200px;
-    background-attachment: fixed;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
+    height: 40vh;
 }
 
-.slideshow-content.text {
+.slideshow-content.text h6 {
+    font-weight: 600;
     padding-top: 1vh;
-    padding-bottom: 1vh;
-    font-size: 15px;
-    font-weight: 500;
-    font-family: inherit;
-    color: #222;
+    padding-bottom: 0.5vh;
 }
 </style>

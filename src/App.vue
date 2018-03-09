@@ -46,22 +46,38 @@
         <div class="header">
           <h5 class="title"> History </h5>
           <svg class="icon" width="32" height="32">
-            <path transform="translate(0, 7) scale(1.6)" fill="#ffffff" d="
+            <path transform="translate(-3, 4) scale(1.8)" fill="#ffffff" d="
               M10 1c3.866 0 7 3.134 7 7s-3.134 7-7 7v-1.5c1.469 0 2.85-0.572 3.889-1.611s1.611-2.42 1.611-3.889c0-1.469-0.572-2.85-1.611-3.889s-2.42-1.611-3.889-1.611c-1.469 0-2.85 0.572-3.889 1.611-0.799 0.799-1.322 1.801-1.52 2.889h2.909l-3.5 4-3.5-4h2.571c0.485-3.392 3.402-6 6.929-6zM13 7v2h-4v-5h2v3z">
             </path>
           </svg>
         </div>
         <div class="content">
-          <div v-for="item in history_slides" class="page" @click="onThumbnailClick(item)" :class="{ active: item == slide }">
-            {{`${item.name}`}}
+          <div v-for="item in history" class="page" @click="onThumbnailClick(item)" :class="{ active: item == slide }">
+            <div> {{`${item.name}`}} </div>
+            <svg v-if="item.chart_type =='piechart'" ersion="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+              <path fill="#ffffff" opacity=0.15 d="M7 9v-7c-3.866 0-7 3.134-7 7s3.134 7 7 7 7-3.134 7-7c0-1.126-0.266-2.189-0.738-3.131l-6.262 3.131zM14.262 3.869c-1.149-2.294-3.521-3.869-6.262-3.869v7l6.262-3.131z"></path>
+            </svg>
+            <svg v-else-if="item.chart_type =='linechart'" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+              <path fill="#ffffff" opacity=0.15 d="M2 14h14v2h-16v-16h2zM4.5 13c-0.828 0-1.5-0.672-1.5-1.5s0.672-1.5 1.5-1.5c0.044 0 0.088 0.002 0.131 0.006l1.612-2.687c-0.154-0.235-0.243-0.517-0.243-0.819 0-0.828 0.672-1.5 1.5-1.5s1.5 0.672 1.5 1.5c0 0.302-0.090 0.583-0.243 0.819l1.612 2.687c0.043-0.004 0.087-0.006 0.131-0.006 0.033 0 0.066 0.001 0.099 0.004l2.662-4.658c-0.165-0.241-0.261-0.532-0.261-0.845 0-0.828 0.672-1.5 1.5-1.5s1.5 0.672 1.5 1.5c0 0.828-0.672 1.5-1.5 1.5-0.033 0-0.066-0.001-0.099-0.004l-2.662 4.658c0.165 0.241 0.261 0.532 0.261 0.845 0 0.828-0.672 1.5-1.5 1.5s-1.5-0.672-1.5-1.5c0-0.302 0.090-0.583 0.243-0.819l-1.612-2.687c-0.043 0.004-0.087 0.006-0.131 0.006s-0.088-0.002-0.131-0.006l-1.612 2.687c0.154 0.235 0.243 0.517 0.243 0.819 0 0.828-0.672 1.5-1.5 1.5z"></path>
+            </svg>
+            <svg v-else-if="item.chart_type =='barchart'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+              <path fill="#ffffff" opacity=0.15 d="M0 13h16v2h-16zM2 9h2v3h-2zM5 5h2v7h-2zM8 8h2v4h-2zM11 2h2v10h-2z"></path>
+            </svg>
+            <svg v-else-if="item.chart_type =='stackedbarchart'" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+              <path fill="#ffffff" opacity=0.15 d="M4.5 6h-3c-0.275 0-0.5 0.225-0.5 0.5v9c0 0.275 0.225 0.5 0.5 0.5h3c0.275 0 0.5-0.225 0.5-0.5v-9c0-0.275-0.225-0.5-0.5-0.5zM4.5 15h-3v-4h3v4zM9.5 4h-3c-0.275 0-0.5 0.225-0.5 0.5v11c0 0.275 0.225 0.5 0.5 0.5h3c0.275 0 0.5-0.225 0.5-0.5v-11c0-0.275-0.225-0.5-0.5-0.5zM9.5 15h-3v-5h3v5zM14.5 2h-3c-0.275 0-0.5 0.225-0.5 0.5v13c0 0.275 0.225 0.5 0.5 0.5h3c0.275 0 0.5-0.225 0.5-0.5v-13c0-0.275-0.225-0.5-0.5-0.5zM14.5 15h-3v-6h3v6z"></path>
+            </svg>
+            <svg v-else-if="item.chart_type =='areachart'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-chart-area fa-w-16" style="font-size: 64px;">
+              <path fill="#ffffff" opacity=0.15 d="M500 384c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H12c-6.6 0-12-5.4-12-12V76c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v308h436zM372.7 159.5L288 216l-85.3-113.7c-5.1-6.8-15.5-6.3-19.9 1L96 248v104h384l-89.9-187.8c-3.2-6.5-11.4-8.7-17.4-4.7z" class=""></path>
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+              <path fill="#ffffff" opacity=0.15 d="M6 1h10v2h-10v-2zM6 7h10v2h-10v-2zM6 13h10v2h-10v-2zM0 2c0-1.105 0.895-2 2-2s2 0.895 2 2c0 1.105-0.895 2-2 2s-2-0.895-2-2zM0 8c0-1.105 0.895-2 2-2s2 0.895 2 2c0 1.105-0.895 2-2 2s-2-0.895-2-2zM0 14c0-1.105 0.895-2 2-2s2 0.895 2 2c0 1.105-0.895 2-2 2s-2-0.895-2-2z"></path>
+            </svg>
           </div>
         </div>
       </div>
       <div class="body-container">
-          <div class="slideshow-container" :class="{'sidebar-active': right_sidebar_active}">
-            <slideshow-container :context="this.context" :slide="this.slide" :trigger="this.trigger_counter">
-            </slideshow-container>
-          </div>
+          <slideshow-container :context="this.context" :page="this.page" :trigger="this.trigger_counter">
+          </slideshow-container>
           <div class="sidebar-container tool" :class="{'sidebar-active': right_sidebar_active}">
             <div class="overview">
               <div class="header">
@@ -146,146 +162,239 @@
 </template>
 
 <script>
-  import SlideshowContainer from './component/SlideshowContainer.vue';
-  import axios from 'axios';
-  import { request, serverUrl } from './request';
-  import { getBubbleChart } from './bubblechart';
-  import * as d3 from 'd3';
-  import * as mojs from "mo-js";
-  import * as SlideTemplate from "./slidetemplate";
+import SlideshowContainer from "./component/SlideshowContainer.vue";
+import axios from "axios";
+import * as d3 from "d3";
+import * as mojs from "mo-js";
+import * as SlideTemplate from "./lib/slidetemplate";
+import { request, serverUrl } from "./lib/request";
+import { getBubbleChart } from "./lib/bubblechart";
 
-  const maxPeakNum = 15;
+const maxPeakNum = 15;
 
-  function loadData(self, item) {
-    Promise.all(item.resources.map((type) => {
+function loadSlide(self, item) {
+  Promise.all(
+    item.resources.map(type => {
       return request(self, item, type);
     })
-    ).then(() => {
-      self.history_slides.push(item);
-      self.slide = item;
-      self.trigger_counter += 1;
-      return;
-      const position = self.bubblechart_layout.find(d => d.class == item.type);
-      if (position) {
-        d3.select("#overview").select("g")
-          .transition()
-          .duration(1000)
-          .attr("transform", `translate(${self.overview_width / 2 - position.x},
-            ${self.overview_height / 2 - position.y})`)
-      }
-    });
-  }
-  export default {
-    name: 'app',
-    data() {
-      return {
-        slides: [],
-        slide: null,
-        history_slides: [],
-        videos: [],
-        problems: [],
-        chapters: [],
-        id2item: {},
-        logs: [],
-        users: [],
-        // current_video: null,
-        // current_problem: null,
-        current_chapter: null,
-        trigger_counter: 0,
-        colorSchema: ["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c",
-          "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a"
-        ],
-        course_name: 'Introduction to Computing with Java',
-        course_id: 'HKUSTx_COMP102x_2T2014',
-        right_sidebar_active: false,
-        overview_width: 230,
-        overview_height: 230,
-        bubblechart_layout: null,
-      }
-    },
-    components: {
-      SlideshowContainer,
-    },
-    mounted() {
-      axios.get(`${serverUrl}getVideoList`, { params: { courseId: this.course_id } }).then((response) => {
+  ).then(() => {
+    self.history.push(item);
+    if (!self.page) {
+      self.page = [];
+      self.pages.push(self.page);
+    }
+    self.page.push(item);
+    self.trigger_counter += 1;
+    return;
+    const position = self.bubblechart_layout.find(d => d.class == item.type);
+    if (position) {
+      d3.select("#overview")
+        .select("g")
+        .transition()
+        .duration(1000)
+        .attr(
+          "transform",
+          `translate(${self.overview_width / 2 - position.x},
+            ${self.overview_height / 2 - position.y})`
+        );
+    }
+  });
+}
+export default {
+  name: "app",
+  data() {
+    return {
+      slides: [],
+      pages: [],
+      page: null,
+      history: [],
+      videos: [],
+      problems: [],
+      chapters: [],
+      users: [],
+      id2item: {},
+      // current_video: null,
+      // current_problem: null,
+      current_chapter: null,
+      trigger_counter: 0,
+      color_schema: [
+        "#a6cee3",
+        "#1f78b4",
+        "#b2df8a",
+        "#33a02c",
+        "#fb9a99",
+        "#e31a1c",
+        "#fdbf6f",
+        "#ff7f00",
+        "#cab2d6",
+        "#6a3d9a"
+      ],
+      course_name: "Introduction to Computing with Java",
+      course_id: "HKUSTx_COMP102x_2T2014",
+      overview_width: 230,
+      overview_height: 230,
+      bubblechart_layout: null,
+      right_sidebar_active: false
+    };
+  },
+  components: {
+    SlideshowContainer
+  },
+  mounted() {
+    axios
+      .get(`${serverUrl}getVideoList`, { params: { courseId: this.course_id } })
+      .then(response => {
         this.videos = response.data;
-        this.videos.forEach((d) => this.id2item[d.id] = d);
-      }).then(() => {
-        axios.get(`${serverUrl}getProblemList`, { params: { courseId: this.course_id } }).then((response) => {
-          this.problems = response.data;
-          this.problems.forEach((d) => this.id2item[d.id] = d);
-        });
-      }).then(() => {
-        axios.get(`${serverUrl}getChapterList`, { params: { courseId: this.course_id } }).then((response) => {
-          this.chapters = response.data;
-          this.chapters.forEach((d) => this.id2item[d.id] = d);
-        });
+        this.videos.forEach(d => (this.id2item[d.id] = d));
+      })
+      .then(() => {
+        axios
+          .get(`${serverUrl}getProblemList`, {
+            params: { courseId: this.course_id }
+          })
+          .then(response => {
+            this.problems = response.data;
+            this.problems.forEach(d => (this.id2item[d.id] = d));
+          });
+      })
+      .then(() => {
+        axios
+          .get(`${serverUrl}getChapterList`, {
+            params: { courseId: this.course_id }
+          })
+          .then(response => {
+            this.chapters = response.data;
+            this.chapters.forEach(d => (this.id2item[d.id] = d));
+            const chapter = this.chapters[4];
+            this.current_chapter = chapter;
+            for (const slide of SlideTemplate.createTemplatesOnChapter(chapter)) {
+              this.slides.push(slide);
+            }
+            loadSlide(this, this.slides.find(d => d.id.includes("O1")));
+            loadSlide(this, this.slides.find(d => d.id.includes("V2")));
+            loadSlide(this, this.slides.find(d => d.id.includes("V5")));
+          });
       });
-
+  },
+  computed: {
+    context() {
+      return {
+        current_chapter: this.current_chapter,
+        videos: this.videos,
+        chapters: this.chapters,
+        problems: this.problems,
+        slides: this.slides,
+        history: this.history,
+        id2item: this.id2item,
+        color_schema: this.color_schema,
+        video_color: this.color_schema[1],
+        assignment_color: this.color_schema[3],
+        selectVideo: (item) => {},
+        selectAssignment: (item) => {},
+        selectStudent: (item) => {},
+        selectChapter: (item) => {},
+        addSlide: slide => this.slides.push(slide),
+        lastSlide: () => this.slides[this.slides.length - 1],
+        loadSlide: item => loadSlide(this, item),
+        followupSlides: slide =>
+          slide.follow_ups.map(d =>
+            this.slides.find(
+              x => x.id.includes(d) && slide.resource_id == x.resource_id
+            )
+          ),
+        moveto: item => loadSlide(this, item)
+      };
     },
-    computed: {
-      context() {
-        return {
-          current_chapter: this.current_chapter,
-          videos: this.videos,
-          chapters: this.chapters,
-          problems: this.problems,
-          slides: this.slides,
-          history_slides: this.history_slides,
-          id2item: this.id2item,
-          colorSchema: this.colorSchema,
-          loadData: (item) => loadData(this, item),
-          addSlide: (slide) => this.addSlide(slide),
-          lastSlide: () => this.slides[this.slides.length - 1],
+    slide() {
+      return null;
+    },
+    slide_structure() {
+      const ret = this.slides.filter(d => d.index == 0).map(d => {
+        if (!d.subcategory) {
+          return {
+            id: `course.${d.category}.${d.type}`,
+            name: d.name,
+            value: Math.random() * 10 + 30
+          };
+        } else {
+          return {
+            id: `course.${d.category}.${d.subcategory}.${d.type}`,
+            name: d.subname,
+            value: Math.random() * 10 + 15
+          };
         }
-      },
-      slide_structure() {
-        const ret = this.slides.filter(d => d.index == 0).map(d => {
-          if (!d.subcategory) {
-            return {
-              id: `course.${d.category}.${d.type}`,
-              name: d.name,
-              value: Math.random() * 10 + 30,
-            };
-          } else {
-            return {
-              id: `course.${d.category}.${d.subcategory}.${d.type}`,
-              name: d.subname,
-              value: Math.random() * 10 + 15,
-            };
-          }
-        });
-        ret.push({ id: 'course.video', name: 'video', value: Math.random() * 10 + 10, });
-        ret.push({ id: 'course.assignment', name: 'assignment', value: Math.random() * 10 + 10, });
-        ret.push({ id: 'course.student', name: 'student', value: Math.random() * 10 + 10, });
-        ret.push({ id: 'course', name: 'course', });
-        return ret;
-      }
-    },
-    watch: {
-      slides(val) {
-        // this.bubblechart_layout = getBubbleChart(d3.select("#overview"), this.slide_structure);
-      }
-    },
-    methods: {
-      onThumbnailClick(item) {
-        Promise.all(item.resources.map((type) => {
+      });
+      ret.push({
+        id: "course.video",
+        name: "video",
+        value: Math.random() * 10 + 10
+      });
+      ret.push({
+        id: "course.assignment",
+        name: "assignment",
+        value: Math.random() * 10 + 10
+      });
+      ret.push({
+        id: "course.student",
+        name: "student",
+        value: Math.random() * 10 + 10
+      });
+      ret.push({ id: "course", name: "course" });
+      return ret;
+    }
+  },
+  watch: {
+    slides(val) {
+      // this.bubblechart_layout = getBubbleChart(d3.select("#overview"), this.slide_structure);
+    }
+  },
+  methods: {
+    onThumbnailClick(item) {
+      Promise.all(
+        item.resources.map(type => {
           return request(this, item, type);
-        })).then(() => {
-          this.history_slides.push(item);
-          this.slide = item;
-          this.trigger_counter += 1;
-          return;
-          const position = this.bubblechart_layout.find(d => d.class == item.type);
-          if (position) {
-            d3.select("#overview").select("g")
-              .transition()
-              .duration(1000)
-              .attr("transform", `translate(${this.overview_width / 2 - position.x},${this.overview_height / 2 - position.y})`)
-          }
-        });
-      },
-      /*
+        })
+      ).then(() => {
+        // this.history.push(item);
+        this.trigger_counter += 1;
+        return;
+        const position = this.bubblechart_layout.find(
+          d => d.class == item.type
+        );
+        if (position) {
+          d3
+            .select("#overview")
+            .select("g")
+            .transition()
+            .duration(1000)
+            .attr(
+              "transform",
+              `translate(${this.overview_width / 2 - position.x},${this
+                .overview_height /
+                2 -
+                position.y})`
+            );
+        }
+      });
+    },
+    /*
+
+    paint() {
+      if (!this.slide) {
+        return null;
+      }
+      var item = null;
+      if (
+        (item = this.slides.find(
+          d => this.slide.type == d.type && this.slide.index == d.index
+        ))
+      ) {
+        scrollTo(document.getElementById(`${item.type}_${item.index}`), 1000);
+        return;
+      }
+      this.slides.push(this.slide);
+    }
+
       videoDropdownClick(video) {
         this.current_video = video;
         for (const chapter of this.chapters) {
@@ -309,32 +418,17 @@
         }
       },
       */
-      addSlide(slide) {
-        var index = 0;
-        for (const x of this.slides) {
-          if (x.name == slide.name && x.index >= index) {
-            index = x.index + 1;
-          }
-        }
-        slide.index = index;
+    chapterDropdownClick(chapter) {
+      this.current_chapter = chapter;
+      for (const slide of SlideTemplate.createTemplatesOnChapter(chapter)) {
         this.slides.push(slide);
-      },
-      chapterDropdownClick(chapter) {
-        this.current_chapter = chapter;
-
-        for (const slide of SlideTemplate.createTemplatesOnChapter(chapter)) {
-          this.addSlide(slide);
-        }
-
-        this.onThumbnailClick(this.slides.find(d => d.id == 'student0'));
-        if (this.slide) {
-          this.onThumbnailClick(this.slide);
-        }
-      },
-    },
+      }
+      loadSlide(this, this.slides.find(d => d.id == "O1"));
+    }
   }
+};
 
-  /*
+/*
       const RADIUS = 28;
       const circle = new mojs.Shape({
         left: 0, top: 0,
@@ -420,31 +514,27 @@ body {
   display: inline-flex;
   flex-direction: row;
 }
-.slideshow-container {
-  width: 80vw;
-  display: inline-flex;
-}
 .sidebar-container.tool {
   width: 20vw;
   left: 80vw;
-  background: radial-gradient(circle at top,#333333,#111111);
+  background: radial-gradient(circle at top, #333333, #111111);
   position: fixed;
 }
 .sidebar-container.tool .header {
-  background: radial-gradient(circle at top,#353a3f,#333333);
+  background: radial-gradient(circle at top, #353a3f, #333333);
   position: relative;
 }
 .sidebar-container.tool .header .icon {
   position: absolute;
   left: 86%;
   top: 0vh;
-  transition: 0.2s;  
+  transition: 0.2s;
   transition-timing-function: ease-in-out;
 }
 .sidebar-container.tool .content {
-  background: radial-gradient(circle at top,#333333,#111111);
+  background: radial-gradient(circle at top, #333333, #111111);
 }
-.slideshow-container.sidebar-active{
+.slideshow-container.sidebar-active {
   width: 100vw;
 }
 .sidebar-container.tool.sidebar-active {
@@ -476,10 +566,10 @@ body {
   border-width: 1px 1.5px 1px 1.5px;
   border-style: solid;
   border-color: #666666;
-  background: radial-gradient(circle at top,#353a3f,#333333);
+  background: radial-gradient(circle at top, #353a3f, #333333);
   z-index: 3;
   top: 0px;
-  transition: 0.2s;  
+  transition: 0.2s;
   transition-timing-function: ease-in-out;
 }
 .sidebar-container .header .title {
@@ -491,13 +581,13 @@ body {
   margin-left: 1.5vw;
 }
 .sidebar-container .content {
-  transition: 0.5s;  
+  transition: 0.5s;
   transition-timing-function: ease-in-out;
-  background: radial-gradient(circle at top,#333333,#111111);
+  background: radial-gradient(circle at top, #333333, #111111);
 }
 
 .sidebar-container.slideshow {
-  left: -13vw;   
+  left: -13vw;
   width: 16vw;
   position: fixed;
 }
@@ -510,14 +600,14 @@ body {
   position: sticky;
   border-style: solid;
   border-color: #666666;
-  background: radial-gradient(circle at top,#353a3f,#333333);
+  background: radial-gradient(circle at top, #353a3f, #333333);
   width: 15.9vw;
 }
 .sidebar-container.slideshow .header .icon {
   position: absolute;
   left: 85%;
   top: 0vh;
-  transition: 0.2s;  
+  transition: 0.2s;
   transition-timing-function: ease-in-out;
 }
 .sidebar-container.slideshow:hover .header {
@@ -544,14 +634,27 @@ body {
   margin: 0.5vh 0.5vw 1vh 0.5vw;
   left: -2vw;
   display: inline-flex;
+  flex-direction: column;
   text-align: center;
   border-color: #525252;
   border-style: solid;
   border-width: 1.5px;
-  font-size: 14px;
+  font-size: 12px;
   position: relative;
-  transition: 0.2s;  
+  transition: 0.2s;
   transition-timing-function: ease-in-out;
+}
+
+.sidebar-container.slideshow .page div {
+  padding-top: 0.5vh;
+}
+
+.sidebar-container.slideshow .page svg {
+  width: 8vh;
+  height: 8vh;
+  position: absolute;
+  left: 35%;
+  top: 2vh;
 }
 
 .sidebar-container.slideshow:hover .page {
@@ -570,17 +673,17 @@ body {
 }
 
 .sidebar-container .content::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
- 
+
 .sidebar-container .content::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.0);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
 }
- 
+
 .sidebar-container .content::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background-color: rgba(0,0,0,0.3);
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
 .right-sidebar {

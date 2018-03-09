@@ -5,7 +5,7 @@
                 <h4 style="font-weight: 800"> {{ item.name }} </h4>
             </div>
         <!-- clickstream and peak view -->
-            <template v-if="item.id.includes('video4')">
+            <template v-if="item.id.includes('V5')">
                 <div class="slideshow-content graph" style="height: 30vh" :id="`${item.type}_${item.index}`">
                 </div>
                 <div class="slideshow-content text">
@@ -119,7 +119,7 @@
                 </b-form-row> 
             </template>
         <!-- material popularities -->
-            <template v-else-if="item.id=='student0'">
+            <template v-else-if="item.id=='O1'">
                 <div class="slideshow-content graph" style="height: 40vh" :id="`${item.type}_${item.index}`">
                 </div>
                 <div class="slideshow-content text">
@@ -175,7 +175,7 @@
                 </div>
             </template>
         <!-- material start time -->
-            <template v-else-if="item.id=='student3'">
+            <template v-else-if="item.id=='O3'">
                 <div class="slideshow-content graph" style="height: 40vh" :id="`${item.type}_${item.index}`">
                 </div>
                 <div class="slideshow-content text">
@@ -227,55 +227,6 @@
                             </b-link>
                             , which spent {{  Number(item.data.max_assignment_activies_duration.duration).toFixed(1) }}
                             days.
-                        </li>
-                    </ul>
-                </div>
-            </template>
-        <!-- video completed -->
-            <template v-else-if="item.type=='video1'">
-                <div class="slideshow-content graph" style="height: 40vh" :id="`${item.type}_${item.index}`">
-                </div>
-                <div class="slideshow-content text">
-                    <ul>
-                        <li>
-                            The video the student has viewed the most on average is
-                            <b-link href="javascript:void(0);" @click="onSelectVideo(item.data.most_attempts[0].id)">
-                                <span class="step" :style="{background: colorSchema[1]}">
-                                    V
-                                </span>                                
-                                {{ item.data.most_attempts[0].name }}
-                            </b-link>
-                            , which viewed {{ Number(item.data.most_attempts[0].attempts).toFixed(1) }} times.
-                        </li>
-                        <li>
-                            The video the student has viewed the least is
-                            <b-link href="javascript:void(0);" @click="onSelectVideo(item.data.least_attempts[0].id)">
-                                <span class="step" :style="{background: colorSchema[1]}">
-                                    V
-                                </span>                                
-                                {{ item.data.least_attempts[0].name }}
-                            </b-link>
-                            , which viewed {{ Number(item.data.least_attempts[0].attempts).toFixed(1) }} times.
-                        </li>
-                        <li>
-                            The video with highest watch time on average is
-                            <b-link href="javascript:void(0);" @click="onSelectVideo(item.data.most_watch[0].id)">
-                                <span class="step" :style="{background: colorSchema[1]}">
-                                    V
-                                </span>                                
-                                {{ item.data.most_watch[0].name }}
-                            </b-link>
-                            , which has been watched {{ Number(item.data.most_watch[0].watch_time).toFixed(1) }} minutes.
-                        </li>
-                        <li>
-                            The video with lowest watch time on average is
-                            <b-link href="javascript:void(0);" @click="onSelectVideo(item.data.least_watch[0].id)">
-                                <span class="step" :style="{background: colorSchema[1]}">
-                                    V
-                                </span>                                
-                                {{ item.data.least_watch[0].name }}
-                            </b-link>
-                            , which has been watched {{ Number(item.data.least_watch[0].watch_time).toFixed(1) }} minutes.
                         </li>
                     </ul>
                 </div>
@@ -1691,21 +1642,6 @@
         methods: {
             slideGraphRender() {
                 this.slide_render[this.slide.name]();
-            },
-            top_video_peaks(item, i) {
-                var data = item.data;          
-                var d = data.video_peaks[i];
-                var t = ~~((d.start + d.end) / 2);
-                return {
-                    time: t,
-                    student_num: d.activeness,
-                    operations: data.video_logs.map(v => ({
-                        name: v.type,
-                        value: v.data[t] || 0,
-                    })),
-                    grade_distribution: d.grade_distribution,
-                    index: i,
-                }
             },
             paint() {
                 if (!this.slide) {

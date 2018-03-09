@@ -1,91 +1,57 @@
 <template>
-    <div class="slideshow-outbox">
-        <template v-for="item, index in slides">
-            <material-popularity-slide v-if="item.id == 'student0'" :context="context" :item="item">
+    <div class="slideshow-container">
+        <template v-for="item, index in page">
+            <material-popularity-slide v-if="item.id.includes('O1')" :context="context" :item="item">
             </material-popularity-slide>
+            <video-time-spend-slide v-else-if="item.id.includes('V2')" :context="context" :item="item">
+            </video-time-spend-slide>
+            <video-peaks-slide v-else-if="item.id.includes('V5')" :context="context" :item="item">
+            </video-peaks-slide>
         </template>
     </div>
 </template>
 
 <script>
-    import Plottable from "plottable";
-    import * as d3 from "d3";
-    import { setTimeout } from 'plottable/build/src/utils/windowUtils';
-    import { axisRight } from 'd3';
-    import MaterialPopularitySlide from './Slideshow/MaterialPopularity.vue';
 
-    const entropy_delta_threshold = 0.3;
-    const max_entropy_delta_num = 3;
-    let isScrolling = false;
+import MaterialPopularitySlide from "./Slideshow/MaterialPopularity.vue";
+import VideoPopularitySlide from "./Slideshow/VideoPopularity.vue";
+import AssignmentPopularitySlide from "./Slideshow/AssignmentPopularity.vue";
+import VideoPeaksSlide from "./Slideshow/VideoPeaks.vue";
+import VideoTimeSpendSlide from "./Slideshow/VideoTimeSpend.vue";
 
-    function scrollTo(anchor, duration) {   
-        if (!anchor) return;     
-        var scrollTop = document.documentElement.scrollTop;
-        if (Math.abs(anchor.offsetTop - scrollTop) < 100) {
-            return;
-        }
-        if (isScrolling) {
-            return;
-        }
-        isScrolling = true;        
-        var step = (anchor.offsetTop - scrollTop) / (duration / 1000) / 50;            
-
-        function scroll() {     
-            if (Math.abs(anchor.offsetTop - scrollTop) > Math.abs(step)) {
-                scrollTop += step;
-                document.documentElement.scrollTop = scrollTop;
-                setTimeout(scroll, 20);
-                return;
-            } else {
-                isScrolling = false;
-                return;
-            }
-        }
-        scroll();
-    }
-
-    export default {
-        data() {
-            return {
-                slide_index: 0,
-                slides: [],
-                colorSchema: ["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", 
-                    "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a"
-                ],
-                show_video: [],
-            };
-        },
-        props: ["slide", "context", "trigger"],
-        components: {
-            MaterialPopularitySlide,
-        },
-        methods: {
-            paint() {
-                if (!this.slide) {
-                    return null;
-                }
-                var item = null;
-                if (item = this.slides.find(d => this.slide.type == d.type && this.slide.index == d.index)) {
-                    scrollTo(document.getElementById(`${item.type}_${item.index}`), 1000);
-                    return;
-                }
-                this.slides.push(this.slide);
-            },
-        },
-        watch: {
-            trigger() {
-                this.paint();
-            },
-        }
+export default {
+  data() {
+    return {
     };
+  },
+  props: ["page", "context", "trigger"],
+  components: {
+    MaterialPopularitySlide,
+    VideoPopularitySlide,
+    AssignmentPopularitySlide,
+    VideoPeaksSlide,
+    VideoTimeSpendSlide,
+  },
+  methods: {
+  },
+  watch: {
+    trigger() {
+      // this.paint();
+    }
+  }
+};
 </script>
 
 <style scope>
-.slideshow-outbox {
+.slideshow-container {
   left: 0px;
   top: 0px;
-  min-height: 100%;
-  width: 100%;
+  height: 100%;
+  width: 80vw;
+  display: inline-flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: scroll;
   padding-bottom: 10vh;
 }
 
@@ -93,26 +59,38 @@
   width: 90%;
   left: 3vw;
   position: relative;
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
 }
 
 .slideshow-content.title {
-    font-weight: 800;
-    text-align: center;
-    padding-top: 5vh;
-    padding-bottom: 2vh;
+  font-weight: 800;
+  text-align: center;
+  padding-top: 5vh;
+  padding-bottom: 2vh;
 }
 
-span.step {
-  border-radius: 0.65em;
-  -moz-border-radius: 0.65em;
-  -webkit-border-radius: 0.65em;
-  color: #ffffff;
-  display: inline-block;
-  font-weight: bold;
-  line-height: 1.3em;
-  margin-right: 4px;
-  text-align: center;
-  width: 1.3em; 
+.slideshow-content.title h1,
+h2,
+h3,
+h4 {
+  font-weight: 800;
+}
+
+.slideshow-content.graph {
+  perspective: 200px;
+  background-attachment: fixed;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+}
+
+.slideshow-content.text {
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  color: #222;
 }
 </style>
 

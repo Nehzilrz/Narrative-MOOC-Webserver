@@ -1,10 +1,11 @@
-export function createTemplate(name, type, resources, follow_ups, resource_id, id, title) {
+export function createTemplate(name, type, resources, follow_ups, chart_type, resource_id, id, title) {
     return {
         name: name,
         title: title || name,
         type: type,
         resource_id: resource_id,
         id: id,
+        chart_type: chart_type,
         resources: Array.isArray(resources) ? resources : resources.split(' '),
         follow_ups: Array.isArray(follow_ups) ? follow_ups : follow_ups.split(' '),
         data: {},
@@ -19,19 +20,21 @@ export function createTemplatesOnChapter(chapter) {
             'What are the popularity of different materials?',
             'student',
             'chapter_video_activies chapter_problem_activies',
-            'student1 student2',
+            'O2 student2',
+            'barchart',
             chapter_id,
-            'student0',
+            'O1',
         ),
 
         // How often do students access course materials?
         createTemplate(
-            'How often do students access course materials?',
+            'How often do learners access different materials?',
             'student',
             'chapter_activies',
             'student2',
+            'barchart',
             chapter_id,
-            'student1',
+            'O2',
         ),
 
         // How much time do students spend on different materials?
@@ -39,7 +42,8 @@ export function createTemplatesOnChapter(chapter) {
             'How much time do students spend on different materials?',
             'student',
             'chapter_problem_activies',
-            'student3',
+            'O3',
+            'barchart',
             chapter_id,
             'student2'
         ),
@@ -48,14 +52,16 @@ export function createTemplatesOnChapter(chapter) {
             'student',
             'chapter_problem_activies chapter_video_activies',
             'student4',
+            'barchart',
             chapter_id,
-            'student3',
+            'O3',
         ),
         createTemplate(
             'Which students are having difficulties?',
             'student',
             'student_overview',
             '',
+            'barchart',
             chapter_id,
             'student4',
         ),
@@ -64,7 +70,8 @@ export function createTemplatesOnChapter(chapter) {
             'How much video content have students completed?',
             'video',
             'chapter_video_activies',
-            'video1',
+            'V2',
+            'barchart',
             chapter_id,
             'video0',
         ),
@@ -72,23 +79,26 @@ export function createTemplatesOnChapter(chapter) {
             'How much time do students spend on each video?',
             'video',
             'chapter_video_activies',
-            'video2',
+            'V2',
+            'barchart',
             chapter_id,
-            'video1',
+            'V2',
         ),
         createTemplate(
             'How often do students review each video?',
             'video',
             'chapter_video_activies',
             'video3',
+            'barchart',
             chapter_id,
-            'video2'
+            'V2'
         ),
         createTemplate(
             'How many assignments do students finish?',
             'assignment',
             'chapter_problem_activies',
             'assignment2',
+            'barchart',
             chapter_id,
             'assignment1',
         ),
@@ -97,6 +107,7 @@ export function createTemplatesOnChapter(chapter) {
             'assignment',
             'chapter_problem_activies',
             'assignment3',
+            'barchart',
             chapter_id,
             'assignment2',
         ),
@@ -105,6 +116,7 @@ export function createTemplatesOnChapter(chapter) {
             'assignment',
             'chapter_problem_activies',
             'assignment4',
+            'barchart',
             chapter_id,
             'assignment3'
         ),
@@ -113,6 +125,7 @@ export function createTemplatesOnChapter(chapter) {
             'assignment',
             'chapter_problem_activies',
             'assignment5',
+            'barchart',
             chapter_id,
             'assignment4',
         ),
@@ -124,8 +137,9 @@ export function createTemplatesOnChapter(chapter) {
             'video',
             'video_peaks video_logs video_info',
             '',
+            'areachart',
             video_id,
-            `video4${index}`
+            `V5${index}`
         ),
     );
 

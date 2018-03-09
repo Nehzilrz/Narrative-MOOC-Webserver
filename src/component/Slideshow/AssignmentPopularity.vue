@@ -10,29 +10,39 @@
                 Activies in this week:
             </h6>
             <ul>
-                <li v-if="max_video_activies">
-                    The most visited video was 
-                    <entity-link :id="max_video_activies.id" :context="context"></entity-link>
-                    , {{ max_video_activies.activeness }} 
-                    students visited the video.
-                </li>
-                <li v-if="min_video_activies">
-                    The least visited video was 
-                    <entity-link :id="min_video_activies.id" :context="context"></entity-link>
-                    , {{ min_video_activies.activeness }} 
-                    students visited the video.
-                </li>
-                <li style="margin-top: 1.5vh" v-if="max_assignment_activies">
+                <li v-if="max_assignment_activies">
                     The most visited assignment was 
-                    <entity-link :id="max_assignment_activies.id" :context="context"></entity-link>
+                    <b-link href="javascript:void(0);" @click="context.selectAssignment(max_video_activies.id)">
+                        <span class="step" :style="{background: context.assignment_color}">
+                            A
+                        </span>
+                        {{ max_assignment_activies.name }}
+                    </b-link>
                     , {{ max_assignment_activies.activeness }} 
                     students visited the assignment.
                 </li>
                 <li v-if="min_assignment_activies">
                     The least visited assignment was 
-                    <entity-link :id="min_assignment_activies.id" :context="context"></entity-link>
+                    <b-link href="javascript:void(0);" @click="context.selectAssignment(min_video_activies.id)">
+                        <span class="step" :style="{background: context.assignment_color}">
+                            A
+                        </span>            
+                        {{ min_assignment_activies.name }}
+                    </b-link>
                     , {{ min_assignment_activies.activeness }} 
                     students visited the assignment.
+                </li>
+            </ul>
+        </div>
+        <div class="slideshow-content text" v-if="item.follow_ups.length > 0">
+            <h6>
+                Related questions:
+            </h6>
+            <ul>
+                <li v-for="q in context.followupSlides(item)">
+                    <b-link href="javascript:void(0);" @click="context.moveto(q)">
+                        {{ q.name }}
+                    </b-link>
                 </li>
             </ul>
         </div>
@@ -62,16 +72,6 @@
             });
         },
         computed: {
-            max_video_activies() {
-                const video_activies = this.item.data.video_activies;
-                const t = Math.max(...video_activies.map(d => d.activeness));
-                return video_activies.find(d => d.activeness == t);
-            },
-            min_video_activies() {
-                const video_activies = this.item.data.video_activies;
-                const t = Math.min(...video_activies.map(d => d.activeness));
-                return video_activies.find(d => d.activeness == t);
-            },
             max_assignment_activies() {
                 const problem_activies = this.item.data.problem_activies;
                 const t = Math.max(...problem_activies.map(d => d.activeness));
@@ -92,10 +92,10 @@
                 var xAxis = new Plottable.Axes.Category(xScale, "bottom").yAlignment("bottom");
 
                 var colorScale = new Plottable.Scales.Color();
-                colorScale.domain(['video', 'assignment']);
+                colorScale.domain(['assignment']);
                 data.video_color = context.video_color;
                 data.assignment_color = context.assignment_color;
-                colorScale.range([data.video_color, data.assignment_color]);
+                colorScale.range([data.assignment_color]);
 
                 var activenessScale = new Plottable.Scales.Linear();
                 var activenessAxis = new Plottable.Axes.Numeric(activenessScale, "left").xAlignment("left");
