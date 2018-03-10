@@ -5,7 +5,7 @@
         </h6>
         <ul>
             <li v-for="q in context.followupSlides(item)">
-                <b-link href="javascript:void(0);" @click="context.moveto(q)">
+                <b-link href="javascript:void(0);" @click="context.loadSlide(q.type, item.resource_id)">
                     {{ q.name }}
                 </b-link>
             </li>

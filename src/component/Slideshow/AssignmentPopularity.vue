@@ -1,52 +1,54 @@
 <template>
     <div class="slideshow-page">
-        <div class="slideshow-content title">
-            <h4> {{ item.name }} </h4>
-        </div>
-        <div class="slideshow-content graph" style="height: 40vh">
-        </div>
-        <div class="slideshow-content text">
-            <h6> 
-                Activies in this week:
-            </h6>
-            <ul>
-                <li v-if="max_assignment_activies">
-                    The most visited assignment was 
-                    <b-link href="javascript:void(0);" @click="context.selectAssignment(max_video_activies.id)">
-                        <span class="step" :style="{background: context.assignment_color}">
-                            A
-                        </span>
-                        {{ max_assignment_activies.name }}
-                    </b-link>
-                    , {{ max_assignment_activies.activeness }} 
-                    students visited the assignment.
-                </li>
-                <li v-if="min_assignment_activies">
-                    The least visited assignment was 
-                    <b-link href="javascript:void(0);" @click="context.selectAssignment(min_video_activies.id)">
-                        <span class="step" :style="{background: context.assignment_color}">
-                            A
-                        </span>            
-                        {{ min_assignment_activies.name }}
-                    </b-link>
-                    , {{ min_assignment_activies.activeness }} 
-                    students visited the assignment.
-                </li>
-            </ul>
-        </div>
-        <div class="slideshow-content text" v-if="item.follow_ups.length > 0">
-            <h6>
-                Related questions:
-            </h6>
-            <ul>
-                <li v-for="q in context.followupSlides(item)">
-                    <b-link href="javascript:void(0);" @click="context.moveto(q)">
-                        {{ q.name }}
-                    </b-link>
-                </li>
-            </ul>
-        </div>
-        <follow-up :item="item" :context="context"></follow-up>
+        <template v-if="item && item.loaded">
+            <div class="slideshow-content title">
+                <h4> {{ item.name }} </h4>
+            </div>
+            <div class="slideshow-content graph" style="height: 40vh">
+            </div>
+            <div class="slideshow-content text">
+                <h6> 
+                    Activies in this week:
+                </h6>
+                <ul>
+                    <li v-if="max_assignment_activies">
+                        The most visited assignment was 
+                        <b-link href="javascript:void(0);" @click="context.selectAssignment(max_video_activies.id)">
+                            <span class="step" :style="{background: context.assignment_color}">
+                                A
+                            </span>
+                            {{ max_assignment_activies.name }}
+                        </b-link>
+                        , {{ max_assignment_activies.activeness }} 
+                        students visited the assignment.
+                    </li>
+                    <li v-if="min_assignment_activies">
+                        The least visited assignment was 
+                        <b-link href="javascript:void(0);" @click="context.selectAssignment(min_video_activies.id)">
+                            <span class="step" :style="{background: context.assignment_color}">
+                                A
+                            </span>            
+                            {{ min_assignment_activies.name }}
+                        </b-link>
+                        , {{ min_assignment_activies.activeness }} 
+                        students visited the assignment.
+                    </li>
+                </ul>
+            </div>
+            <div class="slideshow-content text" v-if="item.follow_ups.length > 0">
+                <h6>
+                    Related questions:
+                </h6>
+                <ul>
+                    <li v-for="q in context.followupSlides(item)">
+                        <b-link href="javascript:void(0);" @click="context.moveto(q)">
+                            {{ q.name }}
+                        </b-link>
+                    </li>
+                </ul>
+            </div>
+            <follow-up :item="item" :context="context"></follow-up>
+        </template>
     </div>
 </template>
 

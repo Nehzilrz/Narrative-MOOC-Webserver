@@ -1,24 +1,27 @@
 <template>
     <div class="slideshow-page">
-        <div class="slideshow-content title">
-            <h4> {{ item.name }} </h4>
-        </div>
-        <div class="slideshow-content graph" style="height: 25vh">
-        </div>
-        <div class="slideshow-content text">
-            <ul>
-                <li>
-                    The assignment with highest working time on average is
-                    <entity-link :id="most_work[0].id" :context="context"></entity-link>
-                    , which has been spent {{ Number(most_work[0].work_time / 60).toFixed(1) }} minutes.
-                </li>
-                <li>
-                    The assignment with lowest working time on average is
-                    <entity-link :id="least_work[0].id" :context="context"></entity-link>
-                    , which has been spent {{ Number(least_work[0].work_time / 60).toFixed(1) }} minutes.
-                </li>
-            </ul>
-        </div>
+        <template v-if="item && item.loaded">
+            <div class="slideshow-content title">
+                <h4> {{ item.name }} </h4>
+            </div>
+            <div class="slideshow-content graph" style="height: 25vh">
+            </div>
+            <div class="slideshow-content text">
+                <ul>
+                    <li>
+                        The assignment with highest working time on average is
+                        <entity-link :id="most_work[0].id" :context="context"></entity-link>
+                        , which has been spent {{ Number(most_work[0].work_time / 60).toFixed(1) }} minutes.
+                    </li>
+                    <li>
+                        The assignment with lowest working time on average is
+                        <entity-link :id="least_work[0].id" :context="context"></entity-link>
+                        , which has been spent {{ Number(least_work[0].work_time / 60).toFixed(1) }} minutes.
+                    </li>
+                </ul>
+            </div>
+            <follow-up :item="item" :context="context"></follow-up>
+        </template>
     </div>
 </template>
 

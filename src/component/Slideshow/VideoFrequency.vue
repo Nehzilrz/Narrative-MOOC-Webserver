@@ -1,5 +1,6 @@
 <template>
     <div class="slideshow-page">
+        <template v-if="item && item.loaded">
         <div class="slideshow-content title">
             <h4> {{ item.name }} </h4>
         </div>
@@ -23,6 +24,7 @@
             </ul>
         </div>
         <follow-up :item="item" :context="context"></follow-up>
+        </template>
     </div>
 </template>
 

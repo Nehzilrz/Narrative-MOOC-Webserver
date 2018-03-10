@@ -1,42 +1,44 @@
 <template>
     <div class="slideshow-page">
-        <div class="slideshow-content title">
-            <h4> {{ item.name }} </h4>
-        </div>
-        <div class="slideshow-content graph" style="height: 40vh">
-        </div>
-        <div class="slideshow-content text">
-            <h6> 
-                Activies in this week:
-            </h6>
-            <ul>
-                <li v-if="max_video_activies">
-                    The most visited video was 
-                    <entity-link :id="max_video_activies.id" :context="context"></entity-link>
-                    , {{ max_video_activies.activeness }} 
-                    students visited the video.
-                </li>
-                <li v-if="min_video_activies">
-                    The least visited video was 
-                    <entity-link :id="min_video_activies.id" :context="context"></entity-link>
-                    , {{ min_video_activies.activeness }} 
-                    students visited the video.
-                </li>
-                <li style="margin-top: 1.5vh" v-if="max_assignment_activies">
-                    The most visited assignment was 
-                    <entity-link :id="max_assignment_activies.id" :context="context"></entity-link>
-                    , {{ max_assignment_activies.activeness }} 
-                    students visited the assignment.
-                </li>
-                <li v-if="min_assignment_activies">
-                    The least visited assignment was 
-                    <entity-link :id="min_assignment_activies.id" :context="context"></entity-link>
-                    , {{ min_assignment_activies.activeness }} 
-                    students visited the assignment.
-                </li>
-            </ul>
-        </div>
-        <follow-up :item="item" :context="context"></follow-up>
+        <template v-if="item && item.loaded">
+            <div class="slideshow-content title">
+                <h4> {{ item.name }} </h4>
+            </div>
+            <div class="slideshow-content graph" style="height: 40vh">
+            </div>
+            <div class="slideshow-content text">
+                <h6> 
+                    Activies in this week:
+                </h6>
+                <ul>
+                    <li v-if="max_video_activies">
+                        The most visited video was 
+                        <entity-link :id="max_video_activies.id" :context="context"></entity-link>
+                        , {{ max_video_activies.activeness }} 
+                        students visited the video.
+                    </li>
+                    <li v-if="min_video_activies">
+                        The least visited video was 
+                        <entity-link :id="min_video_activies.id" :context="context"></entity-link>
+                        , {{ min_video_activies.activeness }} 
+                        students visited the video.
+                    </li>
+                    <li style="margin-top: 1.5vh" v-if="max_assignment_activies">
+                        The most visited assignment was 
+                        <entity-link :id="max_assignment_activies.id" :context="context"></entity-link>
+                        , {{ max_assignment_activies.activeness }} 
+                        students visited the assignment.
+                    </li>
+                    <li v-if="min_assignment_activies">
+                        The least visited assignment was 
+                        <entity-link :id="min_assignment_activies.id" :context="context"></entity-link>
+                        , {{ min_assignment_activies.activeness }} 
+                        students visited the assignment.
+                    </li>
+                </ul>
+            </div>
+            <follow-up :item="item" :context="context"></follow-up>
+        </template>
     </div>
 </template>
 

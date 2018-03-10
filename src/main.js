@@ -1,14 +1,14 @@
-import Vue from 'vue'
-import BootstrapVue from "bootstrap-vue"
-import App from './App.vue'
-import Eagle from 'eagle.js'
+import Vue from 'vue';
+import BootstrapVue from "bootstrap-vue";
+import Eagle from 'eagle.js';
+import scrollReveal from "scrollReveal";
 import EntityLink from './component/EntityLink.vue';
 import FollowUpQuestion from './component/FollowUpQuestion.vue';
-import scrollReveal from "./lib/scrollReveal.js";
-import "bootstrap/dist/css/bootstrap.min.css"
-import "bootstrap-vue/dist/bootstrap-vue.css"
-import 'eagle.js/dist/eagle.css'
-import 'plottable/plottable.css'
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
+import 'eagle.js/dist/eagle.css';
+import 'plottable/plottable.css';
+import App from './App.vue';
 
 Vue.prototype.$sr = scrollReveal({ reset: true });
 Vue.use(Eagle)

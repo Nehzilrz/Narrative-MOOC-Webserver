@@ -32,14 +32,22 @@
           </svg>
         </div>
         <div class="content">
-          <slideshow-thumb v-for="item in history" :item="item" :context="context" :class="{ active: item == slide }">
-          </slideshow-thumb>
+          <template v-for="page, index in pages">
+            <slideshow-thumb v-for="item in page" :item="item" :context="context" :class="{ active: item == slide }">
+            </slideshow-thumb>
+            <hr v-if="index != pages.length - 1">
+          </template>
         </div>
       </div>
       <div class="body-container">
-          <slideshow-container :context="this.context" :page="this.page" :trigger="this.trigger_counter">
-          </slideshow-container>
-          <div class="sidebar-container tool" :class="{'sidebar-active': right_sidebar_active}">
+          <div class="slideshow-outter-container">
+            <slideshow-container :context="this.context" :page="this.page" :trigger="this.trigger_counter">
+            </slideshow-container>
+            <ol class="carousel-switcher" v-if="pages && pages.length > 1">
+              <li v-for="p in pages" :class="{ active: p == page }" @click="onChangePage(p)"></li>
+            </ol>
+          </div>
+          <div class="sidebar-container tool">
             <div class="overview">
               <div class="header">
                 <h5 class="title"> Overview </h5>
@@ -69,24 +77,23 @@
 </template>
 
 <script>
-import SlideshowContainer from "./component/SlideshowContainer.vue";
-import SlideshowThumb from "./component/SlideshowThumb.vue";
 import axios from "axios";
 import * as d3 from "d3";
 import * as mojs from "mo-js";
 import * as MoveTo from "moveto";
 import * as SlideTemplate from "./lib/slidetemplate";
 import { request, serverUrl } from "./lib/request";
-import { getBubbleChart } from "./lib/bubblechart";
+import SlideshowContainer from "./component/SlideshowContainer.vue";
+import SlideshowThumb from "./component/SlideshowThumb.vue";
 
-const maxPeakNum = 15;
-
-function loadSlide(self, item) {
-  Promise.all(
+async function loadSlide(self, type, id) {
+  const item = SlideTemplate.create(type, id);
+  return Promise.all(
     item.resources.map(type => {
       return request(self, item, type);
     })
-  ).then(() => {
+  ).then(async () => {
+    item.loaded = true;
     if (!self.page) {
       self.page = [];
       self.pages.push(self.page);
@@ -96,7 +103,8 @@ function loadSlide(self, item) {
     return;
     const position = self.bubblechart_layout.find(d => d.class == item.type);
     if (position) {
-      d3.select("#overview")
+      d3
+        .select("#overview")
         .select("g")
         .transition()
         .duration(1000)
@@ -144,7 +152,7 @@ export default {
       right_sidebar_active: false,
       active_items: [],
       moveto: new MoveTo({ tolerance: 56, duration: 400 }),
-      viewport: { top: 0, bottom: 800, height: 800 },
+      viewport: { top: 0, bottom: 800, height: 800 }
     };
   },
   components: {
@@ -152,11 +160,11 @@ export default {
     SlideshowThumb
   },
   mounted() {
-    window.onscroll = (d) => {
+    window.onscroll = d => {
       this.viewport = {
         top: window.visualViewport.pageTop,
         bottom: window.visualViewport.pageTop + window.visualViewport.height,
-        height: window.visualViewport.height,
+        height: window.visualViewport.height
       };
     };
     axios
@@ -180,20 +188,19 @@ export default {
           .get(`${serverUrl}getChapterList`, {
             params: { courseId: this.course_id }
           })
-          .then(response => {
+          .then(async response => {
             this.chapters = response.data;
             this.chapters.forEach(d => (this.id2item[d.id] = d));
             const chapter = this.chapters[4];
             this.current_chapter = chapter;
-            for (const slide of SlideTemplate.createTemplatesOnChapter(chapter)) {
-              this.slides.push(slide);
-            }
-            loadSlide(this, this.slides.find(d => d.id.includes("O1")));
-            loadSlide(this, this.slides.find(d => d.id.includes("O2")));
-            loadSlide(this, this.slides.find(d => d.id.includes("S4")));
-            loadSlide(this, this.slides.find(d => d.id.includes("A0")));
-            loadSlide(this, this.slides.find(d => d.id.includes("V2")));
-            loadSlide(this, this.slides.find(d => d.id.includes("V5")));
+
+            await loadSlide(this, "O1", chapter.id);
+            await loadSlide(this, "O2", chapter.id);
+            await loadSlide(this, "S2", chapter.id);
+            this.page = null;
+            await loadSlide(this, "A0", chapter.id);
+            await loadSlide(this, "V2", chapter.id);
+            // loadSlide(this, 'V5', chapter.id);
           });
       });
   },
@@ -201,22 +208,32 @@ export default {
     history() {
       return [].concat(...this.pages);
     },
-    slide() {                
-      const elements = document.getElementsByClassName('slideshow-page');
-      return this.page ? this.page.find((item, index) => {
-        const element = elements[index];
-        if (!element) return false;
-        const top = element.getBoundingClientRect().top;
-        const bottom = element.getBoundingClientRect().bottom;
-        const height = element.getBoundingClientRect().height;
-        const view_height = this.viewport.height;
-        if (0 <= bottom && bottom <= view_height && bottom > height * 0.66) {
-            return true;
-        } else if (0 <= top && top <= view_height && (view_height - top) > height * 0.66) {
-            return true;
-        }
-        return false;
-      }) : null;
+    slide() {
+      const elements = document.getElementsByClassName("slideshow-page");
+      return this.page
+        ? this.page.find((item, index) => {
+            const element = elements[index];
+            if (!element) return false;
+            const top = element.getBoundingClientRect().top;
+            const bottom = element.getBoundingClientRect().bottom;
+            const height = element.getBoundingClientRect().height;
+            const view_height = this.viewport.height;
+            if (
+              0 <= bottom &&
+              bottom <= view_height &&
+              bottom > height * 0.66
+            ) {
+              return true;
+            } else if (
+              0 <= top &&
+              top <= view_height &&
+              view_height - top > height * 0.66
+            ) {
+              return true;
+            }
+            return false;
+          })
+        : null;
     },
     context() {
       return {
@@ -232,22 +249,20 @@ export default {
         assignment_color: this.color_schema[3],
         page: this.page,
         pages: this.pages,
-        selectVideo: (item) => {},
-        selectAssignment: (item) => {},
-        selectStudent: (item) => {},
-        selectChapter: (item) => {},
-        addSlide: slide => this.slides.push(slide),
+        selectVideo: item => {},
+        selectAssignment: item => {},
+        selectStudent: item => {},
+        selectChapter: item => {},
         lastSlide: () => this.slides[this.slides.length - 1],
-        loadSlide: item => loadSlide(this, item),
+        loadSlide: (type, id) => loadSlide(this, type, id),
         followupSlides: slide =>
-          slide.follow_ups.map(d =>
-            this.slides.find(
-              x => x.id.includes(d) && slide.resource_id == x.resource_id
-            )
-          ),
-        moveto: this.moveto,
+          slide.follow_ups.map(d => ({
+            name: SlideTemplate.questions[d],
+            type: d
+          })),
+        moveto: this.moveto
       };
-    },
+    }
   },
   watch: {
     slides(val) {
@@ -257,13 +272,15 @@ export default {
   methods: {
     chapterDropdownClick(chapter) {
       this.current_chapter = chapter;
-      for (const slide of SlideTemplate.createTemplatesOnChapter(chapter)) {
-        this.slides.push(slide);
+      loadSlide(this, "O1", chapter.id);
+    },
+    onChangePage(page) {
+      if (this.page != page) {
+        this.page = page;
       }
-      loadSlide(this, this.slides.find(d => d.id == "O1"));
     }
   }
-}
+};
 </script>
 
 <style scope>
@@ -309,13 +326,6 @@ body {
 .sidebar-container.tool .content {
   background: radial-gradient(circle at top, #333333, #111111);
 }
-.slideshow-container.sidebar-active {
-  width: 100vw;
-}
-.sidebar-container.tool.sidebar-active {
-  left: 100vw;
-}
-
 .sidebar-container.tool .overview .content {
   height: 43vh;
 }
@@ -324,6 +334,13 @@ body {
 }
 .sidebar-container.tool .marktool .content {
   height: 40vh;
+}
+
+.slideshow-container {
+  height: 100%;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: column;
 }
 
 .sidebar-container {
@@ -365,6 +382,12 @@ body {
   left: -13vw;
   width: 16vw;
   position: fixed;
+}
+.sidebar-container.slideshow hr {
+  border-color: #888888;
+  border-width: 3px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 .sidebar-container.slideshow:hover {
   left: 0vw;
@@ -421,13 +444,26 @@ body {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
-.right-sidebar {
-  margin-top: 5px;
-  color: white;
+.carousel-switcher {
+  position: fixed;
+  top: 97%;
+  left: 40%;
+  z-index: 15;
+  display: flex;
+  opacity: 1;
 }
 
-.card-body {
-  padding: 0px;
+.carousel-switcher li {
+  position: relative;
+  width: 30px;
+  height: 5px;
+  margin-right: 3px;
+  margin-left: 3px;
+  text-indent: -999px;
+  background-color: rgba(119, 136, 153, 0.2);
+}
+.carousel-switcher li.active {
+  background-color: rgba(119, 136, 153, 0.7);
 }
 
 #overview {

@@ -1,28 +1,30 @@
 <template>
     <div class="slideshow-page">
-        <div class="slideshow-content title">
-            <h4> {{ item.name }} </h4>
-        </div>
-        <div class="slideshow-content graph" style="height: 40vh">
-        </div>
-        <div class="slideshow-content text">
-            <h6> 
-                Activies in this week:
-            </h6>
-            <ul>
-                <li v-if="max_assignment_activies">
-                    The most tried assignment was 
-                    <entity-link :id="max_assignment_activies.id" :context="context"></entity-link>
-                    , each students submitted this assignment {{ max_assignment_activies.attempts }} times.
-                </li>
-                <li v-if="min_assignment_activies">
-                    The least tried assignment was 
-                    <entity-link :id="min_assignment_activies.id" :context="context"></entity-link>
-                    , each students submitted this assignment {{ min_assignment_activies.attempts }} times.
-                </li>
-            </ul>
-        </div>
-        <follow-up :item="item" :context="context"></follow-up>
+        <template v-if="item && item.loaded">
+            <div class="slideshow-content title">
+                <h4> {{ item.name }} </h4>
+            </div>
+            <div class="slideshow-content graph" style="height: 40vh">
+            </div>
+            <div class="slideshow-content text">
+                <h6> 
+                    Activies in this week:
+                </h6>
+                <ul>
+                    <li v-if="max_assignment_activies">
+                        The most tried assignment was 
+                        <entity-link :id="max_assignment_activies.id" :context="context"></entity-link>
+                        , each students submitted this assignment {{ max_assignment_activies.attempts }} times.
+                    </li>
+                    <li v-if="min_assignment_activies">
+                        The least tried assignment was 
+                        <entity-link :id="min_assignment_activies.id" :context="context"></entity-link>
+                        , each students submitted this assignment {{ min_assignment_activies.attempts }} times.
+                    </li>
+                </ul>
+            </div>
+            <follow-up :item="item" :context="context"></follow-up>
+        </template>
     </div>
 </template>
 

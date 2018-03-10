@@ -1,17 +1,21 @@
 <template>
-    <div class="slideshow-container">
+    <div class="slideshow-inner-container">
         <template v-for="item, index in page">
             <material-popularity-slide v-if="item.id.includes('O1')" :context="context" :item="item">
             </material-popularity-slide>
             <material-frequency-slide v-else-if="item.id.includes('O2')" :context="context" :item="item">
             </material-frequency-slide>
+            <material-time-spend-slide v-else-if="item.id.includes('O3')" :context="context" :item="item">
+            </material-time-spend-slide>
+            <material-sequence-slide v-else-if="item.id.includes('O4')" :context="context" :item="item">
+            </material-sequence-slide>
             <assignment-time-spend-slide v-else-if="item.id.includes('A0')" :context="context" :item="item">
             </assignment-time-spend-slide>
             <video-time-spend-slide v-else-if="item.id.includes('V2')" :context="context" :item="item">
             </video-time-spend-slide>
             <video-peaks-slide v-else-if="item.id.includes('V5')" :context="context" :item="item">
             </video-peaks-slide>
-            <video-time-spend-distribution-slide v-else-if="item.id.includes('S4')" :context="context" :item="item">
+            <video-time-spend-distribution-slide v-else-if="item.id.includes('S2')" :context="context" :item="item">
             </video-time-spend-distribution-slide>
         </template>
     </div>
@@ -19,14 +23,16 @@
 
 <script>
 
-import MaterialPopularitySlide from "./Slideshow/MaterialPopularity.vue";
-import VideoPopularitySlide from "./Slideshow/VideoPopularity.vue";
+import AssignmentTimeSpendSlide from "./Slideshow/AssignmentTimeSpend.vue";
 import AssignmentPopularitySlide from "./Slideshow/AssignmentPopularity.vue";
+import VideoPopularitySlide from "./Slideshow/VideoPopularity.vue";
 import VideoPeaksSlide from "./Slideshow/VideoPeaks.vue";
 import VideoTimeSpendSlide from "./Slideshow/VideoTimeSpend.vue";
 import VideoTimeSpendDistributionSlide from "./Slideshow/VideoTimeSpendDistribution.vue";
-import AssignmentTimeSpendSlide from "./Slideshow/AssignmentTimeSpend.vue";
-import MaterialFrequencySlide from "./Slideshow/MaterialFrequency.vue"
+import MaterialPopularitySlide from "./Slideshow/MaterialPopularity.vue";
+import MaterialFrequencySlide from "./Slideshow/MaterialFrequency.vue";
+import MaterialTimeSpendSlide from "./Slideshow/MaterialTimeSpend.vue";
+import MaterialSequenceSlide from "./Slideshow/MaterialSequence.vue";
 
 export default {
   data() {
@@ -37,12 +43,14 @@ export default {
   components: {
     MaterialPopularitySlide,
     MaterialFrequencySlide,
+    MaterialSequenceSlide,
+    MaterialTimeSpendSlide,
     VideoPopularitySlide,
-    AssignmentPopularitySlide,
     VideoPeaksSlide,
     VideoTimeSpendSlide,
-    AssignmentTimeSpendSlide,
     VideoTimeSpendDistributionSlide,
+    AssignmentPopularitySlide,
+    AssignmentTimeSpendSlide,
   },
   methods: {
   },
@@ -55,7 +63,7 @@ export default {
 </script>
 
 <style scope>
-.slideshow-container {
+.slideshow-inner-container {
   left: 0px;
   top: 0px;
   height: 100%;

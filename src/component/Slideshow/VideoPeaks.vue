@@ -1,64 +1,67 @@
 
 <template>
     <div class="slideshow-page">
-        <div class="slideshow-content title">
-            <h4> {{ item.name }} </h4>
-        </div>
-        <div class="slideshow-content graph" style="height: 30vh">
-        </div>
-        <div class="slideshow-content text">
-            <h6 style="font-weight: 600; padding-top: 1vh; padding-bottom: 0.5vh;"> 
-                Peaks in this video:
-            </h6>
-            <ul style="padding-left: 2vw"
-                v-if="item.data.video_peaks && item.data.video_peaks.length">
-                <li v-for="peak, i in showed_peaks">
-                    The 
-                    <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
-                        Peak 
-                        <span class="step" :style="{background: context.color_schema[i]}">
-                            {{i}}
-                        </span>
-                    </b-link>
-                    of students' operation appears at the 
-                    <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
-                        {{ ~~(peak.time / 60) }}:{{ ~~(peak.time % 60 / 10) }}{{ peak.time % 10 }} 
-                    </b-link>
-                    of the video, with 
-                    <b-link href="javascript:void(0);" @click="onSelectStudents(item.data.video_peaks[i].users, ' in Peak#' + i)">
-                        {{ peak.student_num }} students
-                    </b-link>
-                    , 
-                    which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
-                </li>
-                <li v-if="item.data.video_peaks.length > showed_peaks_num">
-                    <b-link href="javascript:void(0);" @click="showed_peaks_num += 1">
-                        Show more ...
-                    </b-link>
-                </li>
-            </ul>
-        </div>
-        <div class="slideshow-content text" v-show="show_video">
-            <b-form-row>
-                <b-col cols="5">
-                    <h6 style="font-weight: 600"> Screenshot of this peak: </h6>
-                    <b-embed v-if="item.data.video"
-                            type="video"
-                            aspect="16by9"
-                            :src= "item.data.video.html5_sources"
-                            class="peak_embed_video"
-                    ></b-embed>
-                </b-col>
-                <b-col cols="1">
-                </b-col>
-                <b-col cols="6">
-                    <h6 style="font-weight: 600; padding-bottom: 2vh;"> A comparison of these students' in this peak with the average: </h6>
-                    <div class="peak_embed_chart" 
-                        style="width: 100%; height: 30vh; padding-left: 2vw;">
-                    </div>
-                </b-col>
-            </b-form-row>
-        </div>
+        <template v-if="item && item.loaded">
+            <div class="slideshow-content title">
+                <h4> {{ item.name }} </h4>
+            </div>
+            <div class="slideshow-content graph" style="height: 30vh">
+            </div>
+            <div class="slideshow-content text">
+                <h6 style="font-weight: 600; padding-top: 1vh; padding-bottom: 0.5vh;"> 
+                    Peaks in this video:
+                </h6>
+                <ul style="padding-left: 2vw"
+                    v-if="item.data.video_peaks && item.data.video_peaks.length">
+                    <li v-for="peak, i in showed_peaks">
+                        The 
+                        <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
+                            Peak 
+                            <span class="step" :style="{background: context.color_schema[i]}">
+                                {{i}}
+                            </span>
+                        </b-link>
+                        of students' operation appears at the 
+                        <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
+                            {{ ~~(peak.time / 60) }}:{{ ~~(peak.time % 60 / 10) }}{{ peak.time % 10 }} 
+                        </b-link>
+                        of the video, with 
+                        <b-link href="javascript:void(0);" @click="onSelectStudents(item.data.video_peaks[i].users, ' in Peak#' + i)">
+                            {{ peak.student_num }} students
+                        </b-link>
+                        , 
+                        which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
+                    </li>
+                    <li v-if="item.data.video_peaks.length > showed_peaks_num">
+                        <b-link href="javascript:void(0);" @click="showed_peaks_num += 1">
+                            Show more ...
+                        </b-link>
+                    </li>
+                </ul>
+            </div>
+            <div class="slideshow-content text" v-show="show_video">
+                <b-form-row>
+                    <b-col cols="5">
+                        <h6 style="font-weight: 600"> Screenshot of this peak: </h6>
+                        <b-embed v-if="item.data.video"
+                                type="video"
+                                aspect="16by9"
+                                :src= "item.data.video.html5_sources"
+                                class="peak_embed_video"
+                        ></b-embed>
+                    </b-col>
+                    <b-col cols="1">
+                    </b-col>
+                    <b-col cols="6">
+                        <h6 style="font-weight: 600; padding-bottom: 2vh;"> A comparison of these students' in this peak with the average: </h6>
+                        <div class="peak_embed_chart" 
+                            style="width: 100%; height: 30vh; padding-left: 2vw;">
+                        </div>
+                    </b-col>
+                </b-form-row>
+            </div>
+            <follow-up :item="item" :context="context"></follow-up>
+        </template>
     </div>
 </template>
 

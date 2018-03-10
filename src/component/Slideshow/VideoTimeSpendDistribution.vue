@@ -1,25 +1,27 @@
 <template>
     <div class="slideshow-page">
-        <div class="slideshow-content title">
-            <h4> {{ item.name }} </h4>
-        </div>
-        <div class="slideshow-content graph" style="height: 40vh">
-        </div>
-        <div class="slideshow-content text">
-            <h6> 
-                Summary in this week:
-            </h6>
-            <ul>
-                <li v-for="student in students">
-                    {{ student.name }} students pay more attention on these video, which including
-                    <entity-link :id="student.videos[0].id" :context="context"></entity-link>
-                    and
-                    <entity-link :id="student.videos[1].id" :context="context"></entity-link>
-                    .
-                </li>
-            </ul>
-        </div>
-        <follow-up :item="item" :context="context"></follow-up>
+        <template v-if="item && item.loaded">
+            <div class="slideshow-content title">
+                <h4> {{ item.name }} </h4>
+            </div>
+            <div class="slideshow-content graph" style="height: 40vh">
+            </div>
+            <div class="slideshow-content text">
+                <h6> 
+                    Summary in this week:
+                </h6>
+                <ul>
+                    <li v-for="student in students">
+                        {{ student.name }} students pay more attention on these video, which including
+                        <entity-link :id="student.videos[0].id" :context="context"></entity-link>
+                        and
+                        <entity-link :id="student.videos[1].id" :context="context"></entity-link>
+                        .
+                    </li>
+                </ul>
+            </div>
+            <follow-up :item="item" :context="context"></follow-up>
+        </template>
     </div>
 </template>
 
