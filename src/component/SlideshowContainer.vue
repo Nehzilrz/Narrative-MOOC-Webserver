@@ -11,10 +11,10 @@
           </material-sequence-slide>
           <assignment-time-spend-slide v-else-if="item.id.includes('A0')" :context="context" :item="item">
           </assignment-time-spend-slide>
-          <assignment-time-spend-slide v-else-if="item.id.includes('A1')" :context="context" :item="item">
-          </assignment-time-spend-slide>
-          <assignment-time-spend-slide v-else-if="item.id.includes('A2')" :context="context" :item="item">
-          </assignment-time-spend-slide>
+          <assignment-correctness-slide v-else-if="item.id.includes('A1')" :context="context" :item="item">
+          </assignment-correctness-slide>
+          <assignment-completeness-slide v-else-if="item.id.includes('A2')" :context="context" :item="item">
+          </assignment-completeness-slide>
           <video-completeness-slide v-else-if="item.id.includes('V1')" :context="context" :item="item">
           </video-completeness-slide>
           <video-time-spend-slide v-else-if="item.id.includes('V2')" :context="context" :item="item">
@@ -48,6 +48,8 @@ import MaterialPopularitySlide from "./Slideshow/MaterialPopularity.vue";
 import MaterialFrequencySlide from "./Slideshow/MaterialFrequency.vue";
 import MaterialTimeSpendSlide from "./Slideshow/MaterialTimeSpend.vue";
 import MaterialSequenceSlide from "./Slideshow/MaterialSequence.vue";
+import AssignmentCorrectnessSlide from "./Slideshow/AssignmentCorrectness.vue";
+import AssignmentCompletenessSlide from "./Slideshow/AssignmentCompleteness.vue";
 
 export default {
   data() {
@@ -69,6 +71,8 @@ export default {
     VideoFrequencySlide,
     VideoCompletenessSlide,
     VideoStartFinishSlide,
+    AssignmentCorrectnessSlide,
+    AssignmentCompletenessSlide,
   },
   methods: {
   },

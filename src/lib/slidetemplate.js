@@ -174,7 +174,7 @@ const templates = {
       "student",
       "chapter_problem_activies chapter_video_activies",
       "O4 V1 A1",
-      "barchart",
+      "piechart",
       chapter_id,
       "O3"
     ),
