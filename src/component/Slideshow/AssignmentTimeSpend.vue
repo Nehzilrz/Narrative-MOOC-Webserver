@@ -4,21 +4,27 @@
             <div class="slideshow-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content graph" style="height: 25vh">
-            </div>
-            <div class="slideshow-content text">
-                <ul>
-                    <li>
-                        The assignment with highest working time on average is
-                        <entity-link :id="most_work[0].id" :context="context" :parent="item"></entity-link>
-                        , which has been spent {{ Number(most_work[0].work_time / 60).toFixed(1) }} minutes.
-                    </li>
-                    <li>
-                        The assignment with lowest working time on average is
-                        <entity-link :id="least_work[0].id" :context="context" :parent="item"></entity-link>
-                        , which has been spent {{ Number(least_work[0].work_time / 60).toFixed(1) }} minutes.
-                    </li>
-                </ul>
+            <div class="slideshow-content" style="height: 25vh">
+                <div class="graph" style="width: 50%; float: left;">
+                </div>
+                <div class="text" style="width: 50%; float: left; padding-left: 2vw;
+                    padding-top: 1vh;">
+                    <h6> 
+                        Time cost in this week:
+                    </h6>
+                    <div style="padding-left: 2vw;">
+                        <styled-text :context="context">
+                            The assignment with highest working time on average is
+                            <entity-link :id="most_work[0].id" :context="context" :parent="item"></entity-link>
+                            , which has been spent {{ Number(most_work[0].work_time / 60).toFixed(1) }} minutes.
+                        </styled-text>
+                        <styled-text :context="context">
+                            The assignment with lowest working time on average is
+                            <entity-link :id="least_work[0].id" :context="context" :parent="item"></entity-link>
+                            , which has been spent {{ Number(least_work[0].work_time / 60).toFixed(1) }} minutes.
+                        </styled-text>
+                    </div>
+                </div>
             </div>
             <follow-up :item="item" :context="context"></follow-up>
         </template>
@@ -67,7 +73,7 @@
                     .y(d => d.work_time, watchTimeScale)
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
-                    .attr("fill", context.color_schema[5])
+                    .attr("fill", context.assignment_color)
                     .animated(true)
                     .addDataset(new Plottable.Dataset(assignment_activies));
 

@@ -4,7 +4,7 @@
         <div class="slideshow-content title">
             <h4> {{ item.name }} </h4>
         </div>
-        <div class="slideshow-content graph" style="height: 40vh">
+        <div class="slideshow-content graph" style="height: 25vh">
         </div>
         <div class="slideshow-content text">
             <h6> 
@@ -14,12 +14,12 @@
                 <li v-if="max_video_activies">
                     The most tried video was 
                     <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
-                    , each students visited the video {{ max_video_activies.attempts }} times.
+                    , each students visited the video {{ Number(max_video_activies.attempts).toFixed(1) }} times.
                 </li>
                 <li v-if="min_video_activies">
                     The least tried video was 
                     <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
-                    , each students visited the video {{ min_video_activies.attempts }} times.
+                    , each students visited the video {{ Number(min_video_activies.attempts).toFixed(1) }} times.
                 </li>
             </ul>
         </div>

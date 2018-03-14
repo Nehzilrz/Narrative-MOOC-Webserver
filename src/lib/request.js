@@ -50,7 +50,10 @@ export function request(self, item, type) {
         },
         'chapter_problem_activies': () => {
             if (!item.data.problem_activies) {
-                const params = { problems: self.id2item[item.resource_id].problems };
+                const params = {
+                    problems: self.id2item[item.resource_id].problems,
+                    chapter: item.resource_id,
+                };
                 const str = 'getProblemsData' + JSON.stringify(params);
                 if (cache[str]) {
                     item.data.problem_activies = cache[str];
@@ -66,7 +69,10 @@ export function request(self, item, type) {
         },
         'chapter_video_activies': () => {
             if (!item.data.video_activies) {
-                const params = { videos: self.id2item[item.resource_id].videos };
+                const params = {
+                    videos: self.id2item[item.resource_id].videos,
+                    chapter: item.resource_id,
+                };
                 const str = 'getVideosData' + JSON.stringify(params);
                 if (cache[str]) {
                     item.data.video_activies = cache[str];

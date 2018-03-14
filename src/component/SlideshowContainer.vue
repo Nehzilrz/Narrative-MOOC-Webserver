@@ -13,16 +13,18 @@
           </assignment-time-spend-slide>
           <assignment-time-spend-slide v-else-if="item.id.includes('A1')" :context="context" :item="item">
           </assignment-time-spend-slide>
-          <video-time-spend-slide v-else-if="item.id.includes('V1')" :context="context" :item="item">
-          </video-time-spend-slide>
+          <assignment-time-spend-slide v-else-if="item.id.includes('A2')" :context="context" :item="item">
+          </assignment-time-spend-slide>
+          <video-completeness-slide v-else-if="item.id.includes('V1')" :context="context" :item="item">
+          </video-completeness-slide>
           <video-time-spend-slide v-else-if="item.id.includes('V2')" :context="context" :item="item">
           </video-time-spend-slide>
           <video-time-spend-slide v-else-if="item.id.includes('V2')" :context="context" :item="item">
           </video-time-spend-slide>
           <video-frequency-slide v-else-if="item.id.includes('V3')" :context="context" :item="item">
           </video-frequency-slide>
-          <video-frequency-slide v-else-if="item.id.includes('V4')" :context="context" :item="item">
-          </video-frequency-slide>
+          <video-start-finish-slide v-else-if="item.id.includes('V4')" :context="context" :item="item">
+          </video-start-finish-slide>
           <video-peaks-slide v-else-if="item.id.includes('V5')" :context="context" :item="item">
           </video-peaks-slide>
           <video-time-spend-distribution-slide v-else-if="item.id.includes('S2')" :context="context" :item="item">
@@ -37,8 +39,10 @@ import AssignmentTimeSpendSlide from "./Slideshow/AssignmentTimeSpend.vue";
 import AssignmentPopularitySlide from "./Slideshow/AssignmentPopularity.vue";
 import VideoPopularitySlide from "./Slideshow/VideoPopularity.vue";
 import VideoPeaksSlide from "./Slideshow/VideoPeaks.vue";
+import VideoCompletenessSlide from "./Slideshow/VideoCompleteness.vue";
 import VideoFrequencySlide from "./Slideshow/VideoFrequency.vue";
 import VideoTimeSpendSlide from "./Slideshow/VideoTimeSpend.vue";
+import VideoStartFinishSlide from "./Slideshow/VideoStartFinish.vue";
 import VideoTimeSpendDistributionSlide from "./Slideshow/VideoTimeSpendDistribution.vue";
 import MaterialPopularitySlide from "./Slideshow/MaterialPopularity.vue";
 import MaterialFrequencySlide from "./Slideshow/MaterialFrequency.vue";
@@ -63,6 +67,8 @@ export default {
     AssignmentPopularitySlide,
     AssignmentTimeSpendSlide,
     VideoFrequencySlide,
+    VideoCompletenessSlide,
+    VideoStartFinishSlide,
   },
   methods: {
   },
@@ -117,6 +123,11 @@ h3,
 h4 {
   font-weight: 800;
 }
+
+.slideshow-content h5,h6 {
+  font-weight: 600;
+}
+
 
 .slideshow-content.graph {
   perspective: 200px;

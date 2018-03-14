@@ -4,7 +4,7 @@
             <div class="slideshow-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content graph" style="height: 25vh">
+            <div class="slideshow-content graph" style="height: 30vh">
             </div>
             <div class="slideshow-content text">
                 <ul>
@@ -60,23 +60,38 @@
                 var xScale = new Plottable.Scales.Category();
                 var xAxis = new Plottable.Axes.Category(xScale, "bottom").yAlignment("bottom");
 
+                var colorScale = new Plottable.Scales.Color();
+                colorScale.domain(['watch time', 'video length']);
+                colorScale.range([context.color_schema[1], context.color_schema[0]]);
+
                 var watchTimeScale = new Plottable.Scales.Linear();
                 var watchTimeAxis = new Plottable.Axes.Numeric(watchTimeScale, "left").xAlignment("left");
                 watchTimeAxis.formatter((d) => Number(d / 60).toFixed(1))
-                var watchTimePlot = new Plottable.Plots.Bar()
-                    .y(d => d.video_watch_time, watchTimeScale)
+                var watchTimePlot = new Plottable.Plots.ClusteredBar()
+                    .y((d, i, dataset) => 
+                        dataset.metadata() == 'watch time' ?
+                        d.video_watch_time : context.id2item[d.id].duration, watchTimeScale)
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
-                    .attr("fill", context.color_schema[7])
+                    .attr("fill", (d, i, dataset) => dataset.metadata(), colorScale)
                     .animated(true)
-                    .addDataset(new Plottable.Dataset(video_activies));
+                    .addDataset(new Plottable.Dataset(video_activies).metadata('watch time'))
+                    .addDataset(new Plottable.Dataset(video_activies).metadata('video length'));
 
                 var watchTimeLabel = new Plottable.Components.AxisLabel("minutes", "0");
                 var watchTimePlotLabel = new Plottable.Components.AxisLabel("video watch time", "0");
+                
+                var legend = new Plottable.Components.Legend(colorScale);
+                    legend.maxEntriesPerRow(1);
+                    legend
+                        .symbol(() => Plottable.SymbolFactories.circle())
+                        .xAlignment("right");
+                
+                var plots = new Plottable.Components.Group([watchTimePlot, legend]);
 
                 var table = new Plottable.Components.Table([
                     [watchTimeLabel, null],
-                    [watchTimeAxis, watchTimePlot],
+                    [watchTimeAxis, plots],
                     [null, xAxis]
                 ]);
                 return table;

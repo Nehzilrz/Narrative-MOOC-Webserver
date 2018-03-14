@@ -5,6 +5,7 @@ import scrollReveal from "scrollReveal";
 import EntityLink from './component/EntityLink.vue';
 import FollowUpQuestion from './component/FollowUpQuestion.vue';
 import StyledText from './component/StyledText.vue';
+import VideoList from './component/VideoList.vue';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import 'eagle.js/dist/eagle.css';
@@ -17,6 +18,7 @@ Vue.use(BootstrapVue)
 Vue.component('styled-text', StyledText);
 Vue.component('entity-link', EntityLink);
 Vue.component('follow-up', FollowUpQuestion);
+Vue.component('video-list', VideoList);
 
 new Vue({
   el: '#app',

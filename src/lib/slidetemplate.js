@@ -217,7 +217,7 @@ const templates = {
   V4: chapter_id =>
     initTemplate(
       "video",
-      "chapter_problem_activies",
+      "chapter_video_activies",
       "V5",
       "barchart",
       chapter_id,
