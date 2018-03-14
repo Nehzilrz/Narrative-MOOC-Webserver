@@ -1,7 +1,7 @@
 
 <template>
     <div class="slideshow-page">
-        <template v-if="item && item.loaded">
+        <template v-if="item">
             <div class="slideshow-content title">
                 <h4> {{ item.name }} </h4>
             </div>
@@ -17,7 +17,7 @@
                         The 
                         <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
                             Peak 
-                            <span class="step" :style="{background: context.color_schema[i]}">
+                            <span class="step" :style="{ background: context.color_schema[i] }">
                                 {{i}}
                             </span>
                         </b-link>
@@ -82,11 +82,6 @@
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
-            this.$sr.reveal(".slideshow-content", {
-                duration: 500,
-                viewFactor: 0.4,
-                rotate: { x: 65 },
-            });
             this.$forceUpdate();
         },
         computed: {

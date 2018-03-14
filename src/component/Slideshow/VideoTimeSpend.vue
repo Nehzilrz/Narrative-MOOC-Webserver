@@ -10,12 +10,12 @@
                 <ul>
                     <li>
                         The video with highest watch time on average is
-                        <entity-link :id="most_watch[0].id" :context="context"></entity-link>
+                        <entity-link :id="most_watch[0].id" :context="context" :parent="item"></entity-link>
                         , which has been watched {{ Number(most_watch[0].watch_time).toFixed(1) }} minutes.
                     </li>
                     <li>
                         The video with lowest watch time on average is
-                        <entity-link :id="least_watch[0].id" :context="context"></entity-link>
+                        <entity-link :id="least_watch[0].id" :context="context" :parent="item"></entity-link>
                         , which has been watched {{ Number(least_watch[0].watch_time).toFixed(1) }} minutes.
                     </li>
                 </ul>
@@ -40,11 +40,6 @@
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
-            this.$sr.reveal(".slideshow-content", {
-                duration: 500,
-                viewFactor: 0.4,
-                rotate: { x: 65 },
-            });
         },
         computed: {
             most_watch() {

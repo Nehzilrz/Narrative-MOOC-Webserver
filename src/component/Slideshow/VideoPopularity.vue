@@ -67,11 +67,6 @@
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
-            this.$sr.reveal(".slideshow-content", {
-                duration: 500,
-                viewFactor: 0.4,
-                rotate: { x: 65 },
-            });
         },
         computed: {
             max_video_activies() {

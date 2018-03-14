@@ -47,18 +47,18 @@
         methods: {
             click() {
                 if (this.item.type == 'video') {
-                    context.selectVideo(this.item);
+                    this.context.selectVideo(this.item, this.parent);
                 } else if (this.item.type == 'assignment') {
-                    context.selectAssignment(this.item);
+                    this.context.selectAssignment(this.item, this.parent);
                 } else if (this.item.type == 'chapter') {
-                    context.selectChapter(this.item);
+                    this.context.selectChapter(this.item, this.parent);
                 } else if (this.item.type == 'student') {
-                    context.selectStudent(this.item);
+                    this.context.selectStudent(this.item, this.parent);
                 } else {
                 }
             },
         },
-        props: ["id", "context"],
+        props: ["id", "context", "parent"],
     };
 </script>
 

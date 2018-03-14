@@ -12,24 +12,32 @@
                 </h6>
                 <ul>
                     <li v-if="max_video_activies">
+                    <styled-text :context="context">
                         The most tried video was 
-                        <entity-link :id="max_video_activies.id" :context="context"></entity-link>
+                        <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
                         , each students visited the video {{ Number(max_video_activies.attempts).toFixed(1) }} times.
+                    </styled-text>
                     </li>
                     <li v-if="min_video_activies">
+                    <styled-text :context="context">
                         The least tried video was 
-                        <entity-link :id="min_video_activies.id" :context="context"></entity-link>
+                        <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
                         , each students visited the video {{ Number(min_video_activies.attempts).toFixed(1) }} times.
+                    </styled-text>
                     </li>
-                    <li style="margin-top: 1.5vh" v-if="max_assignment_activies">
+                    <li v-if="max_assignment_activies">
+                    <styled-text :context="context">
                         The most tried assignment was 
-                        <entity-link :id="max_assignment_activies.id" :context="context"></entity-link>
+                        <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
                         , each students submitted this assignment {{ Number(max_assignment_activies.attempts).toFixed(1) }} times.
+                    </styled-text>
                     </li>
                     <li v-if="min_assignment_activies">
+                    <styled-text :context="context">
                         The least tried assignment was 
-                        <entity-link :id="min_assignment_activies.id" :context="context"></entity-link>
+                        <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
                         , each students submitted this assignment {{ Number(min_assignment_activies.attempts).toFixed(1) }} times.
+                    </styled-text>
                     </li>
                 </ul>
             </div>
@@ -53,11 +61,6 @@
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
-            this.$sr.reveal(".slideshow-content", {
-                duration: 500,
-                viewFactor: 0.4,
-                rotate: { x: 65 },
-            });
         },
         computed: {
             max_video_activies() {

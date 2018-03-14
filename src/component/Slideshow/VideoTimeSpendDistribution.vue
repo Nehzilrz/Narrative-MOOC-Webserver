@@ -13,9 +13,9 @@
                 <ul>
                     <li v-for="student in students">
                         {{ student.name }} students pay more attention on these video, which including
-                        <entity-link :id="student.videos[0].id" :context="context"></entity-link>
+                        <entity-link :id="student.videos[0].id" :context="context" :parent="item"></entity-link>
                         and
-                        <entity-link :id="student.videos[1].id" :context="context"></entity-link>
+                        <entity-link :id="student.videos[1].id" :context="context" :parent="item"></entity-link>
                         .
                     </li>
                 </ul>
@@ -40,11 +40,6 @@
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
-            this.$sr.reveal(".slideshow-content", {
-                duration: 500,
-                viewFactor: 0.4,
-                rotate: { x: 65 },
-            });
         },
         computed: {
             overview() {

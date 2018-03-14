@@ -13,12 +13,12 @@
                 <ul>
                     <li v-if="max_assignment_activies">
                         The most tried assignment was 
-                        <entity-link :id="max_assignment_activies.id" :context="context"></entity-link>
+                        <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
                         , each students submitted this assignment {{ max_assignment_activies.attempts }} times.
                     </li>
                     <li v-if="min_assignment_activies">
                         The least tried assignment was 
-                        <entity-link :id="min_assignment_activies.id" :context="context"></entity-link>
+                        <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
                         , each students submitted this assignment {{ min_assignment_activies.attempts }} times.
                     </li>
                 </ul>
@@ -43,11 +43,6 @@
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
-            this.$sr.reveal(".slideshow-content", {
-                duration: 500,
-                viewFactor: 0.4,
-                rotate: { x: 65 },
-            });
         },
         computed: {
             max_assignment_activies() {

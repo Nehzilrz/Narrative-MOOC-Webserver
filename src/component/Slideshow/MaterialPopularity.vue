@@ -12,28 +12,36 @@
                 </h6>
                 <ul>
                     <li v-if="max_video_activies">
-                        The most visited video was 
-                        <entity-link :id="max_video_activies.id" :context="context"></entity-link>
-                        , {{ max_video_activies.activeness }} 
-                        students visited the video.
+                        <styled-text :context="context">
+                            The most visited video was 
+                            <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
+                            , {{ max_video_activies.activeness }} 
+                            students visited the video.
+                        </styled-text>
                     </li>
                     <li v-if="min_video_activies">
+                        <styled-text :context="context">
                         The least visited video was 
-                        <entity-link :id="min_video_activies.id" :context="context"></entity-link>
+                        <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
                         , {{ min_video_activies.activeness }} 
                         students visited the video.
+                        </styled-text>
                     </li>
-                    <li style="margin-top: 1.5vh" v-if="max_assignment_activies">
+                    <li v-if="max_assignment_activies">
+                        <styled-text :context="context">
                         The most visited assignment was 
-                        <entity-link :id="max_assignment_activies.id" :context="context"></entity-link>
+                        <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
                         , {{ max_assignment_activies.activeness }} 
                         students visited the assignment.
+                        </styled-text>
                     </li>
                     <li v-if="min_assignment_activies">
+                        <styled-text :context="context">
                         The least visited assignment was 
-                        <entity-link :id="min_assignment_activies.id" :context="context"></entity-link>
+                        <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
                         , {{ min_assignment_activies.activeness }} 
                         students visited the assignment.
+                        </styled-text>
                     </li>
                 </ul>
             </div>
@@ -51,17 +59,14 @@
                 table: null,
             };
         },
+        components: {
+        },
         created() {
             this.table = this.render(this.item.data, this.context);
         },
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
-            this.$sr.reveal(".slideshow-content", {
-                duration: 500,
-                viewFactor: 0.4,
-                rotate: { x: 65 },
-            });
         },
         computed: {
             max_video_activies() {

@@ -10,12 +10,12 @@
                 <ul>
                     <li>
                         The assignment with highest working time on average is
-                        <entity-link :id="most_work[0].id" :context="context"></entity-link>
+                        <entity-link :id="most_work[0].id" :context="context" :parent="item"></entity-link>
                         , which has been spent {{ Number(most_work[0].work_time / 60).toFixed(1) }} minutes.
                     </li>
                     <li>
                         The assignment with lowest working time on average is
-                        <entity-link :id="least_work[0].id" :context="context"></entity-link>
+                        <entity-link :id="least_work[0].id" :context="context" :parent="item"></entity-link>
                         , which has been spent {{ Number(least_work[0].work_time / 60).toFixed(1) }} minutes.
                     </li>
                 </ul>
@@ -40,11 +40,6 @@
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
-            this.$sr.reveal(".slideshow-content", {
-                duration: 500,
-                viewFactor: 0.4,
-                rotate: { x: 65 },
-            });
         },
         computed: {
             most_work() {
