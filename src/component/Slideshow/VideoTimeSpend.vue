@@ -9,14 +9,18 @@
             <div class="slideshow-content text">
                 <ul>
                     <li>
+                    <styled-text :context="context">
                         The video with highest watch time on average is
                         <entity-link :id="most_watch[0].id" :context="context" :parent="item"></entity-link>
                         , which has been watched {{ Number(most_watch[0].watch_time).toFixed(1) }} minutes.
+                    </styled-text>
                     </li>
                     <li>
+                    <styled-text :context="context">
                         The video with lowest watch time on average is
                         <entity-link :id="least_watch[0].id" :context="context" :parent="item"></entity-link>
                         , which has been watched {{ Number(least_watch[0].watch_time).toFixed(1) }} minutes.
+                    </styled-text>
                     </li>
                 </ul>
             </div>

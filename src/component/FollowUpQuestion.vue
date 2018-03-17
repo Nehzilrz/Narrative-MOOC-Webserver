@@ -1,7 +1,7 @@
 <template>
     <div class="slideshow-content text" v-if="item.follow_ups.length > 0">
         <h6>
-            Related questions:
+            Follow up questions:
         </h6>
         <ul>
             <li v-for="q in context.followupSlides(item)">

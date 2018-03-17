@@ -12,14 +12,18 @@
             </h6>
             <ul>
                 <li v-if="max_video_activies">
+                <styled-text :context="context">
                     The most tried video was 
                     <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
                     , each students visited the video {{ Number(max_video_activies.attempts).toFixed(1) }} times.
+                </styled-text>
                 </li>
-                <li v-if="min_video_activies">
+                <li>
+                <styled-text :context="context">
                     The least tried video was 
                     <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
                     , each students visited the video {{ Number(min_video_activies.attempts).toFixed(1) }} times.
+                </styled-text>
                 </li>
             </ul>
         </div>

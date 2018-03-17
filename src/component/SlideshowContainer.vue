@@ -1,5 +1,8 @@
 <template>
   <div class="slideshow-inner-container">
+      <div class="slideshow-content" v-if="!page || !page.length">
+        <h4 style="text-align: center; padding: 10vw;"> Empty page. </h4>
+      </div>
       <template v-for="item, index in page">
           <material-popularity-slide v-if="item.id.includes('O1')" :context="context" :item="item">
           </material-popularity-slide>
@@ -15,6 +18,12 @@
           </assignment-correctness-slide>
           <assignment-completeness-slide v-else-if="item.id.includes('A2')" :context="context" :item="item">
           </assignment-completeness-slide>
+          <assignment-attempts-slide v-else-if="item.id.includes('A3')" :context="context" :item="item">
+          </assignment-attempts-slide>
+          <assignment-start-finish-slide v-else-if="item.id.includes('A4')" :context="context" :item="item">
+          </assignment-start-finish-slide>
+          <assignment-discussed-slide v-else-if="item.id.includes('A5')" :context="context" :item="item">
+          </assignment-discussed-slide>
           <video-completeness-slide v-else-if="item.id.includes('V1')" :context="context" :item="item">
           </video-completeness-slide>
           <video-time-spend-slide v-else-if="item.id.includes('V2')" :context="context" :item="item">
@@ -27,6 +36,14 @@
           </video-start-finish-slide>
           <video-peaks-slide v-else-if="item.id.includes('V5')" :context="context" :item="item">
           </video-peaks-slide>
+          <video-discussed-slide v-else-if="item.id.includes('V6')" :context="context" :item="item">
+          </video-discussed-slide>
+          <forum-discussed-slide v-else-if="item.id.includes('F1')" :context="context" :item="item">
+          </forum-discussed-slide>
+          <forum-most-upvoted-slide v-else-if="item.id.includes('F2')" :context="context" :item="item">
+          </forum-most-upvoted-slide>
+          <forum-questioner-slide v-else-if="item.id.includes('F3')" :context="context" :item="item">
+          </forum-questioner-slide>
           <video-time-spend-distribution-slide v-else-if="item.id.includes('S2')" :context="context" :item="item">
           </video-time-spend-distribution-slide>
       </template>
@@ -43,6 +60,7 @@ import VideoCompletenessSlide from "./Slideshow/VideoCompleteness.vue";
 import VideoFrequencySlide from "./Slideshow/VideoFrequency.vue";
 import VideoTimeSpendSlide from "./Slideshow/VideoTimeSpend.vue";
 import VideoStartFinishSlide from "./Slideshow/VideoStartFinish.vue";
+import VideoDiscussedSlide from "./Slideshow/VideoDiscussed.vue";
 import VideoTimeSpendDistributionSlide from "./Slideshow/VideoTimeSpendDistribution.vue";
 import MaterialPopularitySlide from "./Slideshow/MaterialPopularity.vue";
 import MaterialFrequencySlide from "./Slideshow/MaterialFrequency.vue";
@@ -50,6 +68,13 @@ import MaterialTimeSpendSlide from "./Slideshow/MaterialTimeSpend.vue";
 import MaterialSequenceSlide from "./Slideshow/MaterialSequence.vue";
 import AssignmentCorrectnessSlide from "./Slideshow/AssignmentCorrectness.vue";
 import AssignmentCompletenessSlide from "./Slideshow/AssignmentCompleteness.vue";
+import AssignmentAttemptsSlide from "./Slideshow/AssignmentAttempts.vue";
+import AssignmentStartFinishSlide from "./Slideshow/AssignmentStartFinish.vue";
+import AssignmentDiscussedSlide from "./Slideshow/AssignmentDiscussed.vue";
+import ForumDiscussedSlide from "./Slideshow/ForumDiscussed.vue";
+import ForumKeywordSlide from "./Slideshow/ForumKeywords.vue";
+import ForumMostUpvotedSlide from "./Slideshow/ForumMostUpvoted.vue";
+import ForumQuestionerSlide from "./Slideshow/ForumQuestioner.vue";
 
 export default {
   data() {
@@ -71,8 +96,16 @@ export default {
     VideoFrequencySlide,
     VideoCompletenessSlide,
     VideoStartFinishSlide,
+    VideoDiscussedSlide,
     AssignmentCorrectnessSlide,
     AssignmentCompletenessSlide,
+    AssignmentAttemptsSlide,
+    AssignmentStartFinishSlide,
+    AssignmentDiscussedSlide,
+    ForumDiscussedSlide,
+    ForumKeywordSlide,
+    ForumMostUpvotedSlide,
+    ForumQuestionerSlide,
   },
   methods: {
   },
@@ -131,6 +164,13 @@ h4 {
 .slideshow-content h5,h6 {
   font-weight: 600;
 }
+
+
+.slideshow-content {
+  margin-left: 3vw;
+  margin-right: 3vw;
+}
+
 
 
 .slideshow-content.graph {

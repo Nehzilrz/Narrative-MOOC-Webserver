@@ -35,6 +35,5 @@ const colors = [
     'rgb(0, 98, 177)',
     'rgb(101, 50, 148)',
     'rgb(171, 20, 158)',
-    'rgba(0, 0, 0, 0)',
 ];
 export default colors;

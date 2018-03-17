@@ -9,14 +9,18 @@
             <div class="slideshow-content text">
                 <ul>
                     <li>
+                    <styled-text :context="context">
                         The video with highest completeness on average is
                         <entity-link :id="max_video[0].id" :context="context" :parent="item"></entity-link>
                         , {{ Number(max_video[0].completeness * 100).toFixed(1) }}% students completed this video.
+                    </styled-text>
                     </li>
                     <li>
+                    <styled-text :context="context">
                         The video with lowest completeness on average is
                         <entity-link :id="min_video[0].id" :context="context" :parent="item"></entity-link>
                         , {{ Number(min_video[0].completeness * 100).toFixed(1) }}% students completed this video.
+                    </styled-text>
                     </li>
                 </ul>
             </div>

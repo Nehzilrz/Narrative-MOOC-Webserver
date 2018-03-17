@@ -16,9 +16,9 @@ const groups = [
     "V1 V2 V3 V4",
     "A1 A2 A3 A4",
     "F1 F2 F3",
-    "V5 V6",
+    "V6",
     "A5",
-    "V7",
+    "V5 V7",
     "A6",
     "S1",
     "S2",
@@ -41,12 +41,20 @@ const grouptype = [
   
 const groupId = {};
 groups.forEach((d, i) => d.forEach(x => (groupId[x] = i)));
+
+const isAdjacent = (a, b) => {
+  if (!a) return false;
+  a = groupId[a];
+  b = groupId[b];
+  return a == b || edges.find(e => e.source == a && e.target == b);
+};
   
 export const relation = {
     groups: groups,
     edges: edges,
     grouptype: grouptype,
-    groupIdOf: x => groupId[x]
+    groupIdOf: x => groupId[x],
+    isAdjacent: isAdjacent,
 };
   
 export const questions = {
@@ -63,7 +71,7 @@ export const questions = {
     V3: "How often do students review each video?",
     V4: "When do students start/finish the videos?",
     V5: "Where in the video are students struggling with?",
-    V6: "Where in the video are most discussed in the forum?",
+    V6: "Which videos are most discussed in the forum?",
     V7: "What is the content of the interested video segment?",
     A0: "How much time do students spend on each assignment?",
     A1: "How well do students perform? (correctness)",
@@ -74,7 +82,20 @@ export const questions = {
     A6: "What is the content of an interested assignment?",
     F1: "Which are the most discussed topics/threads/keywords?",
     F2: "Which are the most upvoted replies?",
-    F3: "Who are the top questioners/responders?"
+    F3: "Who are the top questioners/responders?",   
+    F4: "Which are the most discussed keywords?",
+};
+
+export const scopeOf = type => {
+  if ('O1 O2 O3 O4 V1 V2 V3 V4 V6 A1 A2 A3 A4 A5 F1 F2 F3 F4'.includes(type)) {
+    return 0;
+  } else if ('V5 V7'.includes(type)) {
+    return 1;
+  } else if ('A6'.includes(type)) {
+    return 2;
+  } else {
+    return 3;
+  }
 };
 
 export const abbr_questions = {
@@ -90,7 +111,7 @@ export const abbr_questions = {
     V3: "video review frequency",
     V4: "video start/finish time",
     V5: "difficult video concept",
-    V6: "arguable video concept",
+    V6: "arguable video",
     V7: "interested video segment",
     A0: "assignment time-cost",
     A1: "assignment correctness",
@@ -102,6 +123,7 @@ export const abbr_questions = {
     F1: "popular topics/threads/keywords",
     F2: "upvoted replies",
     F3: "top forum participants",
+    F4: "popular keywords",
 };
 
 function initTemplate(
@@ -173,7 +195,7 @@ const templates = {
     initTemplate(
       "student",
       "chapter_problem_activies chapter_video_activies",
-      "O4 V1 A1",
+      "O4 V1 A1 F1",
       "piechart",
       chapter_id,
       "O3"
@@ -181,7 +203,7 @@ const templates = {
   O4: chapter_id =>
     initTemplate(
       "student",
-      "chapter_problem_activies chapter_video_activies",
+      "chapter_sequence",
       "",
       "barchart",
       chapter_id,
@@ -218,7 +240,7 @@ const templates = {
     initTemplate(
       "video",
       "chapter_video_activies",
-      "V5",
+      "V6",
       "barchart",
       chapter_id,
       "V4"
@@ -227,7 +249,7 @@ const templates = {
     initTemplate(
       "video",
       "video_peaks video_logs video_info",
-      "V6",
+      "V7",
       "areachart",
       video_id,
       "V5"
@@ -235,8 +257,8 @@ const templates = {
   V6: chapter_id =>
     initTemplate(
       "video",
-      "chapter_problem_activies",
-      "V7",
+      "video_related_forum",
+      "V5",
       "barchart",
       chapter_id,
       "V6"
@@ -298,7 +320,7 @@ const templates = {
   A5: chapter_id =>
     initTemplate(
       "assignment",
-      "chapter_problem_activies",
+      "assignment_related_forum",
       "A6",
       "barchart",
       chapter_id,
@@ -342,17 +364,27 @@ const templates = {
     ),
   F1: chapter_id =>
     initTemplate(
-      "student",
-      "student_overview",
+      "forum",
+      "most_discussed_threads most_discussed_keywords",
       "F2",
       "barchart",
       chapter_id,
       "F1"
     ),
-  F2: chapter_id =>
+    /*
+  F4: chapter_id =>
     initTemplate(
       "student",
-      "student_overview",
+      "most_discussed_keywords",
+      "F2",
+      "barchart",
+      chapter_id,
+      "F4"
+    ),*/
+  F2: chapter_id =>
+    initTemplate(
+      "forum",
+      "most_upvoted_threads",
       "F3",
       "barchart",
       chapter_id,
@@ -360,8 +392,8 @@ const templates = {
     ),
   F3: chapter_id =>
     initTemplate(
-      "student",
-      "student_overview",
+      "forum",
+      "top_questioner_responser",
       "",
       "barchart",
       chapter_id,

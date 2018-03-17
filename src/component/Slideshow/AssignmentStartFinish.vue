@@ -4,29 +4,27 @@
             <div class="slideshow-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content graph" style="height: 25vh">
+            <div class="slideshow-content" style="height: 25vh">
+                <div class="graph" style="width: 50%; float: left;">
+                </div>
+                <div class="text" style="width: 50%; float: left; padding-left: 2vw;
+                    padding-top: 1vh;">
+                    <h6> 
+                        Time cost in this week:
+                    </h6>
+                    <div style="padding-left: 2vw;">
+                        <styled-text :context="context">
+                            The assignment the student started at the latest was 
+                            <entity-link :id="max_delay.id" :context="context" :parent="item"></entity-link>
+                            , and they started it {{ Number(max_delay.delay).toFixed(1) }} days after the assignment was released.
+                        </styled-text>
+                        <styled-text :context="context">
+                            The longest assignment for the student working cycle is <entity-link :id="max_duration.id" :context="context" :parent="item"></entity-link>.
+                                {{ Number(max_duration.duration).toFixed(1) }} days.
+                        </styled-text>
+                    </div>
+                </div>
             </div>
-            <div class="slideshow-content text">
-                <h6>
-                    Summary in video watching of this week:
-                </h6>
-                <ul>
-                    <li>
-                    <styled-text :context="context">
-                        The video the student started watching at the latest was 
-                        <entity-link :id="max_video_delay.id" :context="context" :parent="item"></entity-link>
-                        , and they started watching it {{ Number(max_video_delay.delay).toFixed(1) }} days after the video was released.
-                    </styled-text>                    
-                    </li>
-                    <li>
-                    <styled-text :context="context">
-                        The longest video for the student viewing cycle is <entity-link :id="max_video_duration.id" :context="context" :parent="item"></entity-link>.
-                         They watched for {{ Number(max_video_duration.duration).toFixed(1) }} days.
-                    </styled-text>
-                    </li>
-                </ul>
-            </div>
-            <video-list :item="item" :context="context"></video-list>
             <follow-up :item="item" :context="context"></follow-up>
         </template>
     </div>
@@ -49,11 +47,11 @@
             this.table.renderTo(element);
         },
         computed: {
-            video_start_finish() {
-                const video_activies = this.item.data.video_activies;
-                if (!video_activies) return [];
+            start_finish() {
+                const assignment_activies = this.item.data.problem_activies;
+                if (!assignment_activies) return [];
                 const context = this.context;
-                return video_activies.map(d => {
+                return assignment_activies.map(d => {
                     d.duration = (d.modified - d.created) / 86400000;
                     d.delay = (d.created - (context.id2item[d.id] && context.id2item[d.id].chapter_start)) / 86400000;
                     return {
@@ -61,31 +59,31 @@
                         delay: d.delay,
                         name: d.name,
                         id: d.id,
-                        type: 'video',
+                        type: 'assignment',
                     }
                 });
             },
-            max_video_duration() {
-                if (this.video_start_finish.length == 0) return null;
-                const val = Math.max(...this.video_start_finish.map(d => d.duration));
-                return this.video_start_finish.find(d => d.duration == val);
+            max_duration() {
+                if (this.start_finish.length == 0) return null;
+                const val = Math.max(...this.start_finish.map(d => d.duration));
+                return this.start_finish.find(d => d.duration == val);
             },
-            max_video_delay() {
-                if (this.video_start_finish.length == 0) return null;
-                const val = Math.max(...this.video_start_finish.map(d => d.delay));
-                return this.video_start_finish.find(d => d.delay == val);
+            max_delay() {
+                if (this.start_finish.length == 0) return null;
+                const val = Math.max(...this.start_finish.map(d => d.delay));
+                return this.start_finish.find(d => d.delay == val);
             }
         },
         methods: {
             render(data, context) {
-                const video_activies = this.video_start_finish;
+                const assignment_activies = this.start_finish;
 
                 var xScale = new Plottable.Scales.Category();
                 var xAxis = new Plottable.Axes.Category(xScale, "bottom").yAlignment("bottom");
 
                 var colorScale = new Plottable.Scales.Color();
                 colorScale.domain(['delay', 'duration']);
-                colorScale.range([context.color_schema[1], context.color_schema[0]]);
+                colorScale.range([context.color_schema[3], context.color_schema[2]]);
 
                 var timeScale = new Plottable.Scales.Linear();
                 var timeAxis = new Plottable.Axes.Numeric(timeScale, "left").xAlignment("left");
@@ -99,8 +97,8 @@
                     .attr("stroke", "none")
                     .attr("fill", (d, i, dataset) => dataset.metadata(), colorScale)
                     .animated(true)
-                    .addDataset(new Plottable.Dataset(video_activies).metadata('delay'))
-                    .addDataset(new Plottable.Dataset(video_activies).metadata('duration'));
+                    .addDataset(new Plottable.Dataset(assignment_activies).metadata('delay'))
+                    .addDataset(new Plottable.Dataset(assignment_activies).metadata('duration'));
 
                 var timeLabel = new Plottable.Components.AxisLabel("Days", "0");
                 var timePlotLabel = new Plottable.Components.AxisLabel("days", "0");

@@ -34,7 +34,7 @@
         <div class="content">
           <template v-for="page, index in pages">
                 <draggable :list="page">
-                  <div v-for="item in page" class="page" @click="locateTo(item)" :class="{ active: item == slide }">
+                  <div v-for="item in page" class="page" @click="findNext(null, item)" :class="{ active: item == slide }">
                     <div> {{`${item.name}`}} </div>
                     <svg v-if="item.chart_type =='piechart'" width="16" height="16" viewBox="0 0 16 16">
                         <path fill="#ffffff" opacity=0.15 d="
@@ -86,6 +86,9 @@
                     {{ index + 1 }}
                   </b-btn>
                   <b-btn size="sm" variant="outline-secondary"
+                    @click="page = []; pages.push(page);"
+                  >New</b-btn>
+                  <b-btn size="sm" variant="outline-secondary"
                     @click="onChangePage(pages[Math.min(pages.length - 1, pages.indexOf(page) + 1)])"
                   >&rsaquo;</b-btn>
                 </b-button-group>
@@ -136,9 +139,12 @@
                   <p >
                   Text Highlighter
                   </p>
-                  <svg @click="enable_highlight_text = !enable_highlight_text" viewBox="0 0 512 512">
-                      <path fill="#fff" :opacity="enable_highlight_text ? 1 : 0.3" d="M488.96,34.56c-28.16-30.72-76.8-30.72-107.52,0L133.12,282.88l107.52,110.08l248.32-250.88    C519.68,113.92,519.68,65.28,488.96,34.56z"/>
-                      <polygon :fill="current_color" :opacity="enable_highlight_text ? 1 : 0.6" points="97.28,321.28 23.04,392.96 40.96,446.72 0,500.48 51.2,500.48 79.36,482.56 133.12,500.48 204.8,428.8   "/>
+                  <svg @click="enable_highlight_text = enable_highlight_text == 1 ? 0 : 1" viewBox="0 0 512 512">
+                      <path fill="#fff" :opacity="enable_highlight_text == 1 ? 1 : 0.3" d="M488.96,34.56c-28.16-30.72-76.8-30.72-107.52,0L133.12,282.88l107.52,110.08l248.32-250.88    C519.68,113.92,519.68,65.28,488.96,34.56z"/>
+                      <polygon :fill="current_color" :opacity="enable_highlight_text == 1 ? 1 : 0.6" points="97.28,321.28 23.04,392.96 40.96,446.72 0,500.48 51.2,500.48 79.36,482.56 133.12,500.48 204.8,428.8   "/>
+                  </svg>
+                  <svg @click="enable_highlight_text = enable_highlight_text == 2 ? 0 : 2; current_color = 'rgba(0, 0, 0, 0)';" viewBox="0 0 512 512">
+                    <path fill="#fff" :opacity="enable_highlight_text == 2 ? 1 : 0.3" d="M497.941 273.941c18.745-18.745 18.745-49.137 0-67.882l-160-160c-18.745-18.745-49.136-18.746-67.883 0l-256 256c-18.745 18.745-18.745 49.137 0 67.882l96 96A48.004 48.004 0 0 0 144 480h356c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12H355.883l142.058-142.059zm-302.627-62.627l137.373 137.373L265.373 416H150.628l-80-80 124.686-124.686z"/>
                   </svg>
                 </div>
               </div>
@@ -176,6 +182,7 @@
         page: null,
         videos: [],
         problems: [],
+        groups: [[0]],
         chapters: [],
         users: [],
         id2item: {},
@@ -304,17 +311,6 @@
             .then(async response => {
               this.chapters = response.data;
               this.chapters.forEach(d => (this.id2item[d.id] = d));
-              /*
-              const chapter = this.chapters[4];
-              this.current_chapter = chapter;
-              await this.loadSlide("O1", chapter.id, null);
-              await this.loadSlide("O2", chapter.id, null);
-              await this.loadSlide("S2", chapter.id, null);
-              this.page = null;
-              await this.loadSlide("A0", chapter.id, null);
-              await this.loadSlide("V2", chapter.id, null);
-              await this.loadSlide('V5', chapter.id, null);
-              */
             });
         });
     },
@@ -360,6 +356,7 @@
           problems: this.problems,
           slides: this.slides,
           history: this.history,
+          groups: this.groups,
           id2item: this.id2item,
           color_schema: this.color_schema,
           video_color: this.color_schema[1],
@@ -368,11 +365,15 @@
           pages: this.pages,
           enable_highlight_text: this.enable_highlight_text,
           current_color: this.current_color,
-          selectVideo: (item, parent) => this.loadSlide("V5", item.id, parent),
+          selectVideo: (item, parent) => this.findNext(parent, {
+            id: "V5", resource_id: item.id, group: parent.group
+          }),
           selectAssignment: (item, parent) => {},
           selectStudent: (item, parent) => {},
           selectChapter: (item, parent) => {},
-          loadSlide: (id, rid, parent) => this.loadSlide(id, rid, parent),
+          loadSlide: (id, resource_id, parent) => this.findNext(parent, {
+            id, resource_id, group: parent.group
+          }),
           followupSlides: slide =>
             slide.follow_ups.map(d => ({
               name: SlideTemplate.questions[d],
@@ -419,7 +420,9 @@
               name: SlideTemplate.questions[d],
               abbrname: SlideTemplate.abbr_questions[d],
               type: node[0].type,
-              _id: -1
+              id: d,
+              _id: -1,
+              parent_id: node[0]._id,
             }));
           for (const x of virtualnode) {
             node.push(x);
@@ -436,7 +439,9 @@
               name: SlideTemplate.questions[e],
               abbrname: SlideTemplate.abbr_questions[e],
               type: SlideTemplate.relation.grouptype[d.target],
-              _id: -1
+              id: e,
+              _id: -1,
+              parent_id: node[0]._id,
             }))
           );
           for (const target of virtualtargets) {
@@ -465,6 +470,8 @@
           const data = d.map(item => ({
             _id: item._id,
             name: item.abbrname,
+            parent_id: item.parent_id,
+            id: item.id,
             type: item.type,
             padding: padding,
             height: this.overview.fontsize + 2 * this.overview.textpadding_top_bottom,
@@ -719,8 +726,11 @@
           .attr("class", "node")
           .attr("transform", d => `translate(${d.x},${d.y})`)
           .on("click", d => {
-            if (d._id == -1) {} else {
-              this.locateTo(this.history.find(e => e._id == d._id));
+            if (d._id == -1) {
+              const parent = this.history.find(e => e._id == d.parent_id);
+              this.findNext(parent, { id: d.id, resource_id: null, group: parent.group });
+            } else {
+              this.findNext(null, this.history.find(e => e._id == d._id));
             }
           });
   
@@ -750,64 +760,76 @@
           .style("font-family", "Arial")
           .style("fill", d => (d._id == -1 ? "#bbbbbb" : "white"));
       },
-  
-      async loadSlide(id, rid, parent = null, scope_id = 0) {
-        var item = null;
-        if (
-          Array.isArray(this.page) &&
-          (item = this.page.find(d => d.resource_id == rid && d.id.includes(id)))
-        ) {
-          this.locateToDirectly(item);
-          return null;
-        }
-        item = SlideTemplate.create(id, rid);
-        return Promise.all(
-          item.resources.map(type => {
-            return request(this, item, type);
-          })
-        ).then(async() => {
-          item.loaded = true;
-          item.parent = parent;
-          item.scope_id = scope_id;
-          if (!this.page) {
-            this.page = [];
-            this.pages.push(this.page);
+      async findNext(state1, state2) {
+        // jump
+        if (!state2.item) {
+          let item = null;
+          if (Array.isArray(this.page) &&
+            (item = this.page.find(d => 
+                d.resource_id == state2.resource_id && 
+                d.id == state2.id && d.group == state2.group
+            ))
+          ) {
+            state2.item = item;
           }
-          this.page.push(item);
-          this.trigger_counter += 1;
-          this.$nextTick(() => {
-            this.locateToDirectly(item);
+        }
+      
+        if (state2.item) {
+          const item = state2.item;
+          var index = -1;
+          if ((index = this.page.indexOf(item)) != -1) {
+            const element = document.getElementsByClassName("slideshow-page")[index];
+            this.moveto.move(element);
+            this.adjustOverviewViewport(item);
+          } else {
+            this.page = this.pages.find(page => page.includes(item));
+            setTimeout(() => {
+              index = this.page.indexOf(item);
+              const element = document.getElementsByClassName("slideshow-page")[index];
+              this.moveto.move(element);
+              this.adjustOverviewViewport(item);
+            }, 200);
+          }
+        } else {
+          if (state2.resource_id == null) {
+            if (state1 && state1.id && state2.id && SlideTemplate.scopeOf(state1.id) == SlideTemplate.scopeOf(state2.id)) {
+              state2.resource_id = state1.resource_id;
+            } else {
+              return;
+            }
+          }
+          const item = SlideTemplate.create(state2.id, state2.resource_id);
+          item.group = (state2.group || state2.group == 0) ? state2.group : state1.group;
+          return Promise.all(
+            item.resources.map(type => {
+              return request(this, item, type);
+            })
+          ).then(async() => {
+            item.loaded = true;
+            item.parent = state1;
+            const last = this.page && this.page.length && this.page[this.page.length - 1];
+            if (!this.page || 
+              (last && !SlideTemplate.relation.isAdjacent(last.id, item.id)) || 
+              (last && last.group != item.group)) {
+              this.page = [];
+              this.pages.push(this.page);
+            }
+            this.page.push(item);
+            this.trigger_counter += 1;
+            this.$nextTick(() => {
+              this.findNext(null, item);
+            });
+            this.paintOverview();
           });
-          this.paintOverview();
-        });
+        }
       },
       async chapterDropdownClick(chapter) {
         this.current_chapter = chapter;
-        await this.loadSlide("O1", chapter.id, null);
+        await this.findNext(null, { id: "O1", resource_id: chapter.id, group: 0, item: null });
       },
       onChangePage(page) {
         if (this.page != page) {
           this.page = page;
-        }
-      },
-      locateTo(item) {
-        var index = -1;
-        if ((index = this.page.indexOf(item)) != -1) {
-          const element = document.getElementsByClassName("slideshow-page")[
-            index
-          ];
-          this.moveto.move(element);
-          this.adjustOverviewViewport(item);
-        } else {
-          this.page = this.pages.find(page => page.includes(item));
-          this.setTimeout(() => {
-            index = page.indexOf(item);
-            const element = document.getElementsByClassName("slideshow-page")[
-              index
-            ];
-            this.moveto.move(element);
-            this.adjustOverviewViewport(item);
-          }, 50);
         }
       },
       adjustSidebar() {
@@ -858,16 +880,6 @@
               ${position.x}, ${position.y})`
             );
           this.overview.position = position;
-        }
-      },
-      locateToDirectly(item) {
-        var index = -1;
-        if ((index = this.page.indexOf(item)) != -1) {
-          const element = document.getElementsByClassName("slideshow-page")[
-            index
-          ];
-          this.moveto.move(element);
-          this.adjustOverviewViewport(item);
         }
       }
     }
@@ -975,17 +987,24 @@
   .sidebar-container.tool .text-highlighter {
     display: inline-flex;
     width: 100%;
+    padding-top: 5px;
+    padding-left: 5px;
+    border-radius: 2px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
+    background-color: rgba(0, 0, 0, 0);
   }
 
   .sidebar-container.tool .text-highlighter p {
     font-size: 16px;
     font-weight: 700;
     padding-left: 1vw;
-    margin-top: 0.2vh;
-    margin-bottom: 0.2vh;
+    margin-top: 0.7vh;
+    margin-bottom: 0.4vh;
   }
   .sidebar-container.tool .text-highlighter svg {
     margin-left: 2vw;
+    margin-top: 0.4vh;
+    margin-bottom: 0.4vh;
     width: 32px; 
     height: 32px
   }
@@ -1111,7 +1130,7 @@
   .carousel-switcher {
     position: fixed;
     top: 92vh;
-    left: 70vw;
+    left: 65vw;
     opacity: 0.6;
   }
   
