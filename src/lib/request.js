@@ -232,7 +232,19 @@ export function request(self, item, type) {
             } else {
                 return null;
             }
-        }
+        },
+        'assignment_sequence': () => {
+            if (!item.data.sequence) {
+                const params = {
+                    assignment: item.resource_id,
+                };
+                return axios.post(`${serverUrl}getAssignmentOperationSequence`, params).then((response) => {
+                  item.data.sequence = response.data;
+                });
+            } else {
+                return null;
+            }
+        },
     };
     return convert_map[type]();
 }

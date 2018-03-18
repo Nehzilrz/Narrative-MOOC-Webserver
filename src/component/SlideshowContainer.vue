@@ -24,6 +24,8 @@
           </assignment-start-finish-slide>
           <assignment-discussed-slide v-else-if="item.id.includes('A5')" :context="context" :item="item">
           </assignment-discussed-slide>
+          <assignment-sequence-slide v-else-if="item.id.includes('A6')" :context="context" :item="item">
+          </assignment-sequence-slide>
           <video-completeness-slide v-else-if="item.id.includes('V1')" :context="context" :item="item">
           </video-completeness-slide>
           <video-time-spend-slide v-else-if="item.id.includes('V2')" :context="context" :item="item">
@@ -75,6 +77,7 @@ import ForumDiscussedSlide from "./Slideshow/ForumDiscussed.vue";
 import ForumKeywordSlide from "./Slideshow/ForumKeywords.vue";
 import ForumMostUpvotedSlide from "./Slideshow/ForumMostUpvoted.vue";
 import ForumQuestionerSlide from "./Slideshow/ForumQuestioner.vue";
+import AssignmentSequenceSlide from "./Slideshow/AssignmentSequence.vue";
 
 export default {
   data() {
@@ -106,12 +109,16 @@ export default {
     ForumKeywordSlide,
     ForumMostUpvotedSlide,
     ForumQuestionerSlide,
+    AssignmentSequenceSlide,
   },
   methods: {
+
   },
   watch: {
-    trigger() {
-      // this.paint();
+    page() {
+      this.$sr.reveal('.slideshow-content', {
+        rotate: {x: 65} 
+      });
     }
   }
 };
@@ -131,6 +138,7 @@ export default {
 }
 
 .slideshow-page {
+  position: relative;
   margin-top: 0.5vh;
   margin-bottom: 0.5vh;
   padding-top: 1vh;
@@ -140,7 +148,6 @@ export default {
 .slideshow-content {
   width: 90%;
   left: 3vw;
-  position: relative;
   transition: 0.2s;
   padding-top: 0.5vh;
   padding-bottom: 0.5vh;

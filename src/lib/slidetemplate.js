@@ -156,6 +156,7 @@ let _id_counter = 0;
 export function create(type, resource_id) {
   const ret = templates[type] ? templates[type](resource_id) : {};
   ret._id = ++_id_counter;
+  ret.notes = [];
   return ret;
 }
 
@@ -321,7 +322,7 @@ const templates = {
     initTemplate(
       "assignment",
       "assignment_related_forum",
-      "A6",
+      "",
       "barchart",
       chapter_id,
       "A5"
@@ -329,7 +330,7 @@ const templates = {
   A6: chapter_id =>
     initTemplate(
       "assignment",
-      "chapter_problem_activies",
+      "assignment_sequence",
       "",
       "barchart",
       chapter_id,

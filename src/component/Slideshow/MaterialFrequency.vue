@@ -1,5 +1,6 @@
 <template>
     <div class="slideshow-page">
+        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
             <div class="slideshow-content title">
                 <h4> {{ item.name }} </h4>
@@ -57,6 +58,17 @@
         },
         created() {
             this.table = this.render(this.item.data, this.context);
+            this.context.bus.$on("add-text-box", (_id) => {
+                if (_id == this.item._id) {
+                    this.item.notes = this.item.notes.filter(d => d.value.text);
+                    this.item.notes.push({
+                        value: {
+                            text: 'Click to edit',
+                            position: { x: 50, y: 50 },
+                        } 
+                    });
+                }
+            });
         },
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
@@ -100,7 +112,7 @@
 
                 var attemptScale = new Plottable.Scales.Linear();
                 var attemptAxis = new Plottable.Axes.Numeric(attemptScale, "left").xAlignment("left");
-                var attemptPlot = new Plottable.Plots.Bar()
+                var plots = new Plottable.Plots.Bar()
                     .y(d => d.attempts, attemptScale)
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
@@ -112,9 +124,59 @@
                 var attemptAxisLable = new Plottable.Components.AxisLabel("Frequency", "0");
                 var attemptPlotLable = new Plottable.Components.AxisLabel("", "0");
 
+                var interaction = new Plottable.Interactions.Click();
+                var lastElement = null;
+                interaction.onClick(point => {
+                    if (this.context.enable_highlight_chart) {
+                        var element = plots.entitiesAt(point)[0];
+                        if (!element) return;
+                        if (lastElement && lastElement.datum == element.datum) {
+                            plots.selections().attr("opacity", 1);
+                            lastElement = null;
+                            return;
+                        } else {
+                            plots.selections().attr("opacity", 0.5);
+                        }
+                        var selection = element.selection;
+                        selection.attr("opacity", 1);
+                        lastElement = element;
+                    } else {
+                        var element = plots.entitiesAt(point)[0];
+                        if (!element) return;
+                        var selection = element.selection;
+                        if (!selection) return;
+                        var x = selection.datum();
+                        x = context.id2item[x.id];
+                        if (x.type == 'video') {
+                            context.selectVideo(x, this.item);
+                        } else if (x.type == 'assignment') {
+                            context.selectAssignment(x, this.item);
+                        }
+                    }
+                });
+                interaction.attachTo(plots);
+
+                var interaction2 = new Plottable.Interactions.Pointer();
+                interaction2.onPointerMove(point => {
+                    if (!this.context.enable_highlight_chart) {
+                        plots.selections().attr("opacity", 0.8);
+                        var element = plots.entitiesAt(point)[0];
+                        if (!element) return;
+                        var selection = element.selection;
+                        if (!selection) return;
+                        selection.attr("opacity", 1);
+                        var x = selection.datum();
+                    }
+                }).onPointerExit(point => {
+                    if (!this.context.enable_highlight_chart) {
+                        plots.selections().attr("opacity", 1);
+                    }
+                });
+                interaction2.attachTo(plots);
+                
                 var table = new Plottable.Components.Table([
                     [attemptAxisLable, null],
-                    [attemptAxis, attemptPlot],
+                    [attemptAxis, plots],
                     [null, xAxis]
                 ]);
                 return table;

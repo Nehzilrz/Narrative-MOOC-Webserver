@@ -1,5 +1,6 @@
 <template>
     <div class="slideshow-page">
+        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
             <div class="slideshow-content title">
                 <h4> {{ item.name }} </h4>
@@ -33,6 +34,17 @@
         },
         created() {
             this.table = this.render(this.item.data, this.context);
+            this.context.bus.$on("add-text-box", (_id) => {
+                if (_id == this.item._id) {
+                    this.item.notes = this.item.notes.filter(d => d.value.text);
+                    this.item.notes.push({
+                        value: {
+                            text: 'Click to edit',
+                            position: { x: 50, y: 50 },
+                        } 
+                    });
+                }
+            });
         },
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];

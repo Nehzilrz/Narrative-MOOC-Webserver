@@ -2,7 +2,6 @@
   <div id="app">
     <b-navbar toggleable="md" type="dark" variant="dark" :sticky="true">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-  
       <b-navbar-brand href="#">Narrative MOOC</b-navbar-brand>
       <b-collapse is-nav id="nav_collapse">
         <b-navbar-nav class="ml-auto">
@@ -76,7 +75,7 @@
           <div class="slideshow-outter-container">
             <slideshow-container :context="this.context" :page="this.page" :trigger="this.trigger_counter">
             </slideshow-container>
-            <div class="carousel-switcher" v-if="pages && pages.length > 1">
+            <div class="carousel-switcher" v-if="pages">
               <b-button-toolbar key-nav aria-label="Toolbar with button groups">
                 <b-button-group class="mx-1">
                   <b-btn size="sm" variant="outline-secondary"
@@ -147,6 +146,36 @@
                     <path fill="#fff" :opacity="enable_highlight_text == 2 ? 1 : 0.3" d="M497.941 273.941c18.745-18.745 18.745-49.137 0-67.882l-160-160c-18.745-18.745-49.136-18.746-67.883 0l-256 256c-18.745 18.745-18.745 49.137 0 67.882l96 96A48.004 48.004 0 0 0 144 480h356c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12H355.883l142.058-142.059zm-302.627-62.627l137.373 137.373L265.373 416H150.628l-80-80 124.686-124.686z"/>
                   </svg>
                 </div>
+                <div class="chart-highlighter" :class="{ active: enable_highlight_chart }">
+                  <p>
+                  Chart Highlighter
+                  </p>
+                  <svg @click="onChartHighlight" x="0px" y="0px" viewBox="0 0 483.8 483.8" style="enable-background:new 0 0 483.8 483.8;" xml:space="preserve" width="512px" height="512px">
+                  <g>
+                    <g>
+                      <path d="M123.2,134H15.7C7,134,0,141,0,149.7v310.6C0,469,7,476,15.7,476h107.5c8.7,0,15.7-7,15.7-15.7V149.7    C139,141,131.9,134,123.2,134z M107.5,444.6H31.4V165.4h76.1V444.6z" fill="#FFFFFF"/>
+                      <path d="M468.1,216.4H360.6c-8.7,0-15.7,7-15.7,15.7v228.2c0,8.7,7,15.7,15.7,15.7h107.5c8.7,0,15.7-7,15.7-15.7V232.1    C483.8,223.4,476.8,216.4,468.1,216.4z M376.3,247.8h24.4l-24.4,24.4V247.8z M376.3,297.2l49.3-49.3h24.9l-74.2,74.2L376.3,297.2    L376.3,297.2z M452.4,444.6h-24.5l24.5-24.5V444.6z M452.4,395.2L403,444.6h-24.9l74.2-74.2v24.8H452.4z M452.4,345.5l-76.1,76.1    v-24.9l76.1-76.1V345.5z M452.4,295.7l-76.1,76.1v-24.9l76.1-76.1V295.7z" fill="#FFFFFF"/>
+                      <path d="M295.7,7.8H188.1c-8.7,0-15.7,7-15.7,15.7v436.8c0,8.7,7,15.7,15.7,15.7h107.5c8.7,0,15.7-7,15.7-15.7V23.5    C311.4,14.8,304.4,7.8,295.7,7.8z" fill="#FFFFFF"/>
+                    </g>
+                  </g>
+                  </svg>
+                </div>
+                <div class="text-box" @click="addTextbox">
+                  <p>
+                  Add Textbox
+                  </p>
+                  <svg x="0px" y="0px" viewBox="0 0 379.254 379.254" style="enable-background:new 0 0 379.254 379.254;" xml:space="preserve" width="512px" height="512px">
+                    <g>
+                      <path d="M371.582,310.87V68.384c4.592-2.778,7.672-7.805,7.672-13.564c0-8.759-7.101-15.86-15.86-15.86   c-6.046,0-11.299,3.384-13.975,8.36H29.834c-2.676-4.976-7.929-8.36-13.974-8.36C7.101,38.96,0,46.061,0,54.82   c0,6.318,3.703,11.756,9.049,14.306v241.002C3.703,312.678,0,318.116,0,324.434c0,8.759,7.101,15.86,15.86,15.86   c6.317,0,11.756-3.704,14.306-9.05h318.919c2.551,5.346,7.989,9.05,14.308,9.05c8.76,0,15.86-7.101,15.86-15.86   C379.254,318.675,376.174,313.648,371.582,310.87z M349.83,316.244H29.423c-1.331-2.198-3.175-4.043-5.374-5.373V68.383   c2.428-1.469,4.437-3.557,5.785-6.063h319.585c1.595,2.966,4.113,5.352,7.163,6.806v241.002   C353.775,311.467,351.431,313.6,349.83,316.244z" fill="#FFFFFF"/>
+                      <path d="M61.025,114.702c4.142,0,7.5-3.358,7.5-7.5v-4.05h19.65v80.499h-1.233c-4.142,0-7.5,3.358-7.5,7.5   c0,4.142,3.358,7.5,7.5,7.5h17.466c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5h-1.233v-80.499h19.65v4.05   c0,4.142,3.358,7.5,7.5,7.5c4.142,0,7.5-3.358,7.5-7.5v-11.55c0-4.142-3.358-7.5-7.5-7.5h-69.3c-4.142,0-7.5,3.358-7.5,7.5v11.55   C53.525,111.344,56.883,114.702,61.025,114.702z" fill="#FFFFFF"/>
+                      <path d="M163.255,193.448c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h21.024c4.142,0,7.5-3.358,7.5-7.5   c0-4.142-3.358-7.5-7.5-7.5h-3.013V92.66h3.013c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5h-21.024   c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h3.012v100.789H163.255z" fill="#FFFFFF"/>
+                      <path d="M315.814,112.482h-87.572c-4.143,0-7.5,3.358-7.5,7.5c0,4.142,3.357,7.5,7.5,7.5h87.572c4.143,0,7.5-3.358,7.5-7.5   C323.314,115.84,319.956,112.482,315.814,112.482z" fill="#FFFFFF"/>
+                      <path d="M315.814,151.097h-87.572c-4.143,0-7.5,3.358-7.5,7.5s3.357,7.5,7.5,7.5h87.572c4.143,0,7.5-3.358,7.5-7.5   S319.956,151.097,315.814,151.097z" fill="#FFFFFF"/>
+                      <path d="M315.814,235.222H61.025c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h254.788c4.143,0,7.5-3.358,7.5-7.5   C323.314,238.58,319.956,235.222,315.814,235.222z" fill="#FFFFFF"/>
+                      <path d="M315.814,273.837H61.025c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h254.788c4.143,0,7.5-3.358,7.5-7.5   C323.314,277.195,319.956,273.837,315.814,273.837z" fill="#FFFFFF"/>
+                    </g>
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
@@ -157,6 +186,7 @@
 
 <script>
   import axios from "axios";
+  import Vue from 'vue';
   import * as d3 from "d3";
   import * as mojs from "mo-js";
   import * as MoveTo from "moveto";
@@ -202,8 +232,10 @@
           "#cab2d6",
           "#6a3d9a"
         ],
+        enable_highlight_chart: false,
         course_name: "Introduction to Computing with Java",
         course_id: "HKUSTx_COMP102x_2T2014",
+        bus: new Vue(),
         overview: {
           width: 800,
           height: 400,
@@ -358,17 +390,21 @@
           history: this.history,
           groups: this.groups,
           id2item: this.id2item,
+          bus: this.bus,
           color_schema: this.color_schema,
           video_color: this.color_schema[1],
           assignment_color: this.color_schema[3],
           page: this.page,
           pages: this.pages,
           enable_highlight_text: this.enable_highlight_text,
+          enable_highlight_chart: this.enable_highlight_chart,
           current_color: this.current_color,
           selectVideo: (item, parent) => this.findNext(parent, {
             id: "V5", resource_id: item.id, group: parent.group
           }),
-          selectAssignment: (item, parent) => {},
+          selectAssignment: (item, parent) => this.findNext(parent, {
+            id: "A6", resource_id: item.id, group: parent.group
+          }),
           selectStudent: (item, parent) => {},
           selectChapter: (item, parent) => {},
           loadSlide: (id, resource_id, parent) => this.findNext(parent, {
@@ -836,6 +872,14 @@
         this.sidebar_active = !this.sidebar_active;
         this.adjustOverviewViewport();
       },
+      addTextbox() {
+        if (this.slide) {
+          this.bus.$emit("add-text-box", this.slide._id);
+        }
+      },
+      onChartHighlight() {
+        this.enable_highlight_chart = !this.enable_highlight_chart;
+      },
       adjustOverviewViewport(item) {
         if (this.sidebar_active) {
           this.overview.svg
@@ -1008,6 +1052,69 @@
     width: 32px; 
     height: 32px
   }
+
+  .sidebar-container.tool .text-box {
+    display: inline-flex;
+    width: 100%;
+    padding-top: 5px;
+    padding-left: 5px;
+    border-radius: 2px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  .sidebar-container.tool .text-box p {
+    font-size: 16px;
+    font-weight: 700;
+    padding-left: 1vw;
+    margin-top: 0.7vh;
+    margin-bottom: 0.4vh;
+  }
+  .sidebar-container.tool .text-box svg {
+    margin-left: 4vw;
+    margin-top: 0.4vh;
+    margin-bottom: 0.4vh;
+    width: 32px; 
+    height: 32px;
+    opacity: 0.5;
+  }
+  .sidebar-container.tool .text-box svg:hover {
+    opacity: 1;
+  }
+
+
+  .sidebar-container.tool .chart-highlighter {
+    display: inline-flex;
+    width: 100%;
+    padding-top: 5px;
+    padding-left: 5px;
+    border-radius: 2px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  .sidebar-container.tool .chart-highlighter p {
+    font-size: 16px;
+    font-weight: 700;
+    padding-left: 1vw;
+    margin-top: 0.7vh;
+    margin-bottom: 0.4vh;
+  }
+  .sidebar-container.tool .chart-highlighter svg {
+    margin-left: 1.7vw;
+    margin-top: 0.4vh;
+    margin-bottom: 0.4vh;
+    width: 32px; 
+    height: 32px;
+    opacity: 0.5;
+  }
+  .sidebar-container.tool .chart-highlighter svg:hover {
+    opacity: 1;
+  }
+  .sidebar-container.tool .chart-highlighter.active svg {
+    opacity: 1;
+  }
+  
   
   .slideshow-container {
     height: 100%;
