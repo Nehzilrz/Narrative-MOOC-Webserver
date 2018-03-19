@@ -34,17 +34,10 @@
         },
         created() {
             this.table = this.render(this.item.data, this.context);
-            this.context.bus.$on("add-text-box", (_id) => {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            });
+            this.context.bus.$on("add-text-box", this.handle);
+        },
+        destroyed() {
+            this.context.bus.$off("add-text-box", this.handle);
         },
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
@@ -92,6 +85,17 @@
             }
         },
         methods: {
+            handle(_id) {
+                if (_id == this.item._id) {
+                    this.item.notes = this.item.notes.filter(d => d.value.text);
+                    this.item.notes.push({
+                        value: {
+                            text: 'Click to edit',
+                            position: { x: 50, y: 50 },
+                        } 
+                    });
+                }
+            },
             render(data, context) {
                 const activies = this.activies;
                 var color_scale = new Plottable.Scales.Color();
@@ -114,7 +118,7 @@
                     .attr("stroke", 'none');
                     */
                 var sum = activies.map(d => d.val).reduce((a, b) => a + b, 0);
-                var plot = new Plottable.Plots.Pie()
+                var plots = new Plottable.Plots.Pie()
                     .addDataset(new Plottable.Dataset([
                         { type: 'video', val: this.video_time }, 
                         { type: 'assignment', val: this.assignment_time },
@@ -127,6 +131,55 @@
                     .labelFormatter((d) => Number(d / sum * 100).toFixed(1) + '%')
                     .outerRadius(80)
                     .attr("stroke", 'none');
+                    
+                var interaction = new Plottable.Interactions.Click();
+                var lastElement = null;
+                interaction.onClick(point => {
+                    if (this.context.enable_highlight_chart) {
+                        var element = plots.entitiesAt(point)[0];
+                        if (!element) return;
+                        if (lastElement && lastElement.datum == element.datum) {
+                            plots.selections().attr("opacity", 1);
+                            lastElement = null;
+                            return;
+                        } else {
+                            plots.selections().attr("opacity", 0.5);
+                        }
+                        var selection = element.selection;
+                        selection.attr("opacity", 1);
+                        lastElement = element;
+                    } else {
+                        var element = plots.entitiesAt(point)[0];
+                        if (!element) return;
+                        var selection = element.selection;
+                        if (!selection) return;
+                        var x = selection.datum();
+                        if (x.type == 'video') {
+                            context.loadSlide('V1', this.item.resource_id, this.item);
+                        } else if (x.type == 'assignment') {
+                            context.loadSlide('A1', this.item.resource_id, this.item);
+                        }
+                    }
+                });
+                interaction.attachTo(plots);
+
+                var interaction2 = new Plottable.Interactions.Pointer();
+                interaction2.onPointerMove(point => {
+                    if (!this.context.enable_highlight_chart) {
+                        plots.selections().attr("opacity", 0.8);
+                        var element = plots.entitiesAt(point)[0];
+                        if (!element) return;
+                        var selection = element.selection;
+                        if (!selection) return;
+                        selection.attr("opacity", 1);
+                        var x = selection.datum();
+                    }
+                }).onPointerExit(point => {
+                    if (!this.context.enable_highlight_chart) {
+                        plots.selections().attr("opacity", 1);
+                    }
+                });
+                interaction2.attachTo(plots);
                 
                 var legend = new Plottable.Components.Legend(color_scale);
                 legend.maxEntriesPerRow(1);
@@ -134,7 +187,7 @@
                     .xAlignment("right");
                     
                 var table = new Plottable.Components.Table([
-                    [legend, plot],
+                    [legend, plots],
                 ]);
                 return table;
             },

@@ -96,7 +96,7 @@ export default {
 <style scope>
 .textbox {
   position: absolute;
-  z-index: 30;
+  z-index: 2;
   border: solid;
   border-width: 1px;
   border-color: rgba(0, 0, 0, 0);

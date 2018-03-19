@@ -42,6 +42,10 @@ p.nar.styled {
     border-width: 1.5px 1.5px 1.5px 1.5px;
     border-radius: 5px;
     display: inline-block;
+    padding-top: .2rem;
+    padding-bottom: .2rem;
+    margin-top: .2rem;
+    margin-bottom: .2rem;
     border-color: rgba(127, 127, 127, 0.0);
 }
 

@@ -15,23 +15,25 @@
                 <ul style="padding-left: 2vw"
                     v-if="item.data.video_peaks && item.data.video_peaks.length">
                     <li v-for="peak, i in showed_peaks">
-                        The 
-                        <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
-                            Peak 
-                            <span class="step" :style="{ background: context.color_schema[i] }">
-                                {{i}}
-                            </span>
-                        </b-link>
-                        of students' operation appears at the 
-                        <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
-                            {{ ~~(peak.time / 60) }}:{{ ~~(peak.time % 60 / 10) }}{{ peak.time % 10 }} 
-                        </b-link>
-                        of the video, with 
-                        <b-link href="javascript:void(0);" @click="onSelectStudents(item.data.video_peaks[i].users, ' in Peak#' + i)">
-                            {{ peak.student_num }} students
-                        </b-link>
-                        , 
-                        which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
+                        <styled-text :context="context">
+                            The 
+                            <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
+                                Peak 
+                                <span class="step" :style="{ background: context.color_schema[i] }">
+                                    {{i}}
+                                </span>
+                            </b-link>
+                            of students' operation appears at the 
+                            <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
+                                {{ ~~(peak.time / 60) }}:{{ ~~(peak.time % 60 / 10) }}{{ peak.time % 10 }} 
+                            </b-link>
+                            of the video, with 
+                            <b-link href="javascript:void(0);" @click="onSelectStudents(item.data.video_peaks[i].users, ' in Peak#' + i)">
+                                {{ peak.student_num }} students
+                            </b-link>
+                            , 
+                            which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
+                        </styled-text>
                     </li>
                     <li v-if="item.data.video_peaks.length > showed_peaks_num">
                         <b-link href="javascript:void(0);" @click="showed_peaks_num += 1">
@@ -78,18 +80,11 @@
             };
         },
         created() {
-            this.context.bus.$on("add-text-box", (_id) => {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            });
             this.table = this.render(this.item.data, this.context);
+            this.context.bus.$on("add-text-box", this.handle);
+        },
+        destroyed() {
+            this.context.bus.$off("add-text-box", this.handle);
         },
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
@@ -115,6 +110,17 @@
             }
         },
         methods: {
+            handle(_id) {
+                if (_id == this.item._id) {
+                    this.item.notes = this.item.notes.filter(d => d.value.text);
+                    this.item.notes.push({
+                        value: {
+                            text: 'Click to edit',
+                            position: { x: 50, y: 50 },
+                        } 
+                    });
+                }
+            },
             render(data, context) {
                 let video_logs = data.video_logs;
                 let video_peaks = data.video_peaks;
@@ -290,8 +296,8 @@
             onSelectVideo() {
 
             },
-            onSelectStudent() {
-
+            onSelectStudents(users) {
+                this.context.selectStudent({ users }, this.item);
             },
             onVideoPeakChangeTime(peak) {
                 this.show_video = true;

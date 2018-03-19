@@ -66,19 +66,12 @@
             };
         },
         created() {
-            this.context.bus.$on("add-text-box", (_id) => {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            });
             this.table1 = this.render1(this.item.data, this.context);
             this.table2 = this.render2(this.item.data, this.context);
+            this.context.bus.$on("add-text-box", this.handle);
+        },
+        destroyed() {
+            this.context.bus.$off("add-text-box", this.handle);
         },
         mounted() {
             var elements = this.$el.getElementsByClassName('graph');
@@ -108,6 +101,17 @@
             }
         },
         methods: {
+            handle(_id) {
+                if (_id == this.item._id) {
+                    this.item.notes = this.item.notes.filter(d => d.value.text);
+                    this.item.notes.push({
+                        value: {
+                            text: 'Click to edit',
+                            position: { x: 50, y: 50 },
+                        } 
+                    });
+                }
+            },
             render1(data, context) {
                 const assignment_activies = data.problem_activies;
 
