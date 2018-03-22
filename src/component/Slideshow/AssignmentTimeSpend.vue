@@ -38,7 +38,11 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 table: null,
+                lastElement: null,
             };
         },
         created() {
@@ -85,26 +89,86 @@
                 var watchTimeScale = new Plottable.Scales.Linear();
                 var watchTimeAxis = new Plottable.Axes.Numeric(watchTimeScale, "left").xAlignment("left");
                 watchTimeAxis.formatter((d) => Number(d / 60).toFixed(1))
-                var watchTimePlot = new Plottable.Plots.Bar()
+                var Plots = new Plottable.Plots.Bar()
                     .y(d => d.work_time, watchTimeScale)
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", context.assignment_color)
                     .animated(true)
                     .addDataset(new Plottable.Dataset(assignment_activies));
+                if (this.lastElement) {
+                    plots.attr("opacity", d => d.id == this.lastElement ? 1 : 0.5);
+                }
+                
+                var interaction = new Plottable.Interactions.Click();
+                interaction.onClick(point => {
+                    if (this.context.enable_highlight_chart) {
+                        var element = plots.entitiesAt(point)[0];
+                        if (!element) return;
+                        if (this.lastElement == element.datum.id) {
+                            plots.selections().attr("opacity", 1);
+                            this.lastElement = null;
+                            return;
+                        } else {
+                            plots.selections().attr("opacity", 0.5);
+                        }
+                        var selection = element.selection;
+                        selection.attr("opacity", 1);
+                        this.lastElement = element.datum.id;
+                    } else {
+                        var element = plots.entitiesAt(point)[0];
+                        if (!element) return;
+                        var selection = element.selection;
+                        if (!selection) return;
+                        var x = selection.datum();
+                        x = context.id2item[x.id];
+                        if (x.type == 'video') {
+                            context.selectVideo(x, this.item);
+                        } else if (x.type == 'assignment') {
+                            context.selectAssignment(x, this.item);
+                        }
+                    }
+                });
+                interaction.attachTo(plots);
+                var interaction2 = new Plottable.Interactions.Pointer();
+                interaction2.onPointerMove(point => {
+                    var element = plots.entitiesAt(point)[0];
+                    if (!element) {
+                        this.show_tooltip = false;
+                        return;
+                    }
+                    var selection = element.selection;
+                    if (!selection) return;
+                    this.show_tooltip = true;
+                    this.current_point.x = point.x + plots.origin().x;
+                    this.current_point.y = point.y + plots.origin().y;
+                    var x = selection.datum();
+                    this.tooltip_message = `value: ${x.activeness}`;
+                    if (!this.context.enable_highlight_chart) {
+                        plots.selections().attr("opacity", 0.8);
+                        selection.attr("opacity", 1);
+                    }
+                }).onPointerExit(point => {
+                    this.show_tooltip = false;
+                    if (!this.context.enable_highlight_chart) {
+                        plots.selections().attr("opacity", 0.8);
+                    }
+                });
+                interaction2.attachTo(plots);
+
 
                 var watchTimeLabel = new Plottable.Components.AxisLabel("minutes", "0");
-                var watchTimePlotLabel = new Plottable.Components.AxisLabel("time", "0");
+                var PlotsLabel = new Plottable.Components.AxisLabel("time", "0");
 
                 var table = new Plottable.Components.Table([
                     [watchTimeLabel, null],
-                    [watchTimeAxis, watchTimePlot],
+                    [watchTimeAxis, Plots],
                     [null, xAxis]
                 ]);
                 return table;
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

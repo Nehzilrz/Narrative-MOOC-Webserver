@@ -73,9 +73,9 @@
       </div>
       <div class="body-container">
           <div class="slideshow-outter-container">
-            <slideshow-container v-for="item in pages" :context="context" :page="item" v-show="item == page">
+            <slideshow-container v-for="item in pages" :context="context" :page="item" v-if="item == page">
             </slideshow-container>
-            <div class="carousel-switcher" v-if="pages">
+            <div class="carousel-switcher" v-if="pages && !presentation_mode">
               <b-button-toolbar key-nav aria-label="Toolbar with button groups">
                 <b-button-group class="mx-1">
                   <b-btn size="sm" variant="outline-secondary"
@@ -125,7 +125,7 @@
                 </svg>
               </div>
               <div class="content">
-                <div class="vc-compact">
+                <div class="vc-compact" v-if="!presentation_mode">
                   <ul class="vc-compact-colors">
                     <li v-for="color in colors" class="vc-compact-color-item"
                       :style="{ background: color }" @click="current_color = color">
@@ -134,7 +134,7 @@
                     </li>
                   </ul>
                 </div>
-                <div class="text-highlighter">
+                <div class="text-highlighter" v-if="!presentation_mode">
                   <p >
                   Text Highlighter
                   </p>
@@ -146,7 +146,7 @@
                     <path fill="#fff" :opacity="enable_highlight_text == 2 ? 1 : 0.3" d="M497.941 273.941c18.745-18.745 18.745-49.137 0-67.882l-160-160c-18.745-18.745-49.136-18.746-67.883 0l-256 256c-18.745 18.745-18.745 49.137 0 67.882l96 96A48.004 48.004 0 0 0 144 480h356c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12H355.883l142.058-142.059zm-302.627-62.627l137.373 137.373L265.373 416H150.628l-80-80 124.686-124.686z"/>
                   </svg>
                 </div>
-                <div class="chart-highlighter" :class="{ active: enable_highlight_chart }">
+                <div class="box chart-highlighter" :class="{ active: enable_highlight_chart }"  v-if="!presentation_mode">
                   <p>
                   Chart Highlighter
                   </p>
@@ -160,7 +160,7 @@
                   </g>
                   </svg>
                 </div>
-                <div class="text-box" @click="addTextbox">
+                <div class="text-box" @click="addTextbox"  v-if="!presentation_mode">
                   <p>
                   Add Textbox
                   </p>
@@ -176,6 +176,40 @@
                     </g>
                   </svg>
                 </div>
+                <div class="box interaction-box" @click="addTextbox"  v-if="!presentation_mode">
+                  <p>
+                    Related Question
+                  </p>
+                  <svg x="0px" y="0px" width="512px" height="512px" viewBox="0 0 459 459" style="enable-background:new 0 0 459 459;" xml:space="preserve">
+                    <g id="share">
+                      <path d="M459,216.75L280.5,38.25v102c-178.5,25.5-255,153-280.5,280.5C63.75,331.5,153,290.7,280.5,290.7v104.55L459,216.75z" fill="#FFFFFF"/>
+                    </g>
+                  </svg>
+                </div>
+                <div class="box presentation-box" @click="presentation_mode = !presentation_mode">
+                  <p>
+                    Presentation Mode
+                  </p>
+                  <svg :style="{ opacity: presentation_mode ? 1 : 0.5 }" width="512px" height="512px" viewBox="0 0 16 16">
+                    <path fill="#FFFFFF" d="M16 1h-7v-1h-2v1h-7v11h5l-2 4h2.2l2-4h1.5l2 4h2.3l-2-4h5v-11zM15 11h-14v-9h14v9z"/>
+                    <path fill="#FFFFFF" d="M6 4v5l4-2.5z"/>
+                  </svg>
+                </div>
+                <div class="box file-box">
+                  <p>
+                    File
+                  </p>
+                  <svg @click="loadCaseStudy()" x="0px" y="0px" width="512px" height="512px" viewBox="0 0 536.461 536.46" xml:space="preserve">
+                    <g>
+                      <g>
+                        <path d="M144.752,263.52c19.603-9.038,38.354-13.559,56.243-13.559h237.548v-45.683c0-17.511-6.283-32.555-18.85-45.118    c-12.565-12.562-27.596-18.842-45.11-18.842H219.266v-9.136c0-17.511-6.28-32.548-18.842-45.107    c-12.563-12.562-27.6-18.846-45.111-18.846h-91.36c-17.511,0-32.548,6.283-45.111,18.846C6.279,98.635,0,113.672,0,131.183    v274.084c0,0.764,0.049,1.955,0.144,3.576c0.094,1.615,0.144,2.807,0.144,3.566l1.426-1.704L97.93,297.637    C109.54,283.931,125.148,272.556,144.752,263.52z" fill="#FFFFFF"/>
+                        <path d="M528.898,290.214c-5.041-2.478-10.797-3.72-17.272-3.72H200.995c-12.562,0-26.219,3.381-40.968,10.14    c-14.75,6.766-26.219,14.986-34.401,24.701l-95.93,113.059c-5.902,6.662-8.853,12.945-8.853,18.849    c0,5.708,2.523,9.802,7.566,12.272c5.043,2.478,10.8,3.716,17.273,3.716h310.64c12.56,0,26.21-3.381,40.963-10.136    c14.75-6.756,26.214-14.989,34.399-24.701l95.931-113.059c5.899-6.663,8.846-12.939,8.846-18.849    C536.465,296.779,533.946,292.689,528.898,290.214z" fill="#FFFFFF"/>
+                      </g>
+                    </g>
+                  </svg>
+                  <svg @click="saveCaseStudy()" viewBox="0 0 448 512"><path fill="#ffffff" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z" class=""></path></svg>
+                  <svg @click="removeCaseStudy()" viewBox="0 0 448 512"><path fill="#ffffff" d="M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm415.2 56.7L394.8 467c-1.6 25.3-22.6 45-47.9 45H101.1c-25.3 0-46.3-19.7-47.9-45L32.8 140.7c-.4-6.9 5.1-12.7 12-12.7h358.5c6.8 0 12.3 5.8 11.9 12.7z" class=""></path></svg>
+                </div>
               </div>
             </div>
           </div>
@@ -185,178 +219,174 @@
 </template>
 
 <script>
-  import axios from "axios";
-  import Vue from 'vue';
-  import * as d3 from "d3";
-  import * as mojs from "mo-js";
-  import * as MoveTo from "moveto";
-  import * as SlideTemplate from "./lib/slidetemplate";
-  import textwidth from "./lib/text-width";
-  import draggable from "vuedraggable";
-  import {
-    request,
-    serverUrl
-  } from "./lib/request";
-  import SlideshowContainer from "./component/SlideshowContainer.vue";
-  import colors from "./lib/colors";
-  
-  export default {
-    name: "app",
-    data() {
-      return {
-        enable_highlight_text: false,
-        current_color: "#fff",
-        colors: colors,
-        slides: [],
-        pages: [],
-        page: null,
-        videos: [],
-        problems: [],
-        groups: [null],
-        chapters: [],
-        users: [],
-        id2item: {},
-        // current_video: null,
-        // current_problem: null,
-        current_chapter: null,
-        trigger_counter: 0,
-        color_schema: [
-          "#a6cee3",
-          "#1f78b4",
-          "#b2df8a",
-          "#33a02c",
-          "#fb9a99",
-          "#e31a1c",
-          "#fdbf6f",
-          "#ff7f00",
-          "#cab2d6",
-          "#6a3d9a"
-        ],
-        enable_highlight_chart: false,
-        course_name: "Introduction to Computing with Java",
-        course_id: "HKUSTx_COMP102x_2T2014",
-        bus: new Vue(),
-        overview: {
-          width: 800,
-          height: 400,
-          padding: 50,
-          question_offset_x: 10,
-          question_offset_y: 22,
-          area_width: 200,
-          margin: 50,
-          fontsize: 12,
-          fontfamily: "Arial",
-          textpadding_left_right: 5,
-          textpadding_top_bottom: 5,
-          layer_gap: 15,
-          svg: null,
-          position: {
-            x: 0,
-            y: 0
-          }
-        },
-        bubblechart_layout: null,
-        sidebar_active: false,
-        active_items: [],
-        moveto: new MoveTo({
-          tolerance: 56,
-          duration: 400
-        }),
-        viewport: {
-          top: 0,
-          bottom: 800,
-          height: 800
+import axios from "axios";
+import Vue from "vue";
+import * as d3 from "d3";
+import * as MoveTo from "moveto";
+import * as SlideTemplate from "./lib/slidetemplate";
+import textwidth from "./lib/text-width";
+import draggable from "vuedraggable";
+import { request, serverUrl } from "./lib/request";
+import SlideshowContainer from "./component/SlideshowContainer.vue";
+import colors from "./lib/colors";
+import { local } from "d3";
+
+export default {
+  name: "app",
+  data() {
+    return {
+      current_case_study: "",
+      case_studys: [],
+      enable_highlight_text: false,
+      current_color: "#fff",
+      colors: colors,
+      pages: [],
+      page: null,
+      videos: [],
+      problems: [],
+      groups: [null],
+      chapters: [],
+      id2item: {},
+      presentation_mode: false,
+      // current_video: null,
+      // current_problem: null,
+      current_chapter: null,
+      trigger_counter: 0,
+      color_schema: [
+        "#a6cee3",
+        "#1f78b4",
+        "#b2df8a",
+        "#33a02c",
+        "#fb9a99",
+        "#e31a1c",
+        "#fdbf6f",
+        "#ff7f00",
+        "#cab2d6",
+        "#6a3d9a"
+      ],
+      enable_highlight_chart: false,
+      course_name: "Introduction to Computing with Java",
+      course_id: "HKUSTx_COMP102x_2T2014",
+      bus: new Vue(),
+      overview: {
+        width: 800,
+        height: 400,
+        padding: 50,
+        question_offset_x: 10,
+        question_offset_y: 22,
+        area_width: 200,
+        margin: 50,
+        fontsize: 12,
+        fontfamily: "Arial",
+        textpadding_left_right: 5,
+        textpadding_top_bottom: 5,
+        layer_gap: 15,
+        svg: null,
+        position: {
+          x: 0,
+          y: 0
         }
-      };
-    },
-    components: {
-      SlideshowContainer,
-      draggable
-    },
-    mounted() {
-      const colors = d3
-        .select("#overview")
-        .append("g")
-        .attr("class", "color");
-  
-      this.overview.svg = d3
-        .select("#overview")
-        .append("g")
-        .attr("transform", `translate(0,0)`);
-  
-      for (let i = 0; i < this.color_schema.length; ++i) {
-        for (let j = 0; j < this.color_schema.length; ++j) {
-          const defs = colors.append("defs");
-          const grad = defs
-            .append("linearGradient")
-            .attr("id", `c${i}${j}`)
-            .attr("x1", 0)
-            .attr("x2", 0)
-            .attr("y1", 0)
-            .attr("y2", 1);
-          grad
-            .append("stop")
-            .attr("offset", "0%")
-            .attr("stop-color", this.color_schema[i]);
-          grad
-            .append("stop")
-            .attr("offset", "100%")
-            .attr("stop-color", this.color_schema[j]);
-        }
-      }
-      window.onscroll = d => {
-        this.viewport = {
-          top: window.visualViewport.pageTop,
-          bottom: window.visualViewport.pageTop + window.visualViewport.height,
-          height: window.visualViewport.height
-        };
-      };
-      axios
-        .get(`${serverUrl}getVideoList`, {
-          params: {
-            courseId: this.course_id
-          }
-        })
-        .then(response => {
-          this.videos = response.data;
-          this.videos.forEach(d => (this.id2item[d.id] = d));
-        })
-        .then(() => {
-          axios
-            .get(`${serverUrl}getProblemList`, {
-              params: {
-                courseId: this.course_id
-              }
-            })
-            .then(response => {
-              this.problems = response.data;
-              this.problems.forEach(d => (this.id2item[d.id] = d));
-            });
-        })
-        .then(() => {
-          axios
-            .get(`${serverUrl}getChapterList`, {
-              params: {
-                courseId: this.course_id
-              }
-            })
-            .then(async response => {
-              this.chapters = response.data;
-              this.chapters.forEach(d => (this.id2item[d.id] = d));
-            });
-        });
-    },
-    computed: {
-      history() {
-        return [].concat(...this.pages);
       },
-      slide() {
-        if (this.page && this.page.length == 1) {
-          return this.page[0];
+      sidebar_active: false,
+      moveto: new MoveTo({
+        tolerance: 56,
+        duration: 400
+      }),
+      viewport: {
+        top: 0,
+        bottom: 800,
+        height: 800
+      }
+    };
+  },
+  components: {
+    SlideshowContainer,
+    draggable
+  },
+  mounted() {
+    const colors = d3
+      .select("#overview")
+      .append("g")
+      .attr("class", "color");
+
+    this.overview.svg = d3
+      .select("#overview")
+      .append("g")
+      .attr("transform", `translate(0,0)`);
+
+    for (let i = 0; i < this.color_schema.length; ++i) {
+      for (let j = 0; j < this.color_schema.length; ++j) {
+        const defs = colors.append("defs");
+        const grad = defs
+          .append("linearGradient")
+          .attr("id", `c${i}${j}`)
+          .attr("x1", 0)
+          .attr("x2", 0)
+          .attr("y1", 0)
+          .attr("y2", 1);
+        grad
+          .append("stop")
+          .attr("offset", "0%")
+          .attr("stop-color", this.color_schema[i]);
+        grad
+          .append("stop")
+          .attr("offset", "100%")
+          .attr("stop-color", this.color_schema[j]);
+      }
+    }
+    window.onscroll = d => {
+      this.viewport = {
+        top: window.visualViewport.pageTop,
+        bottom: window.visualViewport.pageTop + window.visualViewport.height,
+        height: window.visualViewport.height
+      };
+    };
+    axios
+      .get(`${serverUrl}getVideoList`, {
+        params: {
+          courseId: this.course_id
         }
-        const elements = document.getElementsByClassName("slideshow-page");
-        return this.page ?
-          this.page.find((item, index) => {
+      })
+      .then(response => {
+        this.videos = response.data;
+        this.videos.forEach(d => (this.id2item[d.id] = d));
+      })
+      .then(() => {
+        axios
+          .get(`${serverUrl}getProblemList`, {
+            params: {
+              courseId: this.course_id
+            }
+          })
+          .then(response => {
+            this.problems = response.data;
+            this.problems.forEach(d => (this.id2item[d.id] = d));
+          });
+      })
+      .then(() => {
+        axios
+          .get(`${serverUrl}getChapterList`, {
+            params: {
+              courseId: this.course_id
+            }
+          })
+          .then(async response => {
+            this.chapters = response.data;
+            this.chapters.forEach(d => (this.id2item[d.id] = d));
+          });
+      });
+  },
+  computed: {
+    history() {
+      return [].concat(...this.pages);
+    },
+    slide() {
+      if (this.page && this.page.length == 1) {
+        return this.page[0];
+      }
+      const elements = document.getElementsByClassName("slideshow-page");
+      return this.page
+        ? this.page.find((item, index) => {
             const element = elements[index];
             if (!element) return false;
             const top = element.getBoundingClientRect().top;
@@ -377,332 +407,452 @@
               return true;
             }
             return false;
-          }) :
-          null;
-      },
-      context() {
-        return {
-          current_chapter: this.current_chapter,
-          videos: this.videos,
-          chapters: this.chapters,
-          problems: this.problems,
-          slides: this.slides,
-          history: this.history,
-          groups: this.groups,
-          id2item: this.id2item,
-          bus: this.bus,
-          color_schema: this.color_schema,
-          video_color: this.color_schema[1],
-          assignment_color: this.color_schema[3],
-          page: this.page,
-          pages: this.pages,
-          enable_highlight_text: this.enable_highlight_text,
-          enable_highlight_chart: this.enable_highlight_chart,
-          current_color: this.current_color,
-          selectVideo: (item, parent) => this.findNext(parent, {
-            id: "V5", resource_id: item.id, group: parent.group
+          })
+        : null;
+    },
+    context() {
+      return {
+        current_chapter: this.current_chapter,
+        videos: this.videos,
+        chapters: this.chapters,
+        problems: this.problems,
+        history: this.history,
+        groups: this.groups,
+        id2item: this.id2item,
+        bus: this.bus,
+        color_schema: this.color_schema,
+        video_color: this.color_schema[1],
+        assignment_color: this.color_schema[3],
+        page: this.page,
+        pages: this.pages,
+        enable_highlight_text: this.enable_highlight_text,
+        enable_highlight_chart: this.enable_highlight_chart,
+        current_color: this.current_color,
+        selectVideo: (item, parent) =>
+          this.findNext(parent, {
+            id: "V5",
+            resource_id: item.id,
+            group: parent.group
           }),
-          selectAssignment: (item, parent) => this.findNext(parent, {
-            id: "A6", resource_id: item.id, group: parent.group
+        selectAssignment: (item, parent) =>
+          this.findNext(parent, {
+            id: "A6",
+            resource_id: item.id,
+            group: parent.group
           }),
-          selectStudent: (item, parent) => {
-            this.groups.push(item.users);
-            this.findNext(parent, {
-              id: "S1",
-              resource_users: item.users,
-              group: this.groups.length - 1,
+        selectStudent: (item, parent) => {
+          this.groups.push(item.users);
+          request(
+            this,
+            {
+              id: this.groups.length - 1,
+              users: item.users
+            },
+            "save_student_group"
+          );
+          this.findNext(parent, {
+            id: "S1",
+            resource_id: this.current_chapter.id,
+            resource_data: item.users,
+            group: this.groups.length - 1
+          });
+        },
+        selectChapter: (item, parent) => {},
+        loadSlide: (id, resource_id, parent) =>
+          this.findNext(parent, {
+            id,
+            resource_id,
+            group: parent.group
+          }),
+        followupSlides: slide =>
+          slide.follow_ups.map(d => ({
+            name: SlideTemplate.questions[d],
+            type: d
+          })),
+        moveto: this.moveto
+      };
+    }
+  },
+  watch: {
+    slides(val) {
+      // this.bubblechart_layout = getBubbleChart(d3.select("#overview"), this.slide_structure);
+    },
+    presentation_mode(val) {
+      if (val) {
+        const pages = document.getElementsByClassName("slideshow-page");
+        const elements = [];
+        for (const page of pages) {
+          const contents = page.getElementsByClassName("slideshow-content");
+          for (const content of contents) {
+            content.style.opacity = 0;
+            elements.push({
+              cursor: page,
+              target: content
             });
-          },
-          selectChapter: (item, parent) => {},
-          loadSlide: (id, resource_id, parent) => this.findNext(parent, {
-            id, resource_id, group: parent.group
-          }),
-          followupSlides: slide =>
-            slide.follow_ups.map(d => ({
-              name: SlideTemplate.questions[d],
-              type: d
-            })),
-          moveto: this.moveto
-        };
-      },
-      overview_graph() {
-        let nodes = [];
-        let edges = [];
-        let nodes_num = 0;
-        for (const x of this.history) {
-          if (x.parent &&
-            SlideTemplate.relation.groupIdOf(x.id) ==
-            SlideTemplate.relation.groupIdOf(x.parent.id) &&
-            x.scope_id == x.parent.scope_id) {
-            x.group_id = x.parent.group_id;
-          } else {
-            x.group_id = nodes_num++;
-            nodes.push([]);
-            if (x.parent) {
-              edges.push({
-                source: x.parent.group_id,
-                target: x.group_id
-              });
+          }
+        }
+        let step = 0;
+        this.paintOverview();
+
+        document.onkeydown = event => {
+          if (event.keyCode == 38) {
+            if (step > 0) {
+              elements[--step].target.style.opacity = 0;
+              this.moveto.move(elements[Math.max(0, step - 1)].cursor);
+              this.viewport = {
+                top: window.visualViewport.pageTop,
+                bottom:
+                  window.visualViewport.pageTop + window.visualViewport.height,
+                height: window.visualViewport.height
+              };
+              this.adjustOverviewViewport(this.slide);
             }
+            event.returnValue = false;
+          } else if (event.keyCode == 40) {
+            if (step <= elements.length) {
+              this.moveto.move(elements[step].cursor);
+              elements[step++].target.style.opacity = 1;
+              this.viewport = {
+                top: window.visualViewport.pageTop,
+                bottom:
+                  window.visualViewport.pageTop + window.visualViewport.height,
+                height: window.visualViewport.height
+              };
+              this.adjustOverviewViewport(this.slide);
+            }
+            event.returnValue = false;
           }
-          nodes[x.group_id].push(x);
-        }
-  
-        const virtualnodes = [];
-        const virtualedges = [];
-  
-        for (var i = 0; i < nodes.length; ++i) {
-          const node = nodes[i];
-          const ids = node.map(d => d.id);
-          const group_id = SlideTemplate.relation.groupIdOf(node[0].id);
-          const virtualnode = SlideTemplate.relation.groups[group_id]
-            .filter(d => !ids.includes(d))
-            .map(d => ({
-              name: SlideTemplate.questions[d],
-              abbrname: SlideTemplate.abbr_questions[d],
-              type: node[0].type,
-              id: d,
-              _id: -1,
-              parent_id: node[0]._id,
-            }));
-          for (const x of virtualnode) {
-            node.push(x);
-          }
-  
-          const targets = edges
-            .filter(d => d.source == i)
-            .map(d => SlideTemplate.relation.groupIdOf(nodes[d.target][0].id));
-          let virtualtargets = SlideTemplate.relation.edges.filter(
-            d => group_id == d.source && !targets.includes(d.target)
-          );
-          virtualtargets = virtualtargets.map(d =>
-            SlideTemplate.relation.groups[d.target].map(e => ({
-              name: SlideTemplate.questions[e],
-              abbrname: SlideTemplate.abbr_questions[e],
-              type: SlideTemplate.relation.grouptype[d.target],
-              id: e,
-              _id: -1,
-              parent_id: node[0]._id,
-            }))
-          );
-          for (const target of virtualtargets) {
-            virtualnodes.push(target);
-            virtualedges.push({
-              source: i,
-              target: nodes_num
+        };
+      } else {
+        document.onkeydown = event => {};
+      }
+    }
+  },
+  methods: {
+    overview_graph() {
+      let nodes = [];
+      let edges = [];
+      let nodes_num = 0;
+      for (const x of this.history) {
+        const parent = this.history.find(d => d._id == x.parent);
+        if (
+          parent &&
+          SlideTemplate.relation.groupIdOf(x.id) ==
+            SlideTemplate.relation.groupIdOf(parent.id) &&
+          x.scope_id == parent.scope_id
+        ) {
+          x.group_id = parent.group_id;
+        } else {
+          x.group_id = nodes_num++;
+          nodes.push([]);
+          if (parent) {
+            edges.push({
+              source: parent.group_id,
+              target: x.group_id
             });
-            nodes_num++;
           }
         }
-        nodes = nodes.concat(virtualnodes);
-        edges = edges.concat(virtualedges);
-        const depth = [];
-        for (let i = 0; i < nodes.length; ++i) {
-          depth[i] = Math.max(
-            ...edges
+        nodes[x.group_id].push(x);
+      }
+
+      const virtualnodes = [];
+      const virtualedges = [];
+
+      for (var i = 0; i < nodes.length; ++i) {
+        const node = nodes[i];
+        const ids = node.map(d => d.id);
+        const group_id = SlideTemplate.relation.groupIdOf(node[0].id);
+        const virtualnode = SlideTemplate.relation.groups[group_id]
+          .filter(d => !ids.includes(d))
+          .map(d => ({
+            name: SlideTemplate.questions[d],
+            abbrname: SlideTemplate.abbr_questions[d],
+            type: node[0].type,
+            id: d,
+            _id: -1,
+            parent_id: node[0]._id
+          }));
+        for (const x of virtualnode) {
+          node.push(x);
+        }
+
+        const targets = edges
+          .filter(d => d.source == i)
+          .map(d => SlideTemplate.relation.groupIdOf(nodes[d.target][0].id));
+        let virtualtargets = SlideTemplate.relation.edges.filter(
+          d => group_id == d.source && !targets.includes(d.target)
+        );
+        virtualtargets = virtualtargets.map(d =>
+          SlideTemplate.relation.groups[d.target].map(e => ({
+            name: SlideTemplate.questions[e],
+            abbrname: SlideTemplate.abbr_questions[e],
+            type: SlideTemplate.relation.grouptype[d.target],
+            id: e,
+            _id: -1,
+            parent_id: node[0]._id
+          }))
+        );
+        for (const target of virtualtargets) {
+          virtualnodes.push(target);
+          virtualedges.push({
+            source: i,
+            target: nodes_num
+          });
+          nodes_num++;
+        }
+      }
+      nodes = nodes.concat(virtualnodes);
+      edges = edges.concat(virtualedges);
+      const depth = [];
+      for (let i = 0; i < nodes.length; ++i) {
+        depth[i] = Math.max(
+          ...edges
             .filter(e => e.target == i)
             .map(e => depth[e.source] + 1)
             .concat([0])
-          );
-        }
-        const max_depth = Math.max(...depth) + 1;
-        nodes = nodes.map((d, i) => {
-          const padding = 25;
-          const data = d.map(item => ({
-            _id: item._id,
-            name: item.abbrname,
-            parent_id: item.parent_id,
-            id: item.id,
-            type: item.type,
-            padding: padding,
-            height: this.overview.fontsize + 2 * this.overview.textpadding_top_bottom,
-            width: padding +
-              2 * this.overview.textpadding_left_right +
-              textwidth(item.abbrname, {
-                family: this.overview.fontfamily,
-                size: this.overview.fontsize
-              })
-          }));
-          const max_width = Math.max(
-            ...data.map(t => t.width + 2 * this.overview.textpadding_top_bottom)
-          );
-          data.forEach((t, i) => {
-            t.x = (max_width - t.width) / 2;
-            t.y =
-              i == 0 ?
-              0 :
-              data[i - 1].y +
-              data[i - 1].height +
-              this.overview.textpadding_top_bottom;
-          });
-          return {
-            depth: depth[i],
-            data: data,
-            height: Math.max(...data.map(t => t.height + t.y)),
-            width: max_width,
-            index: i
-          };
+        );
+      }
+      const max_depth = Math.max(...depth) + 1;
+      nodes = nodes.map((d, i) => {
+        const padding = 25;
+        const data = d.map(item => ({
+          _id: item._id,
+          name: item.abbrname,
+          parent_id: item.parent_id,
+          id: item.id,
+          type: item.type,
+          padding: padding,
+          height:
+            this.overview.fontsize + 2 * this.overview.textpadding_top_bottom,
+          width:
+            padding +
+            2 * this.overview.textpadding_left_right +
+            textwidth(item.abbrname, {
+              family: this.overview.fontfamily,
+              size: this.overview.fontsize
+            })
+        }));
+        const max_width = Math.max(
+          ...data.map(t => t.width + 2 * this.overview.textpadding_top_bottom)
+        );
+        data.forEach((t, i) => {
+          t.x = (max_width - t.width) / 2;
+          t.y =
+            i == 0
+              ? 0
+              : data[i - 1].y +
+                data[i - 1].height +
+                this.overview.textpadding_top_bottom;
         });
-        const cdegree = {};
-        edges = edges.map(d => {
-          cdegree[d.source] = (cdegree[d.source] || 0) + 1;
-          return {
-            rank: cdegree[d.source] - 1 || 0,
-            source: nodes[d.source],
-            target: nodes[d.target]
-          };
-        });
-  
-        nodes.forEach(d => {
-          d.degree = edges.filter(e => e.source == d).length || 1;
-        });
-  
-        const width = this.overview.width - this.overview.padding * 2;
-        const height = this.overview.height - this.overview.padding * 2;
-  
-        let y1 = this.overview.padding;
-        const margin = 20;
-        const max_offset = 20;
-        const layer_gap = this.overview.layer_gap;
-        for (let i = 0; i < max_depth; ++i) {
-          const nodes_i = nodes
-            .filter(d => d.depth == i)
-            .sort(
-              (a, b) =>
+        return {
+          depth: depth[i],
+          data: data,
+          height: Math.max(...data.map(t => t.height + t.y)),
+          width: max_width,
+          index: i
+        };
+      });
+
+      const cdegree = {};
+      edges = edges.map(d => {
+        cdegree[d.source] = (cdegree[d.source] || 0) + 1;
+        return {
+          rank: cdegree[d.source] - 1 || 0,
+          source: nodes[d.source],
+          target: nodes[d.target]
+        };
+      });
+
+      nodes.forEach(d => {
+        d.degree = edges.filter(e => e.source == d).length || 1;
+      });
+
+      const width = this.overview.width - this.overview.padding * 2;
+      const height = this.overview.height - this.overview.padding * 2;
+
+      let y1 = this.overview.padding;
+      const margin = 20;
+      const max_offset = 20;
+      const layer_gap = this.overview.layer_gap;
+      for (let i = 0; i < max_depth; ++i) {
+        const nodes_i = nodes
+          .filter(d => d.depth == i)
+          .sort(
+            (a, b) =>
               edges.find(d => d.target == a).source.x -
               edges.find(d => d.target == b).source.x
-            );
-          const n = nodes_i.length;
-  
-          let x1 = 0;
-          nodes_i.forEach((d, j) => {
-            d.x = x1;
-            x1 += d.width;
-          });
-          nodes_i.forEach(d => {
-            d.x = this.overview.padding + width / 2 + d.x - x1 / 2;
-            d.y = y1;
-          });
-          nodes_i.forEach((d, j) => {
-            const from = edges.find(e => e.target == d);
-            if (!from) return;
-            const parent = edges.find(e => e.target == d).source;
-            if (
-              parent.x + max_offset < d.x &&
-              (j == 0 ||
-                parent.x > nodes_i[j - 1].x + nodes_i[j - 1].width + margin)
-            ) {
-              const delta = d.x - parent.x;
-              for (var k = j; k < nodes_i.length; ++k) {
-                nodes_i[k].x -= delta;
-              }
-            }
-          });
-          const max_degree = Math.max(...nodes_i.map(d => d.degree)) || 1;
-          y1 += Math.max(...nodes_i.map(d => d.height));
-          if (i != max_depth - 1) {
-            y1 += layer_gap * max_degree;
-          }
-        }
-  
-        nodes.forEach(d => {
-          // d.y = this.overview.padding + height / 2 + d.y - y1 / 2;
-          d.background = [];
-          for (let i = 0; i < d.data.length; ++i) {
-            const t = d.data[i];
-            const shorter_than_prev = i && t.width < d.data[i - 1].width;
-            d.background.push({
-              x0: t.x - 5,
-              x1: t.x + t.width + 5,
-              y: t.y + (shorter_than_prev ? 5 : -5)
-            });
-            const shorter_than_next =
-              i + 1 < d.data.length && t.width < d.data[i + 1].width;
-            d.background.push({
-              x0: t.x - 5,
-              x1: t.x + t.width + 5,
-              y: t.y + t.height + (shorter_than_next ? -5 : 5)
-            });
-          }
-          d.type = d.data[0].type;
-          d.top = d.background[0];
-          d.bottom = d.background[d.background.length - 1];
+          );
+        const n = nodes_i.length;
+
+        let x1 = 0;
+        nodes_i.forEach((d, j) => {
+          d.x = x1;
+          x1 += d.width;
         });
-  
-        return {
-          nodes,
-          edges
-        };
+        nodes_i.forEach(d => {
+          d.x = this.overview.padding + width / 2 + d.x - x1 / 2;
+          d.y = y1;
+        });
+        nodes_i.forEach((d, j) => {
+          const from = edges.find(e => e.target == d);
+          if (!from) return;
+          const parent = edges.find(e => e.target == d).source;
+          if (
+            parent.x + max_offset < d.x &&
+            (j == 0 ||
+              parent.x > nodes_i[j - 1].x + nodes_i[j - 1].width + margin)
+          ) {
+            const delta = d.x - parent.x;
+            for (var k = j; k < nodes_i.length; ++k) {
+              nodes_i[k].x -= delta;
+            }
+          }
+        });
+        const max_degree = Math.max(...nodes_i.map(d => d.degree)) || 1;
+        y1 += Math.max(...nodes_i.map(d => d.height));
+        if (i != max_depth - 1) {
+          y1 += layer_gap * max_degree;
+        }
       }
-    },
-    watch: {
-      slides(val) {
-        // this.bubblechart_layout = getBubbleChart(d3.select("#overview"), this.slide_structure);
-      }
-    },
-    methods: {
-      paintOverview() {
-        const graph = this.overview_graph;
-        const svg = this.overview.svg;
-        svg.selectAll("*").remove();
-  
-        const view = svg
-          .append("g")
-          .attr("class", "view")
-          .attr(
-            "transform",
-            `translate(${this.overview.padding},${this.overview.padding})`
-          );
-  
-        const nodes = view
-          .selectAll(".nodes")
-          .data(graph.nodes)
-          .enter()
-          .append("g")
-          .attr("class", "nodes")
-          .attr("transform", d => `translate(${d.x},${d.y})`);
-  
-        const edges = view
-          .selectAll(".edges")
-          .data(graph.edges)
-          .enter()
-          .append("g")
-          .attr("class", "edges");
-  
-        const edge_color_scale = e => {
-          let a = ["video", "assignment", "student", "forum"].indexOf(
-            e.source.type
-          );
-          let b = ["video", "assignment", "student", "forum"].indexOf(
-            e.target.type
-          );
-          if (a == -1) a = 8;
-          else a = a * 2;
-          if (b == -1) b = 8;
-          else b = b * 2;
-          return `url(#c${a}${b})`;
-        };
-  
+
+      nodes.forEach(d => {
+        // d.y = this.overview.padding + height / 2 + d.y - y1 / 2;
+        d.background = [];
+        for (let i = 0; i < d.data.length; ++i) {
+          const t = d.data[i];
+          const shorter_than_prev = i && t.width < d.data[i - 1].width;
+          d.background.push({
+            x0: t.x - 5,
+            x1: t.x + t.width + 5,
+            y: t.y + (shorter_than_prev ? 5 : -5)
+          });
+          const shorter_than_next =
+            i + 1 < d.data.length && t.width < d.data[i + 1].width;
+          d.background.push({
+            x0: t.x - 5,
+            x1: t.x + t.width + 5,
+            y: t.y + t.height + (shorter_than_next ? -5 : 5)
+          });
+        }
+        d.type = d.data[0].type;
+        d.top = d.background[0];
+        d.bottom = d.background[d.background.length - 1];
+      });
+
+      return {
+        nodes,
         edges
-          .append("path")
-          .attr("d", (d, i) => {
-            const x0 =
-              d.source.x +
-              d.source.bottom.x0 +
-              (d.source.bottom.x1 - d.source.bottom.x0) *
+      };
+    },
+    saveCaseStudy() {
+      localStorage.setItem("videos", JSON.stringify(this.videos));
+      console.log("All videos have been saved.");
+      localStorage.setItem("problems", JSON.stringify(this.problems));
+      console.log("All problems have been saved.");
+      localStorage.setItem("chapters", JSON.stringify(this.chapters));
+      localStorage.setItem("current_chapter_id", this.current_chapter.id);
+      console.log("All chapters have been saved.");
+      localStorage.setItem("pages", JSON.stringify(this.pages));
+      console.log("All pages have been saved.");
+      localStorage.setItem("groups", JSON.stringify(this.groups));
+      console.log("All groups have been saved.");
+      /*
+        id2item: {},
+        */
+      // page: null,
+    },
+    loadCaseStudy() {
+      this.videos = JSON.parse(localStorage.getItem("videos"));
+      console.log("All videos have been loaded.");
+      this.problems = JSON.parse(localStorage.getItem("problems"));
+      console.log("All problems have been loaded.");
+      this.chapters = JSON.parse(localStorage.getItem("chapters"));
+      console.log("All chapters have been loaded.");
+      this.pages = JSON.parse(localStorage.getItem("pages"));
+      console.log("All pages have been loaded.");
+      this.groups = JSON.parse(localStorage.getItem("groups"));
+      console.log("All groups have been loaded.");
+      this.id2item = {};
+      this.videos.forEach(d => (this.id2item[d.id] = d));
+      this.problems.forEach(d => (this.id2item[d.id] = d));
+      this.chapters.forEach(d => (this.id2item[d.id] = d));
+      this.page = this.pages && this.pages.length && this.pages[0];
+      const current_chapter_id = localStorage.getItem("current_chapter_id");
+      this.current_chapter = this.chapters.find(
+        d => d.id == current_chapter_id
+      );
+      this.paintOverview();
+    },
+    removeCaseStudy() {
+      localStorage.removeItem("videos");
+      localStorage.removeItem("problems");
+      localStorage.removeItem("chapters");
+      localStorage.removeItem("current_chapter_id");
+      localStorage.removeItem("pages");
+      localStorage.removeItem("groups");
+    },
+    paintOverview() {
+      const graph = this.overview_graph();
+      const svg = this.overview.svg;
+      svg.selectAll("*").remove();
+
+      const view = svg
+        .append("g")
+        .attr("class", "view")
+        .attr(
+          "transform",
+          `translate(${this.overview.padding},${this.overview.padding})`
+        );
+
+      const nodes = view
+        .selectAll(".nodes")
+        .data(graph.nodes)
+        .enter()
+        .append("g")
+        .attr("class", "nodes")
+        .attr("transform", d => `translate(${d.x},${d.y})`);
+
+      const edges = view
+        .selectAll(".edges")
+        .data(graph.edges)
+        .enter()
+        .append("g")
+        .attr("class", "edges");
+
+      const edge_color_scale = e => {
+        let a = ["video", "assignment", "student", "forum"].indexOf(
+          e.source.type
+        );
+        let b = ["video", "assignment", "student", "forum"].indexOf(
+          e.target.type
+        );
+        if (a == -1) a = 8;
+        else a = a * 2;
+        if (b == -1) b = 8;
+        else b = b * 2;
+        return `url(#c${a}${b})`;
+      };
+
+      edges
+        .append("path")
+        .attr("d", (d, i) => {
+          const x0 =
+            d.source.x +
+            d.source.bottom.x0 +
+            (d.source.bottom.x1 - d.source.bottom.x0) *
               (d.rank / d.source.degree);
-            const y0 = d.source.y + d.source.height + 4.9;
-            const x1 =
-              d.source.x +
-              d.source.bottom.x0 +
-              (d.source.bottom.x1 - d.source.bottom.x0) *
+          const y0 = d.source.y + d.source.height + 4.9;
+          const x1 =
+            d.source.x +
+            d.source.bottom.x0 +
+            (d.source.bottom.x1 - d.source.bottom.x0) *
               ((d.rank + 1) / d.source.degree);
-            const y1 = d.source.y + d.source.height + 4.9;
-            const x2 = d.target.x + d.target.top.x0;
-            const y2 = d.target.y - 4.9;
-            const x3 = d.target.x + d.target.top.x1;
-            const y3 = d.target.y - 4.9;
-            return `M${x0},${y0} 
+          const y1 = d.source.y + d.source.height + 4.9;
+          const x2 = d.target.x + d.target.top.x0;
+          const y2 = d.target.y - 4.9;
+          const x3 = d.target.x + d.target.top.x1;
+          const y3 = d.target.y - 4.9;
+          return `M${x0},${y0} 
               C${x0},${(y0 * 2 + y2) / 3}
               ${x2},${(y0 + y2 * 2) / 3}
               ${x2},${y2}
@@ -711,633 +861,681 @@
               ${x1},${(y3 + y1 * 2) / 3}
               ${x1},${y1}
               Z`;
-          })
-          .attr("fill", d => edge_color_scale(d))
-          .attr("opacity", 0.2);
-  
-        const color_schema = type => {
-          const schema = [
-            "#a6cee3",
-            "#1f78b4",
-            "#b2df8a",
-            "#33a02c",
-            "#fb9a99",
-            "#e31a1c",
-            "#fdbf6f",
-            "#ff7f00",
-            "#cab2d6",
-            "#6a3d9a"
-          ];
-          if (type == "video") {
-            return schema.slice(0, 2);
-          } else if (type == "assignment") {
-            return schema.slice(2, 4);
-          } else if (type == "student") {
-            return schema.slice(4, 6);
-          } else if (type == "forum") {
-            return schema.slice(6, 8);
-          } else {
-            return schema.slice(8, 10);
-          }
-        };
-  
-        const text_dx = 25;
-        const text_dy = 14;
-        const color_scale = d => color_schema(d.type)[0];
-        const type_color_scale = type => color_schema(type)[0];
-  
-        const outerArea = d3
-          .area()
-          .curve(d3.curveBasis)
-          .x0(d => d.x0)
-          .x1(d => d.x1)
-          .y(d => d.y);
-  
-        nodes
-          .append("path")
-          .attr("d", d => outerArea(d.background))
-          .style("fill", d => color_scale(d))
-          .style("opacity", 0.2);
-  
-        const items = nodes
-          .selectAll(".node")
-          .data(d => d.data)
-          .enter()
-          .append("g")
-          .attr("class", "node")
-          .attr("transform", d => `translate(${d.x},${d.y})`)
-          .on("click", d => {
-            if (d._id == -1) {
-              const parent = this.history.find(e => e._id == d.parent_id);
-              this.findNext(parent, { id: d.id, resource_id: null, group: parent.group });
-            } else {
-              this.findNext(null, this.history.find(e => e._id == d._id));
-            }
-          });
-  
-        items
-          .append("rect")
-          .attr("width", d => d.width)
-          .attr("height", d => d.height)
-          .attr("rx", 5)
-          .attr("ry", 5)
-          .style("fill", d => color_scale(d))
-          .style("fill-opacity", d => (d._id == -1 ? 0.5 : 1));
-  
-        items
-          .append("circle")
-          .attr("cx", 10)
-          .attr("cy", d => d.height / 2)
-          .attr("r", 5)
-          .style("fill", "white")
-          .style("fill-opacity", d => (d._id == -1 ? 0.3 : 1));
-  
-        items
-          .append("text")
-          .text(d => d.name)
-          .attr("dx", d => d.padding)
-          .attr("dy", d => d.height / 2 + 4)
-          .style("font-size", "12px")
-          .style("font-family", "Arial")
-          .style("fill", d => (d._id == -1 ? "#bbbbbb" : "white"));
-      },
-      async findNext(state1, state2) {
-        // jump
-        if (!state2.item) {
-          let item = null;
-          if (Array.isArray(this.page) &&
-            (item = this.page.find(d => 
-                d.resource_id == state2.resource_id && 
-                d.id == state2.id && d.group == state2.group
-            ))
-          ) {
-            state2.item = item;
-          }
+        })
+        .attr("fill", d => edge_color_scale(d))
+        .attr("opacity", 0.2);
+
+      const color_schema = type => {
+        const schema = [
+          "#a6cee3",
+          "#1f78b4",
+          "#b2df8a",
+          "#33a02c",
+          "#fb9a99",
+          "#e31a1c",
+          "#fdbf6f",
+          "#ff7f00",
+          "#cab2d6",
+          "#6a3d9a"
+        ];
+        if (type == "video") {
+          return schema.slice(0, 2);
+        } else if (type == "assignment") {
+          return schema.slice(2, 4);
+        } else if (type == "student") {
+          return schema.slice(4, 6);
+        } else if (type == "forum") {
+          return schema.slice(6, 8);
+        } else {
+          return schema.slice(8, 10);
         }
-      
-        if (state2.item) {
-          const item = state2.item;
-          var index = -1;
-          if ((index = this.page.indexOf(item)) != -1) {
-            const element = document.getElementsByClassName("slideshow-page")[index];
+      };
+
+      const text_dx = 25;
+      const text_dy = 14;
+      const color_scale = d => color_schema(d.type)[0];
+      const type_color_scale = type => color_schema(type)[0];
+
+      const outerArea = d3
+        .area()
+        .curve(d3.curveBasis)
+        .x0(d => d.x0)
+        .x1(d => d.x1)
+        .y(d => d.y);
+
+      nodes
+        .append("path")
+        .attr("d", d => outerArea(d.background))
+        .style("fill", d => color_scale(d))
+        .style("opacity", 0.2);
+
+      const items = nodes
+        .selectAll(".node")
+        .data(d => d.data)
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.x},${d.y})`)
+        .on("click", d => {
+          if (d._id == -1) {
+            const parent = this.history.find(e => e._id == d.parent_id);
+            this.findNext(parent, {
+              id: d.id,
+              resource_id: null,
+              group: parent.group
+            });
+          } else {
+            this.findNext(null, this.history.find(e => e._id == d._id));
+          }
+        });
+
+      items
+        .append("rect")
+        .attr("width", d => d.width)
+        .attr("height", d => d.height)
+        .attr("rx", 5)
+        .attr("ry", 5)
+        .style("fill", d => color_scale(d))
+        .style("fill-opacity", d => (d._id == -1 ? 0.5 : 1));
+
+      items
+        .append("circle")
+        .attr("cx", 10)
+        .attr("cy", d => d.height / 2)
+        .attr("r", 5)
+        .style("fill", "white")
+        .style("fill-opacity", d => (d._id == -1 ? 0.3 : 1));
+
+      items
+        .append("text")
+        .text(d => d.name)
+        .attr("dx", d => d.padding)
+        .attr("dy", d => d.height / 2 + 4)
+        .style("font-size", "12px")
+        .style("font-family", "Arial")
+        .style("fill", d => (d._id == -1 ? "#bbbbbb" : "white"));
+    },
+    async findNext(state1, state2) {
+      // jump
+      let item = null;
+      if (
+        !state2.item &&
+        (Array.isArray(this.page) &&
+          (item = this.page.find(
+            d =>
+              d.resource_id == state2.resource_id &&
+              d.id == state2.id &&
+              d.group == state2.group
+          )))
+      ) {
+        var index = -1;
+        if ((index = this.page.indexOf(item)) != -1) {
+          const element = document.getElementsByClassName("slideshow-page")[
+            index
+          ];
+          this.moveto.move(element);
+          this.adjustOverviewViewport(item);
+        } else {
+          this.page = this.pages.find(page => page.includes(item));
+          setTimeout(() => {
+            index = this.page.indexOf(item);
+            const element = document.getElementsByClassName("slideshow-page")[
+              index
+            ];
             this.moveto.move(element);
             this.adjustOverviewViewport(item);
-          } else {
-            this.page = this.pages.find(page => page.includes(item));
-            setTimeout(() => {
-              index = this.page.indexOf(item);
-              const element = document.getElementsByClassName("slideshow-page")[index];
-              this.moveto.move(element);
-              this.adjustOverviewViewport(item);
-            }, 200);
-          }
-        } else {
-          if (state2.resource_id == null) {
-            if (state1 && state1.id && state2.id && SlideTemplate.scopeOf(state1.id) == SlideTemplate.scopeOf(state2.id)) {
-              state2.resource_id = state1.resource_id;
-            } else {
-              return;
-            }
-          }
-          const item = SlideTemplate.create(state2.id, state2.resource_id);
-          item.group = (state2.group || state2.group == 0) ? state2.group : state1.group;
-          return Promise.all(
-            item.resources.map(type => {
-              return request(this, item, type);
-            })
-          ).then(async() => {
-            item.loaded = true;
-            item.parent = state1;
-            const last = this.page && this.page.length && this.page[this.page.length - 1];
-            if (!this.page || 
-              (last && !SlideTemplate.relation.isAdjacent(last.id, item.id)) || 
-              (last && last.group != item.group)) {
-              this.page = [];
-              this.pages.push(this.page);
-            }
-            this.page.push(item);
-            this.trigger_counter += 1;
-            this.$nextTick(() => {
-              this.findNext(null, item);
-            });
-            this.paintOverview();
-          });
+          }, 200);
         }
-      },
-      async chapterDropdownClick(chapter) {
-        this.current_chapter = chapter;
-        await this.findNext(null, { id: "O1", resource_id: chapter.id, group: 0, item: null });
-      },
-      onChangePage(page) {
-        if (this.page != page) {
-          this.page = page;
+      } else if (state2.item) {
+        item = state2.item;
+        var index = -1;
+        if ((index = this.page.indexOf(item)) != -1) {
+          const element = document.getElementsByClassName("slideshow-page")[
+            index
+          ];
+          this.moveto.move(element);
+          this.adjustOverviewViewport(item);
+        } else {
+          this.page = this.pages.find(page => page.includes(item));
+          setTimeout(() => {
+            index = this.page.indexOf(item);
+            const element = document.getElementsByClassName("slideshow-page")[
+              index
+            ];
+            this.moveto.move(element);
+            this.adjustOverviewViewport(item);
+          }, 200);
+        }
+      } else {
+        if (state2.resource_id == null) {
+          if (
+            state1 &&
+            state1.id &&
+            state2.id &&
+            SlideTemplate.scopeOf(state1.id) == SlideTemplate.scopeOf(state2.id)
+          ) {
+            state2.resource_id = state1.resource_id;
+          } else {
+            return;
+          }
+        }
+        item = SlideTemplate.create(state2.id, state2.resource_id);
+        item.resource_data =
+          state2.resource_data || (state1 && state1.resource_data);
+        item.group =
+          state2.group || state2.group == 0 ? state2.group : state1.group;
+        return Promise.all(
+          item.resources.map(type => {
+            return request(this, item, type);
+          })
+        ).then(async () => {
+          item.loaded = true;
+          item.parent = state1 && state1._id;
+          const last =
+            this.page && this.page.length && this.page[this.page.length - 1];
+          if (
+            !this.page ||
+            (last && !SlideTemplate.relation.isAdjacent(last.id, item.id)) ||
+            (last && last.group != item.group)
+          ) {
+            this.page = [];
+            this.pages.push(this.page);
+          }
+          this.page.push(item);
+          this.trigger_counter += 1;
+          this.$nextTick(() => {
+            this.findNext(null, item);
+          });
+          this.paintOverview();
+        });
+      }
+    },
+    async chapterDropdownClick(chapter) {
+      this.current_chapter = chapter;
+      await this.findNext(null, {
+        id: "O1",
+        resource_id: chapter.id,
+        group: 0,
+        item: null
+      });
+    },
+    onChangePage(page) {
+      if (this.page != page) {
+        this.page = page;
+        /*
           this.$sr.reveal('.slideshow-content', {
             rotate: {x: 65} 
           });
-        }
-      },
-      adjustSidebar() {
-        this.sidebar_active = !this.sidebar_active;
-        this.adjustOverviewViewport();
-      },
-      addTextbox() {
-        if (this.slide) {
-          this.bus.$emit("add-text-box", this.slide._id);
-        }
-      },
-      onChartHighlight() {
-        this.enable_highlight_chart = !this.enable_highlight_chart;
-      },
-      adjustOverviewViewport(item) {
-        if (this.sidebar_active) {
-          this.overview.svg
-            .select(".view")
-            .attr(
-              "transform",
-              `translate(
+          */
+      }
+    },
+    adjustSidebar() {
+      this.sidebar_active = !this.sidebar_active;
+      this.adjustOverviewViewport();
+    },
+    addTextbox() {
+      if (this.slide) {
+        this.bus.$emit("add-text-box", this.slide._id);
+      }
+    },
+    onChartHighlight() {
+      this.enable_highlight_chart = !this.enable_highlight_chart;
+    },
+    adjustOverviewViewport(item) {
+      if (this.sidebar_active) {
+        this.overview.svg
+          .select(".view")
+          .attr(
+            "transform",
+            `translate(
                 ${this.overview.position.x}, ${this.overview.position.y})`
-            )
-            .transition()
-            .duration(500)
-            .attr("transform", `translate(0, 0)`);
-          this.overview.position = {
-            x: 0,
-            y: 0
-          };
-        } else {
-          item = item || this.slide;
-          if (!item) return;
-          const node = this.overview_graph.nodes.find(d =>
-            d.data.map(e => e._id).includes(item._id)
-          );
-          if (!node) return;
-          const x = -(node.x + node.width / 2) + 150;
-          const y = -node.y + this.overview.padding;
-          const position = {
-            x,
-            y
-          };
-          this.overview.svg
-            .select(".view")
-            .attr(
-              "transform",
-              `translate(
+          )
+          .transition()
+          .duration(500)
+          .attr("transform", `translate(0, 0)`);
+        this.overview.position = {
+          x: 0,
+          y: 0
+        };
+      } else {
+        item = item || this.slide;
+        if (!item) return;
+        const node = this.overview_graph().nodes.find(d =>
+          d.data.map(e => e._id).includes(item._id)
+        );
+        if (!node) return;
+        const x = -(node.x + node.width / 2) + 150;
+        const y = -node.y + this.overview.padding;
+        const position = {
+          x,
+          y
+        };
+        this.overview.svg
+          .select(".view")
+          .attr(
+            "transform",
+            `translate(
               ${this.overview.position.x}, ${this.overview.position.y})`
-            )
-            .transition()
-            .duration(500)
-            .attr(
-              "transform",
-              `translate(
+          )
+          .transition()
+          .duration(500)
+          .attr(
+            "transform",
+            `translate(
               ${position.x}, ${position.y})`
-            );
-          this.overview.position = position;
-        }
+          );
+        this.overview.position = position;
       }
     }
-  };
+  }
+};
 </script>
 
 <style scope>
-  body {
-    background-color: rgb(243, 244, 246);
-  }
-  
-  #app {
-    font-family: "Avenir", Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: #333333;
-    max-height: 100%;
-  }
-  
-  .page-container {
-    width: 100%;
-    overflow-x: hidden;
-  }
-  
-  .body-container {
-    height: 100%;
-    width: 120vw;
-    display: inline-flex;
-    flex-direction: row;
-  }
-  
-  .sidebar-container.tool {
-    width: 20vw;
-    left: 80vw;
-    background: radial-gradient(circle at top, #333333, #111111);
-    position: fixed;
-    transition: 0.2s;
-    transition-timing-function: ease-in-out;
-  }
-  
-  .sidebar-container.tool.open {
-    width: 60vw;
-    left: 40vw;
-  }
-  
-  .sidebar-container.tool .header {
-    background: radial-gradient(circle at top, #353a3f, #333333);
-    position: relative;
-  }
-  
-  .sidebar-container.tool .header svg.icon {
-    position: absolute;
-    left: 36%;
-    top: 0vh;
-    transition: 0.2s;
-    transition-timing-function: ease-in-out;
-  }
-  
-  .sidebar-container.tool.open .header svg.icon {
-    position: absolute;
-    left: 12%;
-    top: 0vh;
-  }
-  
-  .sidebar-container.tool .header svg.expand {
-    position: absolute;
-    display: block;
-    left: 88%;
-    top: 0.5vh;
-    width: 32px;
-    height: 32px;
-    opacity: 0.3;
-  }
-  
-  .sidebar-container.tool .header svg.expand:hover {
-    opacity: 1;
-    transition: 0.2s;
-    transition-timing-function: ease-in-out;
-  }
-  
-  .sidebar-container.tool.open .header svg.expand {
-    left: 96%;
-  }
-  
-  .sidebar-container.tool .content {
-    background: radial-gradient(circle at top, #333333, #111111);
-  }
-  
-  .sidebar-container.tool .overview .content {
-    height: 40vh;
-  }
-  
-  .sidebar-container.tool.open .overview .content {
-    height:83vh;
-  }
-  
-  .sidebar-container.tool .review .content {
-    height: 30vh;
-  }
-  
-  .sidebar-container.tool .marktool .content {
-    height: 40vh;
-  }
+body {
+  background-color: rgb(243, 244, 246);
+}
 
-  .sidebar-container.tool .text-highlighter {
-    display: inline-flex;
-    width: 100%;
-    padding-top: 5px;
-    padding-left: 5px;
-    border-radius: 2px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
-    background-color: rgba(0, 0, 0, 0);
-  }
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #333333;
+  max-height: 100%;
+}
 
-  .sidebar-container.tool .text-highlighter p {
-    font-size: 16px;
-    font-weight: 700;
-    padding-left: 1vw;
-    margin-top: 0.7vh;
-    margin-bottom: 0.4vh;
-  }
-  .sidebar-container.tool .text-highlighter svg {
-    margin-left: 2vw;
-    margin-top: 0.4vh;
-    margin-bottom: 0.4vh;
-    width: 32px; 
-    height: 32px
-  }
+.page-container {
+  width: 100%;
+  overflow-x: hidden;
+}
 
-  .sidebar-container.tool .text-box {
-    display: inline-flex;
-    width: 100%;
-    padding-top: 5px;
-    padding-left: 5px;
-    border-radius: 2px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
-    background-color: rgba(0, 0, 0, 0);
-  }
+.body-container {
+  height: 100%;
+  width: 120vw;
+  display: inline-flex;
+  flex-direction: row;
+}
 
-  .sidebar-container.tool .text-box p {
-    font-size: 16px;
-    font-weight: 700;
-    padding-left: 1vw;
-    margin-top: 0.7vh;
-    margin-bottom: 0.4vh;
-  }
-  .sidebar-container.tool .text-box svg {
-    margin-left: 4vw;
-    margin-top: 0.4vh;
-    margin-bottom: 0.4vh;
-    width: 32px; 
-    height: 32px;
-    opacity: 0.5;
-  }
-  .sidebar-container.tool .text-box svg:hover {
-    opacity: 1;
-  }
+.sidebar-container.tool {
+  width: 20vw;
+  left: 80vw;
+  background: radial-gradient(circle at top, #333333, #111111);
+  position: fixed;
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
+}
 
+.sidebar-container.tool.open {
+  width: 60vw;
+  left: 40vw;
+}
 
-  .sidebar-container.tool .chart-highlighter {
-    display: inline-flex;
-    width: 100%;
-    padding-top: 5px;
-    padding-left: 5px;
-    border-radius: 2px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
-    background-color: rgba(0, 0, 0, 0);
-  }
+.sidebar-container.tool .header {
+  background: radial-gradient(circle at top, #353a3f, #333333);
+  position: relative;
+}
 
-  .sidebar-container.tool .chart-highlighter p {
-    font-size: 16px;
-    font-weight: 700;
-    padding-left: 1vw;
-    margin-top: 0.7vh;
-    margin-bottom: 0.4vh;
-  }
-  .sidebar-container.tool .chart-highlighter svg {
-    margin-left: 1.7vw;
-    margin-top: 0.4vh;
-    margin-bottom: 0.4vh;
-    width: 32px; 
-    height: 32px;
-    opacity: 0.5;
-  }
-  .sidebar-container.tool .chart-highlighter svg:hover {
-    opacity: 1;
-  }
-  .sidebar-container.tool .chart-highlighter.active svg {
-    opacity: 1;
-  }
-  
-  
-  .slideshow-container {
-    height: 100%;
-    width: 100%;
-    display: inline-flex;
-    flex-direction: column;
-  }
-  
-  .sidebar-container {
-    height: 100%;
-    overflow-y: hidden;
-    z-index: 2;
-    top: 56px;
-    display: inline-flex;
-    flex-direction: column;
-    opacity: 1;
-    color: white;
-  }
-  
-  .sidebar-container .header {
-    position: static;
-    border-width: 1px 1.5px 1px 1.5px;
-    border-style: solid;
-    border-color: #666666;
-    background: radial-gradient(circle at top, #353a3f, #333333);
-    z-index: 3;
-    top: 0px;
-    transition: 0.2s;
-    transition-timing-function: ease-in-out;
-  }
-  
-  .sidebar-container .header .title {
-    font-weight: 300;
-    text-align: left;
-    font-family: "Avenir", Helvetica, Arial, sans-serif;
-    margin-top: 1vh;
-    margin-bottom: 1vh;
-    margin-left: 1.5vw;
-  }
-  
-  .sidebar-container .content {
-    transition: 0.5s;
-    transition-timing-function: ease-in-out;
-    background: radial-gradient(circle at top, #333333, #111111);
-  }
-  
-  .sidebar-container.slideshow {
-    left: -13vw;
-    width: 16vw;
-    position: fixed;
-  }
-  
-  .sidebar-container.slideshow hr {
-    border-color: #888888;
-    border-width: 3px;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-  }
-  
-  .sidebar-container.slideshow:hover {
-    left: 0vw;
-    transition-delay: 0.5s;
-  }
-  
-  .sidebar-container.slideshow:hover .page {
-    left: 0vw;
-    transition-delay: 0.3s;
-  }
-  
-  .sidebar-container.slideshow .header {
-    position: sticky;
-    border-style: solid;
-    border-color: #666666;
-    background: radial-gradient(circle at top, #353a3f, #333333);
-    width: 15.9vw;
-  }
-  
-  .sidebar-container.slideshow .header .icon {
-    position: absolute;
-    left: 85%;
-    top: 0vh;
-    transition: 0.2s;
-    transition-timing-function: ease-in-out;
-  }
-  
-  .sidebar-container.slideshow:hover .header {
-    width: 14vw;
-    transition-delay: 0.5s;
-  }
-  
-  .sidebar-container.slideshow:hover .header .icon {
-    left: 80%;
-    transition-delay: 0.5s;
-  }
-  
-  .sidebar-container.slideshow .content {
-    left: 0vw;
-    width: 14vw;
-    height: 100%;
-    padding-bottom: 7vh;
-    padding-top: 1vh;
-    overflow-x: hidden;
-    overflow-y: scroll;
-  }
-  
-  .sidebar-container .content::-webkit-scrollbar {
-    width: 10px;
-  }
-  
-  .sidebar-container .content::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
-  }
-  
-  .sidebar-container .content::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-  }
-  
-  .carousel-switcher {
-    position: fixed;
-    top: 92vh;
-    left: 65vw;
-    opacity: 0.6;
-  }
-  
-  .page {
-    height: 12vh;
-    width: 12.7vw;
-    margin: 0.5vh 0.5vw 1vh 0.5vw;
-    left: -2vw;
-    display: inline-flex;
-    flex-direction: column;
-    text-align: center;
-    border-color: #525252;
-    border-style: solid;
-    border-width: 1.5px;
-    font-size: 12px;
-    position: relative;
-    transition: 0.2s;
-    transition-timing-function: ease-in-out;
-  }
-  
-  .sidebar-container.slideshow .page div {
-    padding-top: 0.5vh;
-  }
-  
-  .sidebar-container.slideshow .page svg {
-    width: 8vh;
-    height: 8vh;
-    position: absolute;
-    left: 35%;
-    top: 2vh;
-  }
-  
-  .sidebar-container.slideshow .page.active {
-    border-color: #aaaaaa;
-    border-width: 1.5px;
-    opacity: 1;
-  }
-  
-  .sidebar-container.slideshow .page:hover {
-    border-color: #a0a0a0;
-    border-width: 1.5px;
-    opacity: 1;
-  }
-  
-  #overview {
-    width: 100%;
-    height: 100%;
-  }
-  
-  #overview .node:hover rect {
-    stroke-width: 3;
-    stroke: lightgray;
-    stroke-opacity: 1;
-  }
-  
-  .vc-compact {
-    padding-top: 5px;
-    padding-left: 5px;
-    width: 20vw;
-    border-radius: 2px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
-    background-color: rgba(0, 0, 0, 0);
-  }
-  
-  .vc-compact-colors {
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .vc-compact-color-item {
-    list-style: none;
-    width: 15px;
-    height: 15px;
-    border-width: 0.5px;
-    border-style: solid;
-    border-color: rgba(255,255,255,0.1);
-    float: left;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    position: relative;
-    cursor: pointer;
-  }
-  
-  .vc-compact-dot {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    bottom: 5px;
-    left: 5px;
-    border-radius: 50%;
-    opacity: 1;
-    background: #fff;
+.sidebar-container.tool .header svg.icon {
+  position: absolute;
+  left: 36%;
+  top: 0vh;
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
+}
+
+.sidebar-container.tool.open .header svg.icon {
+  position: absolute;
+  left: 12%;
+  top: 0vh;
+}
+
+.sidebar-container.tool .header svg.expand {
+  position: absolute;
+  display: block;
+  left: 88%;
+  top: 0.5vh;
+  width: 32px;
+  height: 32px;
+  opacity: 0.3;
+}
+
+.sidebar-container.tool .header svg.expand:hover {
+  opacity: 1;
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
+}
+
+.sidebar-container.tool.open .header svg.expand {
+  left: 96%;
+}
+
+.sidebar-container.tool .content {
+  background: radial-gradient(circle at top, #333333, #111111);
+}
+
+.sidebar-container.tool .overview .content {
+  height: 40vh;
+}
+
+.sidebar-container.tool.open .overview .content {
+  height: 83vh;
+}
+
+.sidebar-container.tool .review .content {
+  height: 30vh;
+}
+
+.sidebar-container.tool .marktool .content {
+  height: 40vh;
+}
+
+.sidebar-container.tool .text-highlighter {
+  display: inline-flex;
+  width: 100%;
+  padding-top: 5px;
+  padding-left: 5px;
+  border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.sidebar-container.tool .text-highlighter p {
+  font-size: 16px;
+  font-weight: 700;
+  padding-left: 1vw;
+  margin-top: 0.7vh;
+  margin-bottom: 0.4vh;
+}
+.sidebar-container.tool .text-highlighter svg {
+  margin-left: 2vw;
+  margin-top: 0.4vh;
+  margin-bottom: 0.4vh;
+  width: 32px;
+  height: 32px;
+}
+
+.sidebar-container.tool .text-box {
+  display: inline-flex;
+  width: 100%;
+  padding-top: 5px;
+  padding-left: 5px;
+  border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.sidebar-container.tool .text-box p {
+  font-size: 16px;
+  font-weight: 700;
+  padding-left: 1vw;
+  margin-top: 0.7vh;
+  margin-bottom: 0.4vh;
+}
+.sidebar-container.tool .text-box svg {
+  margin-left: 4vw;
+  margin-top: 0.4vh;
+  margin-bottom: 0.4vh;
+  width: 32px;
+  height: 32px;
+  opacity: 0.5;
+}
+.sidebar-container.tool .text-box svg:hover {
+  opacity: 1;
+}
+
+.sidebar-container.tool .box {
+  display: inline-flex;
+  width: 100%;
+  padding-top: 5px;
+  padding-left: 5px;
+  border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.sidebar-container.tool .box p {
+  font-size: 16px;
+  font-weight: 700;
+  padding-left: 1vw;
+  margin-top: 0.7vh;
+  margin-bottom: 0.4vh;
+}
+.sidebar-container.tool .box svg {
+  margin-left: 1.7vw;
+  margin-top: 0.4vh;
+  margin-bottom: 0.4vh;
+  width: 32px;
+  height: 32px;
+  opacity: 0.5;
+}
+.sidebar-container.tool .box svg:hover {
+  opacity: 1;
+}
+.sidebar-container.tool .chart-highlighter.active svg {
+  opacity: 1;
+}
+.sidebar-container.tool .file-box svg {
+  margin-top: 0.4vh;
+  margin-bottom: 0.4vh;
+  width: 27px;
+  height: 27px;
+  opacity: 0.5;
+}
+
+.slideshow-container {
+  height: 100%;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.sidebar-container {
+  height: 100%;
+  overflow-y: hidden;
+  z-index: 2;
+  top: 56px;
+  display: inline-flex;
+  flex-direction: column;
+  opacity: 1;
+  color: white;
+}
+
+.sidebar-container .header {
+  position: static;
+  border-width: 1px 1.5px 1px 1.5px;
+  border-style: solid;
+  border-color: #666666;
+  background: radial-gradient(circle at top, #353a3f, #333333);
+  z-index: 3;
+  top: 0px;
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
+}
+
+.sidebar-container .header .title {
+  font-weight: 300;
+  text-align: left;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+  margin-left: 1.5vw;
+}
+
+.sidebar-container .content {
+  transition: 0.5s;
+  transition-timing-function: ease-in-out;
+  background: radial-gradient(circle at top, #333333, #111111);
+}
+
+.sidebar-container.slideshow {
+  left: -13vw;
+  width: 16vw;
+  position: fixed;
+}
+
+.sidebar-container.slideshow hr {
+  border-color: #888888;
+  border-width: 3px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.sidebar-container.slideshow:hover {
+  left: 0vw;
+  transition-delay: 0.5s;
+}
+
+.sidebar-container.slideshow:hover .page {
+  left: 0vw;
+  transition-delay: 0.3s;
+}
+
+.sidebar-container.slideshow .header {
+  position: sticky;
+  border-style: solid;
+  border-color: #666666;
+  background: radial-gradient(circle at top, #353a3f, #333333);
+  width: 15.9vw;
+}
+
+.sidebar-container.slideshow .header .icon {
+  position: absolute;
+  left: 85%;
+  top: 0vh;
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
+}
+
+.sidebar-container.slideshow:hover .header {
+  width: 14vw;
+  transition-delay: 0.5s;
+}
+
+.sidebar-container.slideshow:hover .header .icon {
+  left: 80%;
+  transition-delay: 0.5s;
+}
+
+.sidebar-container.slideshow .content {
+  left: 0vw;
+  width: 14vw;
+  height: 100%;
+  padding-bottom: 7vh;
+  padding-top: 1vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.sidebar-container .content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sidebar-container .content::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+}
+
+.sidebar-container .content::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+.carousel-switcher {
+  position: fixed;
+  top: 92vh;
+  left: 65vw;
+  opacity: 0.6;
+}
+
+.page {
+  height: 12vh;
+  width: 12.7vw;
+  margin: 0.5vh 0.5vw 1vh 0.5vw;
+  left: -2vw;
+  display: inline-flex;
+  flex-direction: column;
+  text-align: center;
+  border-color: #525252;
+  border-style: solid;
+  border-width: 1.5px;
+  font-size: 12px;
+  position: relative;
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
+}
+
+.sidebar-container.slideshow .page div {
+  padding-top: 0.5vh;
+}
+
+.sidebar-container.slideshow .page svg {
+  width: 8vh;
+  height: 8vh;
+  position: absolute;
+  left: 35%;
+  top: 2vh;
+}
+
+.sidebar-container.slideshow .page.active {
+  border-color: #aaaaaa;
+  border-width: 1.5px;
+  opacity: 1;
+}
+
+.sidebar-container.slideshow .page:hover {
+  border-color: #a0a0a0;
+  border-width: 1.5px;
+  opacity: 1;
+}
+
+#overview {
+  width: 100%;
+  height: 100%;
+}
+
+#overview .node:hover rect {
+  stroke-width: 3;
+  stroke: lightgray;
+  stroke-opacity: 1;
+}
+
+.vc-compact {
+  padding-top: 5px;
+  padding-left: 5px;
+  width: 20vw;
+  border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.vc-compact-colors {
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+.vc-compact-color-item {
+  list-style: none;
+  width: 15px;
+  height: 15px;
+  border-width: 0.5px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.1);
+  float: left;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  position: relative;
+  cursor: pointer;
+}
+
+.vc-compact-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  bottom: 5px;
+  left: 5px;
+  border-radius: 50%;
+  opacity: 1;
+  background: #fff;
 }
 </style>

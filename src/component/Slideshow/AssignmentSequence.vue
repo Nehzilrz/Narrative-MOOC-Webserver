@@ -55,7 +55,11 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 current: null,
+                lastElement: null,
             };
         },
         created() {
@@ -246,7 +250,7 @@
                     .text((d, i) => d.type == 'video' ? i : 1);
             }
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

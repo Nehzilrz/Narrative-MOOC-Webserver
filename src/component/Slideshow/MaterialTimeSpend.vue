@@ -29,7 +29,11 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 table: null,
+                lastElement: null,
             };
         },
         created() {
@@ -133,21 +137,20 @@
                     .attr("stroke", 'none');
                     
                 var interaction = new Plottable.Interactions.Click();
-                var lastElement = null;
                 interaction.onClick(point => {
                     if (this.context.enable_highlight_chart) {
                         var element = plots.entitiesAt(point)[0];
                         if (!element) return;
-                        if (lastElement && lastElement.datum == element.datum) {
+                        if (this.lastElement == element.datum.type) {
                             plots.selections().attr("opacity", 1);
-                            lastElement = null;
+                            this.lastElement = null;
                             return;
                         } else {
                             plots.selections().attr("opacity", 0.5);
                         }
                         var selection = element.selection;
                         selection.attr("opacity", 1);
-                        lastElement = element;
+                        this.lastElement = element.datum.type;
                     } else {
                         var element = plots.entitiesAt(point)[0];
                         if (!element) return;
@@ -229,7 +232,7 @@
                 return table;
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

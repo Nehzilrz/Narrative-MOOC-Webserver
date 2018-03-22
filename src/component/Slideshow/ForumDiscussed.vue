@@ -70,7 +70,11 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 current_comment: null,
+                lastElement: null,
             };
         },
         components: {
@@ -110,7 +114,7 @@
                 this.current_comment = this.current_comment == comment ? null : comment;
             }
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

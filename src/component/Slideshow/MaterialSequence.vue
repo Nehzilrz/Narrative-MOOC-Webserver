@@ -16,7 +16,7 @@
                             S{{p + 1}}
                         </span>
                         <span v-for="i in pattern.path" class="node" 
-                            :class="{ active: current == i }"
+                            :class="{ active: lastElement == i }"
                             @click="click(i)"
                             :style="{ 'background-color':
                             elements[i].type == 'video' ? context.color_schema[1] : context.color_schema[3]
@@ -37,7 +37,10 @@
     export default {
         data() {
             return {
-                current: null,
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
+                lastElement: null,
             };
         },
         created() {
@@ -147,7 +150,7 @@
                 }
             },
             click(i) {
-                this.current = this.current == i ? null : i;
+                this.lastElement = this.lastElement == i ? null : i;
                 this.render(); 
             },
             render() {
@@ -173,10 +176,10 @@
                 const y = height * 0.5;
                 const arc_data = [].concat(...this.adjacant);
                 const highlight = [];
-                const current = this.current;
-                if (current) {
+                const lastElement = this.lastElement;
+                if (lastElement) {
                     for (let i = 0; i < n; ++i) {
-                        if (this.filtered_adj[current][i] > 0) {
+                        if (this.filtered_adj[lastElement][i] > 0) {
                             highlight[i] = true;
                         }
                     }
@@ -194,7 +197,7 @@
                         ${x2(i)} ${y}`;
                     })
                     .attr("opacity", (d, i) => {
-                        if (current && (i % n == current || ~~(i / n) == current)) {
+                        if (lastElement && (i % n == lastElement || ~~(i / n) == lastElement)) {
                             return Math.min(1, d / max_adjacant * 2);
                         } else {
                             return d / max_adjacant;
@@ -202,15 +205,15 @@
                     })
                     .attr("fill", "none")
                     .attr("stroke-width", (d, i) => {
-                        if (current && (i % n == current || ~~(i / n) == current)) {
+                        if (lastElement && (i % n == lastElement || ~~(i / n) == lastElement)) {
                             return 3;
                         } else {
                             return 1;
                         }
                     })
                     .attr("stroke", (d, i) => {
-                        if (current) {
-                            if ((i % n == current || ~~(i / n) == current)) {
+                        if (lastElement) {
+                            if ((i % n == lastElement || ~~(i / n) == lastElement)) {
                                 return '#1f78b4';
                             } else {
                                 return 'gray';
@@ -236,7 +239,7 @@
                             this.context.color_schema[2];
                     })
                     .style("stroke-width", (d, i) => {
-                        if (current == i) {
+                        if (lastElement == i) {
                             return 5;
                         } else if (highlight[i]) {
                             return 3;
@@ -287,7 +290,7 @@
                     */
             }
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

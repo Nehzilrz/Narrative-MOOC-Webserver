@@ -36,6 +36,7 @@
 </script>
 
 <style scope>
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400');
 
 p.nar.styled {
     border-style: solid;
@@ -47,6 +48,12 @@ p.nar.styled {
     margin-top: .2rem;
     margin-bottom: .2rem;
     border-color: rgba(127, 127, 127, 0.0);
+    font-family: 'Source Sans Pro', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 22px;
+    font-weight: normal;    
+    color: #2c3e50;
+    text-align: center;
 }
 
 p.nar.styled:hover {

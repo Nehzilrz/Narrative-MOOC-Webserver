@@ -46,8 +46,10 @@
           </forum-most-upvoted-slide>
           <forum-questioner-slide v-else-if="item.id.includes('F3')" :context="context" :item="item">
           </forum-questioner-slide>
-          <video-time-spend-distribution-slide v-else-if="item.id.includes('S2')" :context="context" :item="item">
-          </video-time-spend-distribution-slide>
+          <learner-profile-slide v-else-if="item.id.includes('S1')" :context="context" :item="item">
+          </learner-profile-slide>
+          <learner-difficulties-slide v-else-if="item.id.includes('S2')" :context="context" :item="item">
+          </learner-difficulties-slide>
       </template>
   </div>
 </template>
@@ -55,7 +57,6 @@
 <script>
 
 import AssignmentTimeSpendSlide from "./Slideshow/AssignmentTimeSpend.vue";
-import AssignmentPopularitySlide from "./Slideshow/AssignmentPopularity.vue";
 import VideoPopularitySlide from "./Slideshow/VideoPopularity.vue";
 import VideoPeaksSlide from "./Slideshow/VideoPeaks.vue";
 import VideoCompletenessSlide from "./Slideshow/VideoCompleteness.vue";
@@ -78,6 +79,8 @@ import ForumKeywordSlide from "./Slideshow/ForumKeywords.vue";
 import ForumMostUpvotedSlide from "./Slideshow/ForumMostUpvoted.vue";
 import ForumQuestionerSlide from "./Slideshow/ForumQuestioner.vue";
 import AssignmentSequenceSlide from "./Slideshow/AssignmentSequence.vue";
+import LearnerProfileSlide from "./Slideshow/LearnerProfile.vue";
+import LearnerDifficultiesSlide from "./Slideshow/LearnerDifficulties.vue";
 
 export default {
   data() {
@@ -94,7 +97,6 @@ export default {
     VideoPeaksSlide,
     VideoTimeSpendSlide,
     VideoTimeSpendDistributionSlide,
-    AssignmentPopularitySlide,
     AssignmentTimeSpendSlide,
     VideoFrequencySlide,
     VideoCompletenessSlide,
@@ -110,15 +112,17 @@ export default {
     ForumMostUpvotedSlide,
     ForumQuestionerSlide,
     AssignmentSequenceSlide,
+    LearnerProfileSlide,
+    LearnerDifficultiesSlide,
   },
   methods: {
 
   },
   watch: {
     page() {
-      this.$sr.reveal('.slideshow-content', {
-        rotate: {x: 65} 
-      });
+        /* this.$sr.reveal('.slideshow-content', {
+        }, 2000);
+        */
     }
   }
 };
@@ -149,10 +153,6 @@ export default {
   width: 90%;
   left: 3vw;
   transition: 0.2s;
-  padding-top: 0.5vh;
-  padding-bottom: 0.5vh;
-  margin-top: 0.5vh;
-  margin-bottom: 0.5vh;
   transition-timing-function: ease-in-out;
 }
 
@@ -176,6 +176,7 @@ h4 {
 .slideshow-content {
   margin-left: 3vw;
   margin-right: 3vw;
+  position: relative;
 }
 
 
@@ -186,10 +187,7 @@ h4 {
 }
 
 .slideshow-content.text {
-  font-size: 15px;
-  font-weight: 500;
-  font-family: inherit;
-  color: #222;
+  margin-left: 5vw;
 }
 </style>
 

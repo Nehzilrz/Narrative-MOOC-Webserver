@@ -45,6 +45,7 @@
         data() {
             return {
                 current_post: null,
+                keywords: [],
             };
         },
         components: {
@@ -57,11 +58,7 @@
             this.context.bus.$off("add-text-box", this.handle);
         },
         mounted() {
-        },
-        computed: {
-            keywords() {
-                return this.item.data.keywords;
-            }
+            this.keywords = this.item.data.keywords;
         },
         methods: {
             handle(_id) {
@@ -76,7 +73,7 @@
                 }
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

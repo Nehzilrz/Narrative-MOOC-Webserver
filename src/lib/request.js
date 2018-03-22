@@ -7,6 +7,12 @@ const cache = {};
 
 export function request(self, item, type) {
     const convert_map = {
+        'save_student_group': () => {
+            return axios.post(`${serverUrl}saveStudentGroup`, {
+                id: item.id,
+                users: item.users,
+            });
+        },
         'video_peaks': () => {
             if (!item.data.video_peaks) {
                 return axios.get(`${serverUrl}getVideoPeaks`, { params: { videoId: item.resource_id } }).then((response) => {
@@ -194,10 +200,25 @@ export function request(self, item, type) {
                 return null;
             }
         },
-        'user_basic_info': () => {
+        'user_info': () => {
             if (!item.data.user_info) {
-                return axios.post(`${serverUrl}getUserBasicInfo`, { users: item.data.users }).then((response) => {
+                return axios.post(`${serverUrl}getUserBasicInfo`, {
+                    users: item.resource_data,
+                    chapter: item.resource_id,
+                }).then((response) => {
                   item.data.user_info = response.data;
+                });
+            } else {
+                return null;
+            }
+        },
+        'user_difficulties': () => {
+            if (!item.data.difficulties) {
+                return axios.post(`${serverUrl}getUserDifficulties`, {
+                    users: item.resource_data,
+                    chapter: item.resource_id,
+                }).then((response) => {
+                  item.data.difficulties = response.data;
                 });
             } else {
                 return null;

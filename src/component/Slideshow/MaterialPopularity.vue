@@ -3,48 +3,50 @@
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
             <div class="slideshow-content title">
-                <h4> {{ item.name }} </h4>
+                <h3> {{ item.name }} </h3>
             </div>
-            <div class="slideshow-content graph" style="height: 40vh">
+            <div class="slideshow-content graph" style="height: 40vh;">
+                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                    :style="{
+                        left: `${current_point && current_point.x}px`, 
+                        top: `${current_point && (current_point.y - 5)}px` 
+                    }">
+                </div>
+                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                    {{ tooltip_message }}
+                </b-tooltip>
             </div>
             <div class="slideshow-content text">
-                <h6> 
-                    Activies in this week:
-                </h6>
-                <ul>
-                    <li v-if="max_video_activies">
-                        <styled-text :context="context">
-                            The most visited video was 
-                            <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
-                            , {{ max_video_activies.activeness }} 
-                            students visited the video.
-                        </styled-text>
-                    </li>
-                    <li v-if="min_video_activies">
-                        <styled-text :context="context">
-                        The least visited video was 
-                        <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
-                        , {{ min_video_activies.activeness }} 
-                        students visited the video.
-                        </styled-text>
-                    </li>
-                    <li v-if="max_assignment_activies">
-                        <styled-text :context="context">
-                        The most visited assignment was 
-                        <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
-                        , {{ max_assignment_activies.activeness }} 
-                        students visited the assignment.
-                        </styled-text>
-                    </li>
-                    <li v-if="min_assignment_activies">
-                        <styled-text :context="context">
-                        The least visited assignment was 
-                        <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
-                        , {{ min_assignment_activies.activeness }} 
-                        students visited the assignment.
-                        </styled-text>
-                    </li>
-                </ul>
+                <styled-text :context="context">
+                    The most visited video was 
+                    <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
+                    , {{ max_video_activies.activeness }} 
+                    students visited the video.
+                </styled-text>
+            </div>
+            <div class="slideshow-content text">
+                <styled-text :context="context">
+                The least visited video was 
+                <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
+                , {{ min_video_activies.activeness }} 
+                students visited the video.
+                </styled-text>
+            </div>
+            <div class="slideshow-content text">
+                <styled-text :context="context">
+                The most visited assignment was 
+                <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
+                , {{ max_assignment_activies.activeness }} 
+                students visited the assignment.
+                </styled-text>
+            </div>
+            <div class="slideshow-content text">
+                <styled-text :context="context">
+                The least visited assignment was 
+                <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
+                , {{ min_assignment_activies.activeness }} 
+                students visited the assignment.
+                </styled-text>
             </div>
             <follow-up :item="item" :context="context"></follow-up>
         </template>
@@ -57,12 +59,23 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
+                last_element: null,
                 table: null,
+                plots: null,
+                step: 10,
             };
         },
-        components: {
+        watch: {
+            last_element(val) {
+                this.item.cache.last_element = val;
+                this.plots && this.plots.attr("opacity", d => d.id == this.last_element ? 1 : 0.5);
+            },
         },
         created() {
+            this.last_element = this.item.cache.last_element;
             this.table = this.render(this.item.data, this.context);
             this.context.bus.$on("add-text-box", this.handle);
         },
@@ -70,6 +83,7 @@
             this.context.bus.$off("add-text-box", this.handle);
         },
         mounted() {
+            this.item.num_step = this.$el.getElementsByClassName('slideshow-content').length;
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
         },
@@ -127,32 +141,31 @@
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", (d, i, dataset) => dataset.metadata(), colorScale)
+                    .attr("opacity", 0.8)
                     .animated(true)
                     .addDataset(new Plottable.Dataset(video_activies).metadata('video'))
                     .addDataset(new Plottable.Dataset(problem_activies).metadata('assignment'));
 
+                this.plots = plots;
                 var legend = new Plottable.Components.Legend(colorScale);
                     legend.maxEntriesPerRow(1);
                     legend
                         .symbol(() => Plottable.SymbolFactories.circle())
                         .xAlignment("right");
+
+                if (this.last_element) {
+                    plots.attr("opacity", d => d.id == this.last_element ? 1 : 0.5);
+                }
                 
                 var interaction = new Plottable.Interactions.Click();
-                var lastElement = null;
                 interaction.onClick(point => {
                     if (this.context.enable_highlight_chart) {
                         var element = plots.entitiesAt(point)[0];
-                        if (!element) return;
-                        if (lastElement && lastElement.datum == element.datum) {
-                            plots.selections().attr("opacity", 1);
-                            lastElement = null;
-                            return;
+                        if (!element) {
+                            this.last_element = null;
                         } else {
-                            plots.selections().attr("opacity", 0.5);
+                            this.last_element = element.datum.id;
                         }
-                        var selection = element.selection;
-                        selection.attr("opacity", 1);
-                        lastElement = element;
                     } else {
                         var element = plots.entitiesAt(point)[0];
                         if (!element) return;
@@ -168,21 +181,28 @@
                     }
                 });
                 interaction.attachTo(plots);
-
                 var interaction2 = new Plottable.Interactions.Pointer();
                 interaction2.onPointerMove(point => {
+                    var element = plots.entitiesAt(point)[0];
+                    if (!element) {
+                        this.show_tooltip = false;
+                        return;
+                    }
+                    var selection = element.selection;
+                    if (!selection) return;
+                    this.show_tooltip = true;
+                    this.current_point.x = point.x + plots.origin().x;
+                    this.current_point.y = point.y + plots.origin().y;
+                    var x = selection.datum();
+                    this.tooltip_message = `value: ${x.activeness}`;
                     if (!this.context.enable_highlight_chart) {
                         plots.selections().attr("opacity", 0.8);
-                        var element = plots.entitiesAt(point)[0];
-                        if (!element) return;
-                        var selection = element.selection;
-                        if (!selection) return;
                         selection.attr("opacity", 1);
-                        var x = selection.datum();
                     }
                 }).onPointerExit(point => {
+                    this.show_tooltip = false;
                     if (!this.context.enable_highlight_chart) {
-                        plots.selections().attr("opacity", 1);
+                        plots.selections().attr("opacity", 0.8);
                     }
                 });
                 interaction2.attachTo(plots);
@@ -198,7 +218,7 @@
                 return table;
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

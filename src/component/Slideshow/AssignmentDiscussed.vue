@@ -45,8 +45,17 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 current_post: null,
+                lastElement: null,
             };
+        },
+        watch: {
+            current_post(val) {
+                this.item.cache.current_post = val;
+            }
         },
         created() {
             this.context.bus.$on("add-text-box", this.handle);
@@ -55,6 +64,7 @@
             this.context.bus.$off("add-text-box", this.handle);
         },
         mounted() {
+            this.current_post = this.item.cache.current_post;
             // var element = this.$el.getElementsByClassName('graph')[0];
             // this.table.renderTo(element);
         },
@@ -79,7 +89,7 @@
                 this.current_post = this.current_post == post ? null : post;
             }
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

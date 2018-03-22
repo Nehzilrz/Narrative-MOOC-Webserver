@@ -6,26 +6,33 @@
                 <h4> {{ item.name }} </h4>
             </div>
             <div class="slideshow-content graph" style="height: 25vh">
+                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                    :style="{
+                        left: `${current_point && current_point.x}px`, 
+                        top: `${current_point && (current_point.y - 5)}px` 
+                    }">
+                </div>
+                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                    {{ tooltip_message }}
+                </b-tooltip>
             </div>
             <div class="slideshow-content text">
                 <h6>
                     Summary in video watching of this week:
                 </h6>
-                <ul>
-                    <li>
-                    <styled-text :context="context">
-                        The video the student started watching at the latest was 
-                        <entity-link :id="max_video_delay.id" :context="context" :parent="item"></entity-link>
-                        , and they started watching it {{ Number(max_video_delay.delay).toFixed(1) }} days after the video was released.
-                    </styled-text>                    
-                    </li>
-                    <li>
-                    <styled-text :context="context">
-                        The longest video for the student viewing cycle is <entity-link :id="max_video_duration.id" :context="context" :parent="item"></entity-link>.
-                         They watched for {{ Number(max_video_duration.duration).toFixed(1) }} days.
-                    </styled-text>
-                    </li>
-                </ul>
+            </div>
+            <div class="slideshow-content text">
+                <styled-text :context="context">
+                    The video the student started watching at the latest was 
+                    <entity-link :id="max_video_delay.id" :context="context" :parent="item"></entity-link>
+                    , and they started watching it {{ Number(max_video_delay.delay).toFixed(1) }} days after the video was released.
+                </styled-text>    
+            </div>
+            <div class="slideshow-content text">    
+                <styled-text :context="context">
+                    The longest video for the student viewing cycle is <entity-link :id="max_video_duration.id" :context="context" :parent="item"></entity-link>.
+                        They watched for {{ Number(max_video_duration.duration).toFixed(1) }} days.
+                </styled-text>
             </div>
             <video-list :item="item" :context="context"></video-list>
             <follow-up :item="item" :context="context"></follow-up>
@@ -39,7 +46,11 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 table: null,
+                lastElement: null,
             };
         },
         created() {
@@ -134,7 +145,7 @@
                 return table;
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

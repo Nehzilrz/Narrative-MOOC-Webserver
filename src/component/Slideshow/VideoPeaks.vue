@@ -6,12 +6,23 @@
             <div class="slideshow-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content graph" style="height: 30vh">
+            <div class="slideshow-content graph" style="height: 30vh" v-show = "step > 1">
+                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                    :style="{
+                        left: `${current_point && current_point.x}px`, 
+                        top: `${current_point && (current_point.y - 5)}px` 
+                    }">
+                </div>
+                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                    {{ tooltip_message }}
+                </b-tooltip>
             </div>
             <div class="slideshow-content text">
                 <h6 style="font-weight: 600; padding-top: 1vh; padding-bottom: 0.5vh;"> 
                     Peaks in this video:
                 </h6>
+            </div>
+            <div class="slideshow-content text">
                 <ul style="padding-left: 2vw"
                     v-if="item.data.video_peaks && item.data.video_peaks.length">
                     <li v-for="peak, i in showed_peaks">
@@ -42,6 +53,7 @@
                     </li>
                 </ul>
             </div>
+            </div>
             <div class="slideshow-content text">
                 <b-form-row v-show="show_video">
                     <b-col cols="5">
@@ -63,7 +75,7 @@
                     </b-col>
                 </b-form-row>
             </div>
-            <follow-up :item="item" :context="context"></follow-up>
+            <follow-up v-show = "step > 5" :item="item" :context="context"></follow-up>
         </template>
     </div>
 </template>
@@ -74,7 +86,11 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 table: null,
+                lastElement: null,
                 show_video: false,
                 showed_peaks_num: 3,
             };
@@ -310,7 +326,7 @@
                 });
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

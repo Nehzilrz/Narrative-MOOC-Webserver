@@ -6,6 +6,15 @@
                 <h4> {{ item.name }} </h4>
             </div>
             <div class="slideshow-content graph" style="height: 40vh">
+                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                    :style="{
+                        left: `${current_point && current_point.x}px`, 
+                        top: `${current_point && (current_point.y - 5)}px` 
+                    }">
+                </div>
+                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                    {{ tooltip_message }}
+                </b-tooltip>
             </div>
             <div class="slideshow-content text">
                 <h6> 
@@ -53,10 +62,20 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 table: null,
+                lastElement: null,
             };
         },
+        watch: {
+            lastElement(val) {
+                this.item.cache.lastElement = val;
+            },
+        },
         created() {
+            this.lastElement = this.item.cache.lastElement;
             this.table = this.render(this.item.data, this.context);
             this.context.bus.$on("add-text-box", this.handle);
         },
@@ -128,22 +147,25 @@
                 var attemptAxisLable = new Plottable.Components.AxisLabel("Frequency", "0");
                 var attemptPlotLable = new Plottable.Components.AxisLabel("", "0");
 
+                if (this.lastElement) {
+                    plots.attr("opacity", d => d.id == this.lastElement ? 1 : 0.5);
+                }
+                
                 var interaction = new Plottable.Interactions.Click();
-                var lastElement = null;
                 interaction.onClick(point => {
                     if (this.context.enable_highlight_chart) {
                         var element = plots.entitiesAt(point)[0];
                         if (!element) return;
-                        if (lastElement && lastElement.datum == element.datum) {
+                        if (this.lastElement == element.datum.id) {
                             plots.selections().attr("opacity", 1);
-                            lastElement = null;
+                            this.lastElement = null;
                             return;
                         } else {
                             plots.selections().attr("opacity", 0.5);
                         }
                         var selection = element.selection;
                         selection.attr("opacity", 1);
-                        lastElement = element;
+                        this.lastElement = element.datum.id;
                     } else {
                         var element = plots.entitiesAt(point)[0];
                         if (!element) return;
@@ -159,21 +181,28 @@
                     }
                 });
                 interaction.attachTo(plots);
-
                 var interaction2 = new Plottable.Interactions.Pointer();
                 interaction2.onPointerMove(point => {
+                    var element = plots.entitiesAt(point)[0];
+                    if (!element) {
+                        this.show_tooltip = false;
+                        return;
+                    }
+                    var selection = element.selection;
+                    if (!selection) return;
+                    this.show_tooltip = true;
+                    this.current_point.x = point.x + plots.origin().x;
+                    this.current_point.y = point.y + plots.origin().y;
+                    var x = selection.datum();
+                    this.tooltip_message = `value: ${Number(x.attempts).toFixed(2)}`;
                     if (!this.context.enable_highlight_chart) {
                         plots.selections().attr("opacity", 0.8);
-                        var element = plots.entitiesAt(point)[0];
-                        if (!element) return;
-                        var selection = element.selection;
-                        if (!selection) return;
                         selection.attr("opacity", 1);
-                        var x = selection.datum();
                     }
                 }).onPointerExit(point => {
+                    this.show_tooltip = false;
                     if (!this.context.enable_highlight_chart) {
-                        plots.selections().attr("opacity", 1);
+                        plots.selections().attr("opacity", 0.8);
                     }
                 });
                 interaction2.attachTo(plots);
@@ -186,7 +215,7 @@
                 return table;
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

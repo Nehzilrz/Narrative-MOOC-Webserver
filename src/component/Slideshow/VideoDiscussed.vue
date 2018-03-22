@@ -6,6 +6,15 @@
                 <h4> {{ item.name }} </h4>
             </div>
             <div class="slideshow-content discussed">
+                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                    :style="{
+                        left: `${current_point && current_point.x}px`, 
+                        top: `${current_point && (current_point.y - 5)}px` 
+                    }">
+                </div>
+                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                    {{ tooltip_message }}
+                </b-tooltip>
                 <template v-for="(assignment, i) in videos">
                     <div class="content-block">
                         <h6 style="padding-left: 2vw; width: 25vw;">
@@ -45,7 +54,11 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 current_post: null,
+                lastElement: null,
             };
         },
         created() {
@@ -82,7 +95,7 @@
                 this.current_post = this.current_post == post ? null : post;
             }
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

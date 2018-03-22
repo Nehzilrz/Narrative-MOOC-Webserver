@@ -61,8 +61,12 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 table1: null,
                 table2: null,
+                lastElement: null,
             };
         },
         created() {
@@ -148,26 +152,86 @@
                 var completenessScale = new Plottable.Scales.Linear();
                 var completenessAxis = new Plottable.Axes.Numeric(completenessScale, "left").xAlignment("left");
                 completenessAxis.formatter((d) => `${Number(d * 100).toFixed(1)}%`)
-                var completenessPlot = new Plottable.Plots.Bar()
+                var plots = new Plottable.Plots.Bar()
                     .y(d => d.completeness, completenessScale)
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", context.color_schema[2])
                     .animated(true)
                     .addDataset(new Plottable.Dataset(problem_activies));
+                if (this.lastElement) {
+                    plots.attr("opacity", d => d.id == this.lastElement ? 1 : 0.5);
+                }
+                
+                var interaction = new Plottable.Interactions.Click();
+                interaction.onClick(point => {
+                    if (this.context.enable_highlight_chart) {
+                        var element = plots.entitiesAt(point)[0];
+                        if (!element) return;
+                        if (this.lastElement == element.datum.id) {
+                            plots.selections().attr("opacity", 1);
+                            this.lastElement = null;
+                            return;
+                        } else {
+                            plots.selections().attr("opacity", 0.5);
+                        }
+                        var selection = element.selection;
+                        selection.attr("opacity", 1);
+                        this.lastElement = element.datum.id;
+                    } else {
+                        var element = plots.entitiesAt(point)[0];
+                        if (!element) return;
+                        var selection = element.selection;
+                        if (!selection) return;
+                        var x = selection.datum();
+                        x = context.id2item[x.id];
+                        if (x.type == 'video') {
+                            context.selectVideo(x, this.item);
+                        } else if (x.type == 'assignment') {
+                            context.selectAssignment(x, this.item);
+                        }
+                    }
+                });
+                interaction.attachTo(plots);
+                var interaction2 = new Plottable.Interactions.Pointer();
+                interaction2.onPointerMove(point => {
+                    var element = plots.entitiesAt(point)[0];
+                    if (!element) {
+                        this.show_tooltip = false;
+                        return;
+                    }
+                    var selection = element.selection;
+                    if (!selection) return;
+                    this.show_tooltip = true;
+                    this.current_point.x = point.x + plots.origin().x;
+                    this.current_point.y = point.y + plots.origin().y;
+                    var x = selection.datum();
+                    this.tooltip_message = `value: ${x.completeness}`;
+                    if (!this.context.enable_highlight_chart) {
+                        plots.selections().attr("opacity", 0.8);
+                        selection.attr("opacity", 1);
+                    }
+                }).onPointerExit(point => {
+                    this.show_tooltip = false;
+                    if (!this.context.enable_highlight_chart) {
+                        plots.selections().attr("opacity", 0.8);
+                    }
+                });
+                interaction2.attachTo(plots);
+
 
                 var completenessLabel = new Plottable.Components.AxisLabel("completeness", "0");
-                var completenessPlotLabel = new Plottable.Components.AxisLabel("completeness", "0");
+                var plotsLabel = new Plottable.Components.AxisLabel("completeness", "0");
 
                 var table = new Plottable.Components.Table([
                     [completenessLabel, null],
-                    [completenessAxis, completenessPlot],
+                    [completenessAxis, plots],
                     [null, xAxis]
                 ]);
                 return table;
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

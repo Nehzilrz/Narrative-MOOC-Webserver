@@ -6,24 +6,29 @@
                 <h4> {{ item.name }} </h4>
             </div>
             <div class="slideshow-content graph" style="height: 25vh">
+                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                    :style="{
+                        left: `${current_point && current_point.x}px`, 
+                        top: `${current_point && (current_point.y - 5)}px` 
+                    }">
+                </div>
+                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                    {{ tooltip_message }}
+                </b-tooltip>
             </div>
             <div class="slideshow-content text">
-                <ul>
-                    <li>
-                    <styled-text :context="context">
-                        The video with highest completeness on average is
-                        <entity-link :id="max_video[0].id" :context="context" :parent="item"></entity-link>
-                        , {{ Number(max_video[0].completeness * 100).toFixed(1) }}% students completed this video.
-                    </styled-text>
-                    </li>
-                    <li>
-                    <styled-text :context="context">
-                        The video with lowest completeness on average is
-                        <entity-link :id="min_video[0].id" :context="context" :parent="item"></entity-link>
-                        , {{ Number(min_video[0].completeness * 100).toFixed(1) }}% students completed this video.
-                    </styled-text>
-                    </li>
-                </ul>
+                <styled-text :context="context">
+                    The video with highest completeness on average is
+                    <entity-link :id="max_video[0].id" :context="context" :parent="item"></entity-link>
+                    , {{ Number(max_video[0].completeness * 100).toFixed(1) }}% students completed this video.
+                </styled-text>
+            </div>
+            <div class="slideshow-content text">
+                <styled-text :context="context">
+                    The video with lowest completeness on average is
+                    <entity-link :id="min_video[0].id" :context="context" :parent="item"></entity-link>
+                    , {{ Number(min_video[0].completeness * 100).toFixed(1) }}% students completed this video.
+                </styled-text>
             </div>
             <follow-up :item="item" :context="context"></follow-up>
         </template>
@@ -36,7 +41,11 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 table: null,
+                lastElement: null,
             };
         },
         created() {
@@ -152,7 +161,7 @@
                 return table;
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

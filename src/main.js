@@ -2,6 +2,7 @@ import Vue from 'vue';
 import BootstrapVue from "bootstrap-vue";
 import editor from 'vue2-medium-editor';
 import Eagle from 'eagle.js';
+import { VTooltip, VPopover, VClosePopover } from 'v-tooltip'
 import scrollReveal from "scrollReveal";
 import EntityLink from './component/EntityLink.vue';
 import FollowUpQuestion from './component/FollowUpQuestion.vue';
@@ -15,9 +16,14 @@ import 'eagle.js/dist/eagle.css';
 import 'plottable/plottable.css';
 import App from './App.vue';
 
+
 Vue.prototype.$sr = scrollReveal({ reset: true });
-Vue.use(Eagle)
-Vue.use(BootstrapVue)
+Vue.use(Eagle);
+Vue.use(BootstrapVue);
+Vue.use(VTooltip);
+Vue.directive('tooltip', VTooltip);
+Vue.directive('close-popover', VClosePopover);
+Vue.component('v-popover', VPopover);
 Vue.component('medium-editor', editor);
 Vue.component('styled-text', StyledText);
 Vue.component('entity-link', EntityLink);

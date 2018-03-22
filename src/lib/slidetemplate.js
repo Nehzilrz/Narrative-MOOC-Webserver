@@ -157,6 +157,7 @@ export function create(type, resource_id) {
   const ret = templates[type] ? templates[type](resource_id) : {};
   ret._id = ++_id_counter;
   ret.notes = [];
+  ret.cache = {};
   return ret;
 }
 
@@ -339,7 +340,7 @@ const templates = {
   S1: video_id =>
     initTemplate(
       "student",
-      "student_overview",
+      "user_info",
       "S2",
       "barchart",
       video_id,
@@ -348,7 +349,7 @@ const templates = {
   S2: chapter_id =>
     initTemplate(
       "student",
-      "student_overview",
+      "user_difficulties",
       "S3",
       "barchart",
       chapter_id,
@@ -357,7 +358,7 @@ const templates = {
   S3: chapter_id =>
     initTemplate(
       "student",
-      "student_overview",
+      "user_info",
       "",
       "barchart",
       chapter_id,

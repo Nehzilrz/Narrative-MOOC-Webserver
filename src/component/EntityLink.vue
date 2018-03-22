@@ -1,5 +1,5 @@
 <template>
-    <b-link v-if="item" href="javascript:void(0);" @click="click">
+    <b-link class="entity" v-if="item" @click="click">
         <span class="step" :style="style">
             {{ (item.type || 'U').slice(0, 1).toUpperCase() }}
         </span>
@@ -74,6 +74,9 @@ span.step {
   margin-right: 4px;
   text-align: center;
   width: 1.3em;
+}
+.entity {
+    padding-left: .5rem;
 }
 
 </style>

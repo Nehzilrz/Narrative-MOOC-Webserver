@@ -6,6 +6,15 @@
             <h4> {{ item.name }} </h4>
         </div>
         <div class="slideshow-content graph" style="height: 25vh">
+            <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                :style="{
+                    left: `${current_point && current_point.x}px`, 
+                    top: `${current_point && (current_point.y - 5)}px` 
+                }">
+            </div>
+            <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                {{ tooltip_message }}
+            </b-tooltip>
         </div>
         <div class="slideshow-content text">
             <h6> 
@@ -39,7 +48,11 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 table: null,
+                lastElement: null,
             };
         },
         created() {
@@ -110,7 +123,7 @@
                 return table;
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

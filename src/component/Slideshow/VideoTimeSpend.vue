@@ -6,24 +6,29 @@
                 <h4> {{ item.name }} </h4>
             </div>
             <div class="slideshow-content graph" style="height: 30vh">
+                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                    :style="{
+                        left: `${current_point && current_point.x}px`, 
+                        top: `${current_point && (current_point.y - 5)}px` 
+                    }">
+                </div>
+                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                    {{ tooltip_message }}
+                </b-tooltip>
             </div>
             <div class="slideshow-content text">
-                <ul>
-                    <li>
-                    <styled-text :context="context">
-                        The video with highest watch time on average is
-                        <entity-link :id="most_watch[0].id" :context="context" :parent="item"></entity-link>
-                        , which has been watched {{ Number(most_watch[0].watch_time).toFixed(1) }} minutes.
-                    </styled-text>
-                    </li>
-                    <li>
-                    <styled-text :context="context">
-                        The video with lowest watch time on average is
-                        <entity-link :id="least_watch[0].id" :context="context" :parent="item"></entity-link>
-                        , which has been watched {{ Number(least_watch[0].watch_time).toFixed(1) }} minutes.
-                    </styled-text>
-                    </li>
-                </ul>
+                <styled-text :context="context">
+                    The video with highest watch time on average is
+                    <entity-link :id="most_watch[0].id" :context="context" :parent="item"></entity-link>
+                    , which has been watched {{ Number(most_watch[0].watch_time).toFixed(1) }} minutes.
+                </styled-text>
+            </div>
+            <div class="slideshow-content text">
+                <styled-text :context="context">
+                    The video with lowest watch time on average is
+                    <entity-link :id="least_watch[0].id" :context="context" :parent="item"></entity-link>
+                    , which has been watched {{ Number(least_watch[0].watch_time).toFixed(1) }} minutes.
+                </styled-text>
             </div>
             <follow-up :item="item" :context="context"></follow-up>
         </template>
@@ -36,7 +41,11 @@
     export default {
         data() {
             return {
+                show_tooltip: false,
+                tooltip_message: 'Hello World',
+                current_point: {},
                 table: null,
+                lastElement: null,
             };
         },
         created() {
@@ -167,7 +176,7 @@
                 return table;
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 

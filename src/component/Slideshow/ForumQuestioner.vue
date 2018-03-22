@@ -121,7 +121,7 @@
                 }
             },
         },
-        props: ["item", "context"],
+        props: ["item", "context", "step"],
     };
 </script>
 
