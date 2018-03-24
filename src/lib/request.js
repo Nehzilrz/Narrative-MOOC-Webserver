@@ -33,7 +33,7 @@ export function request(self, item, type) {
         },
         'video_info': () => {
             if (!item.data.video) {
-                item.data.video = self.id2item[item.resource_id];
+                item.data.video = self.item_mapping[item.resource_id];
             } else {
                 return null;
             }
@@ -57,7 +57,7 @@ export function request(self, item, type) {
         'chapter_problem_activies': () => {
             if (!item.data.problem_activies) {
                 const params = {
-                    problems: self.id2item[item.resource_id].problems,
+                    problems: self.item_mapping[item.resource_id].problems,
                     chapter: item.resource_id,
                 };
                 const str = 'getProblemsData' + JSON.stringify(params);
@@ -76,7 +76,7 @@ export function request(self, item, type) {
         'chapter_video_activies': () => {
             if (!item.data.video_activies) {
                 const params = {
-                    videos: self.id2item[item.resource_id].videos,
+                    videos: self.item_mapping[item.resource_id].videos,
                     chapter: item.resource_id,
                 };
                 const str = 'getVideosData' + JSON.stringify(params);
@@ -95,7 +95,7 @@ export function request(self, item, type) {
         'chapter_activies': () => {
             if (!item.data.events) {
                 const params = { params: {
-                    start: self.id2item[item.resource_id].start,
+                    start: self.item_mapping[item.resource_id].start,
                     time_length: 24 * 8,
                     time_scale: 'hour',
                 }};
@@ -115,7 +115,7 @@ export function request(self, item, type) {
         'video_related_forum': () => {
             if (!item.data.videos) {
                 const params = {
-                    videos: self.id2item[item.resource_id].videos,
+                    videos: self.item_mapping[item.resource_id].videos,
                     chapter: item.resource_id,
                 };
                 return axios.post(`${serverUrl}getForumThreadVideoRelated`, params).then((response) => {
@@ -129,7 +129,7 @@ export function request(self, item, type) {
         'assignment_related_forum': () => {
             if (!item.data.assignments) {
                 const params = {
-                    problems: self.id2item[item.resource_id].problems,
+                    problems: self.item_mapping[item.resource_id].problems,
                     chapter: item.resource_id,
                 };
                 return axios.post(`${serverUrl}getForumThreadProblemRelated`, params).then((response) => {

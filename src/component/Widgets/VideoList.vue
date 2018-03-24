@@ -1,5 +1,5 @@
 <template>
-    <div class="slideshow-content mooc-content text">
+    <div class="slide nm-block text">
         <b-link href="javascript:void(0);" @click="showlist = !showlist">
             {{ !showlist ? 'Show all videos' : 'Hide' }}
         </b-link>

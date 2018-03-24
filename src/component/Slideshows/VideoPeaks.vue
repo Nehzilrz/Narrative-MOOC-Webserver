@@ -1,11 +1,11 @@
 
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <div class="slideshow-content mooc-content title">
+        <div class="slide nm-block title">
             <h4> {{ item.name }} </h4>
         </div>
-        <div class="slideshow-content mooc-content graph" style="height: 30vh">
+        <div class="slide nm-block graph" style="height: 30vh">
             <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
                 :style="{
                     left: `${current_point && current_point.x}px`, 
@@ -16,15 +16,15 @@
                 {{ tooltip_message }}
             </b-tooltip>
         </div>
-        <div class="slideshow-content mooc-content text">
+        <div class="slide nm-block text">
             <h6 style="font-weight: 600; padding-top: 1vh; padding-bottom: 0.5vh;"> 
                 Peaks in this video:
             </h6>
         </div>
-        <div class="slideshow-content mooc-content text">
+        <div class="slide nm-block text">
             <ul style="padding-left: 2vw"
                 v-if="item.data.video_peaks && item.data.video_peaks.length">
-                <li class="mooc-content" v-for="peak, i in showed_peaks">
+                <li class="nm-block" v-for="peak, i in showed_peaks">
                     <styled-text :context="context">
                         The 
                         <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
@@ -45,14 +45,14 @@
                         which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
                     </styled-text>
                 </li>
-                <li class="mooc-content" v-if="item.data.video_peaks.length > showed_peaks_num">
+                <li class="nm-block" v-if="item.data.video_peaks.length > showed_peaks_num">
                     <b-link href="javascript:void(0);" @click="showed_peaks_num += 1">
                         Show more ...
                     </b-link>
                 </li>
             </ul>
         </div>
-        <div class="slideshow-content mooc-content text">
+        <div class="slide nm-block text">
             <b-form-row v-show="show_video">
                 <b-col cols="5">
                     <h6 style="font-weight: 600"> Screenshot of this peak: </h6>
@@ -309,12 +309,12 @@
 </script>
 
 <style scope>
-.slideshow-content.graph {
+.slide.graph {
     perspective: 200px;
     background-attachment: fixed;
 }
 
-.slideshow-content.text {
+.slide.text {
     font-size: 15px;
     font-weight: 500;
     font-family: inherit;

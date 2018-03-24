@@ -1,5 +1,5 @@
 <template>
-    <div class="slideshow-content mooc-content text" v-if="item.follow_ups.length > 0">
+    <div class="slide nm-block text" v-if="item.follow_ups.length > 0">
         <h5>
             Related questions:
         </h5>

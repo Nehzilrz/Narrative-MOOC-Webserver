@@ -1,11 +1,11 @@
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content mooc-content title">
+            <div class="slide nm-block title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content mooc-content graph" style="height: 40vh">
+            <div class="slide nm-block graph" style="height: 40vh">
                 <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
                     :style="{
                         left: `${current_point && current_point.x}px`, 
@@ -16,7 +16,7 @@
                     {{ tooltip_message }}
                 </b-tooltip>
             </div>
-            <div class="slideshow-content mooc-content text" v-for="student, i in students">
+            <div class="slide nm-block text" v-for="student, i in students">
                 <styled-text :context="context">
                     {{ student.name }} students pay more attention on these video, which including
                     <entity-link :id="student.videos[0].id" :context="context" :parent="item"></entity-link>
@@ -55,7 +55,7 @@
         computed: {
             overview() {
                 return this.item.data.student_overview
-                    .filter((d) => this.context.id2item[d.id])
+                    .filter((d) => this.context.item_mapping[d.id])
                     .sort((a, b) => b.length[3].value - a.length[3].value);
             },
             students() {
@@ -68,7 +68,7 @@
                     return {
                         name: name,
                         videos: this.overview.map(d => ({
-                            id: this.context.id2item[d.id].id,
+                            id: this.context.item_mapping[d.id].id,
                             value: d.length[i].value
                         })).sort((a, b) => b.value - a.value).slice(0, 2),
                     }
@@ -92,7 +92,7 @@
                 for (var i = 3; i >= 0; --i) {
                     studentPlot.addDataset(new Plottable.Dataset(
                             overview.map(d => ({
-                                id: context.id2item[d.id].name,
+                                id: context.item_mapping[d.id].name,
                                 value: d.length[i].value
                             }))
                         ).metadata(overview[0].length[i].name)
@@ -125,7 +125,7 @@
 </script>
 
 <style scope>
-.slideshow-content.text h6 {
+.slide.text h6 {
     font-weight: 600;
 }
 </style>

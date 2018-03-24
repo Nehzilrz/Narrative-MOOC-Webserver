@@ -1,19 +1,19 @@
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content mooc-content title">
+            <div class="slide nm-block title">
                 <h4> {{ item.name }} of these {{ users.length }} students </h4>
             </div>
-            <div class="slideshow-content mooc-content learner-profile">
-                <div class="content-block mooc-content">
+            <div class="slide nm-block learner-profile">
+                <div class="content-block nm-block">
                     <h6 style="width: 25vw;">
                         <styled-text :context="context">
                             Gender distribution:
                         </styled-text>
                     </h6>
                 </div>
-                <div class="content-block mooc-content detail" v-for="x, i in gender">
+                <div class="content-block nm-block detail" v-for="x, i in gender">
                     <h5 :style="{ color : context.color_schema[i] }"
                         style="width: 15vw;">
                         {{ x.name }}
@@ -30,14 +30,14 @@
                         </div>
                     </ul>
                 </div>
-                <div class="content-block mooc-content">
+                <div class="content-block nm-block">
                     <h6 style="width: 25vw;">
                         <styled-text :context="context">
                             Age distribution:
                         </styled-text>
                     </h6>
                 </div>
-                <div class="content-block mooc-content detail" v-for="x, i in age">
+                <div class="content-block nm-block detail" v-for="x, i in age">
                     <h5 :style="{ color : context.color_schema[i] }"
                         style="width: 15vw;">
                         {{ x.name }}
@@ -54,7 +54,7 @@
                         </div>
                     </ul>
                 </div>
-                <div class="content-block mooc-content">
+                <div class="content-block nm-block">
                     <h6 style="width: 25vw;">
                         <styled-text :context="context">
                             Education background distribution:
@@ -78,14 +78,14 @@
                         </div>
                     </ul>
                 </div>
-                <div class="content-block mooc-content">
+                <div class="content-block nm-block">
                     <h6 style="width: 25vw;">
                         <styled-text :context="context">
                             Country distribution:
                         </styled-text>
                     </h6>
                 </div>
-                <div class="content-block mooc-content detail" v-for="x, i in [['China', 39.2], ['United States', 17.8], ['Europe', 26.5], ['Other', 16.4]]">
+                <div class="content-block nm-block detail" v-for="x, i in [['China', 39.2], ['United States', 17.8], ['Europe', 26.5], ['Other', 16.4]]">
                     <h5 :style="{ color : context.color_schema[i] }"
                         style="width: 15vw;">
                         {{ x[0] }}
@@ -159,7 +159,7 @@
 </script>
 
 <style scope>
-.slideshow-content.text h6 {
+.slide.text h6 {
     font-weight: 600;
 }
 
@@ -185,7 +185,7 @@
     padding-left: 5vw;
 }
 
-.slideshow-content.learner-profile {
+.slide.learner-profile {
     padding-top: 2vh;
     padding-bottom: 1vh;
     padding-left: 2vh;

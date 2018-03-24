@@ -1,16 +1,16 @@
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content mooc-content title">
+            <div class="slide nm-block title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content mooc-content sequence">
-                <div class="graph mooc-content">
+            <div class="slide nm-block sequence">
+                <div class="graph nm-block">
                     <svg></svg>
                 </div>
                 <div class="patterns">
-                    <div class="pattern mooc-content">
+                    <div class="pattern nm-block">
                         <span class="head">
                             Frequently watched videos
                         </span>
@@ -23,7 +23,7 @@
                             {{ i }}. {{ elements[i].name }}
                         </span>
                     </div>
-                    <div class="pattern infrequent mooc-content">
+                    <div class="pattern infrequent nm-block">
                         <span class="head">
                             Infrequently watched videos
                         </span>
@@ -38,7 +38,7 @@
                     </div>
                 </div>
             </div>
-            <div class="slideshow-content mooc-content text">
+            <div class="slide nm-block text">
                 <styled-text :context="context" style="margin-left: 3vw;">
                     The current assignment is {{ assignment.name }}, the weight of this assignment is {{ assignment.weight }}. 
                     Assignment released on {{ assignment_release_date }}.
@@ -68,7 +68,7 @@
                     .toISOString().slice(0, 16).replace('T', ' ');
             },
             assignment() {
-                return this.context.id2item[this.elements[0].id];
+                return this.context.item_mapping[this.elements[0].id];
             },
             sequence() {
                 return this.item.data.sequence;
@@ -118,7 +118,7 @@
             },
             render() {
                 const svg = d3.select(this.$el)
-                    .select(".slideshow-content.sequence .graph svg");
+                    .select(".slide.sequence .graph svg");
                 svg.selectAll("*").remove();
                 const element = this.$el.getElementsByClassName("sequence")[0]
                     .getElementsByClassName("graph")[0]
@@ -234,16 +234,16 @@
 </script>
 
 <style scope>
-.slideshow-content.text h6 {
+.slide.text h6 {
     font-weight: 600;
 }
 
-.slideshow-content.sequence {
+.slide.sequence {
     position: relative;
     height: 100%;
 }
 
-.slideshow-content.sequence .patterns {
+.slide.sequence .patterns {
     position: absolute;
     top: 300px;
     left: 3vw;
@@ -251,16 +251,16 @@
     flex-direction: column;
 }
 
-.slideshow-content.sequence .patterns .pattern {
+.slide.sequence .patterns .pattern {
     display: block;
     padding-left: 1rem;
 }
 
-.slideshow-content.sequence .patterns .pattern .head {
+.slide.sequence .patterns .pattern .head {
     background: rgb(62, 146, 174);
     margin-right: 1rem;
 }
-.slideshow-content.sequence .patterns .pattern span {
+.slide.sequence .patterns .pattern span {
     color: white;
     opacity: 0.9;
     float: left;
@@ -271,16 +271,16 @@
     height: 1.5rem;
 }
 
-.slideshow-content.sequence .patterns .pattern.infrequent span {
+.slide.sequence .patterns .pattern.infrequent span {
     opacity: 0.7;
 }
 
-.slideshow-content.sequence .graph {
+.slide.sequence .graph {
     width: 100%;
     height: 400px;
 }
 
-.slideshow-content.sequence .graph svg {
+.slide.sequence .graph svg {
     width: 100%;
     height: 100%;
 }

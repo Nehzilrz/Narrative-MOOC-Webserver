@@ -1,11 +1,11 @@
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content mooc-content title">
+            <div class="slide nm-block title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content mooc-content discussed">
+            <div class="slide nm-block discussed">
                 <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
                     :style="{
                         left: `${current_point && current_point.x}px`, 
@@ -16,7 +16,7 @@
                     {{ tooltip_message }}
                 </b-tooltip>
                 <template v-for="(assignment, i) in videos">
-                    <div class="content-block mooc-content">
+                    <div class="content-block nm-block">
                         <styled-text style="padding-left: 2vw; width: 23vw;" :context="context">
                             {{ assignment.name }}
                         </styled-text>
@@ -83,7 +83,7 @@
 </script>
 
 <style scope>
-.slideshow-content.text h6 {
+.slide.text h6 {
     font-weight: 600;
 }
 
@@ -118,7 +118,7 @@
     transition-timing-function: ease-in-out;
 }
 
-.slideshow-content.discussed {
+.slide.discussed {
     padding-top: 2vh;
     padding-bottom: 2vh;
     height: 100%;

@@ -1,12 +1,12 @@
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content mooc-content title">
+            <div class="slide nm-block title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content mooc-content sequence">
-                <div class="graph mooc-content">
+            <div class="slide nm-block sequence">
+                <div class="graph nm-block">
                     <svg></svg>
                     <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
                         :style="{
@@ -19,8 +19,8 @@
                     </b-tooltip>
                 </div>
                 <div class="patterns">
-                    <h6 class="mooc-content"> General learning sequences: </h6>
-                    <div class="pattern mooc-content" v-for="(pattern, p) in patterns">
+                    <h6 class="nm-block"> General learning sequences: </h6>
+                    <div class="pattern nm-block" v-for="(pattern, p) in patterns">
                         <span class="head">
                             S{{p + 1}}
                         </span>
@@ -145,7 +145,7 @@
             },
             render() {
                 const svg = d3.select(this.$el)
-                    .select(".slideshow-content.sequence .graph svg");
+                    .select(".slide.sequence .graph svg");
                 svg.selectAll("*").remove();
                 const element = this.$el.getElementsByClassName("sequence")[0]
                     .getElementsByClassName("graph")[0]
@@ -223,7 +223,7 @@
                         this.show_tooltip = true;
                         this.current_point.x = d3.event.layerX;
                         this.current_point.y = d3.event.layerY;
-                        const x = this.context.id2item[d.id];
+                        const x = this.context.item_mapping[d.id];
                         this.tooltip_message = `${x.type}: ${x.name}`;
                     })
                     .on("mouseout", (d) => {
@@ -295,16 +295,16 @@
 </script>
 
 <style scope>
-.slideshow-content.text h6 {
+.slide.text h6 {
     font-weight: 600;
 }
 
-.slideshow-content.sequence {
+.slide.sequence {
     position: relative;
     height: 100%;
 }
 
-.slideshow-content.sequence .patterns {
+.slide.sequence .patterns {
     position: absolute;
     top: 300px;
     left: 3vw;
@@ -312,16 +312,16 @@
     flex-direction: column;
 }
 
-.slideshow-content.sequence .patterns .pattern {
+.slide.sequence .patterns .pattern {
     display: block;
     padding-left: 1rem;
 }
 
-.slideshow-content.sequence .patterns .pattern .head {
+.slide.sequence .patterns .pattern .head {
     background: rgb(62, 146, 174);
     margin-right: 1rem;
 }
-.slideshow-content.sequence .patterns .pattern span {
+.slide.sequence .patterns .pattern span {
     color: white;
     opacity: 0.7;
     float: left;
@@ -332,30 +332,30 @@
     height: 1.5rem;
 }
 
-.slideshow-content.sequence .patterns .pattern span:hover {
+.slide.sequence .patterns .pattern span:hover {
     opacity: 1;
 }
 
-.slideshow-content.sequence .patterns .pattern span.active {
+.slide.sequence .patterns .pattern span.active {
     opacity: 1;
 }
 
-.slideshow-content.sequence .graph {
+.slide.sequence .graph {
     width: 100%;
     height: 400px;
     position: relative;
 }
 
-.slideshow-content.sequence .graph svg {
+.slide.sequence .graph svg {
     width: 100%;
     height: 100%;
 }
 
-.slideshow-content.sequence .graph svg .node {
+.slide.sequence .graph svg .node {
     opacity: 0.8;
 }
 
-.slideshow-content.sequence .graph svg .node:hover {
+.slide.sequence .graph svg .node:hover {
     opacity: 1;
 }
 </style>

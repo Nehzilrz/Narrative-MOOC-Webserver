@@ -1,13 +1,13 @@
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content mooc-content title">
+            <div class="slide nm-block title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content mooc-content discussed">
+            <div class="slide nm-block discussed">
                 <template v-for="(assignment, i) in assignments">
-                    <div class="content-block mooc-content">
+                    <div class="content-block nm-block">
                         <styled-text style="padding-left: 2vw; width: 25vw;" :context="context">
                             {{ assignment.name }}
                         </styled-text>
@@ -24,7 +24,7 @@
                         </ul>
                     </div>
                 </template>
-                <div class="content-block mooc-content">
+                <div class="content-block nm-block">
                     <b-card v-if="current_post" :sub-title="current_post.title">
                         <p class="card-text">
                             {{ current_post.username }} : {{ current_post.body }}
@@ -71,7 +71,7 @@
 </script>
 
 <style scope>
-.slideshow-content.text h6 {
+.slide.text h6 {
     font-weight: 600;
 }
 
@@ -106,7 +106,7 @@
     transition-timing-function: ease-in-out;
 }
 
-.slideshow-content.discussed {
+.slide.discussed {
     padding-top: 2vh;
     padding-bottom: 2vh;
     height: 100%;

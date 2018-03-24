@@ -1,12 +1,12 @@
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content mooc-content mooc-content title">
+            <div class="slide nm-block nm-block title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content mooc-content" style="height: 25vh;">
-                <div class="graph mooc-content" style="width: 50%; float: left;">
+            <div class="slide nm-block" style="height: 25vh;">
+                <div class="graph nm-block" style="width: 50%; float: left;">
                     <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
                         :style="{
                             left: `${current_point && current_point.x}px`, 
@@ -17,7 +17,7 @@
                         {{ tooltip_message }}
                     </b-tooltip>
                 </div>
-                <div class="text mooc-content" style="width: 50%; float: left;">
+                <div class="text nm-block" style="width: 50%; float: left;">
                     <styled-text :context="context" v-if="video_time > 0 || assignment_time > 0">
                         Students spend an average of {{ Number(video_time / 60).toFixed(1) }} minutes watching the video 
                             and {{ Number(assignment_time / 60).toFixed(1) }} minutes completing the assignment.
@@ -144,7 +144,7 @@
                         var selection = element.selection;
                         if (!selection) return;
                         var x = selection.datum();
-                        x = context.id2item[x.id];
+                        x = context.item_mapping[x.id];
                         if (x.type == 'video') {
                             context.selectVideo(x, this.item);
                         } else if (x.type == 'assignment') {
@@ -231,7 +231,7 @@
 </script>
 
 <style scope>
-.slideshow-content.text h6 {
+.slide.text h6 {
     font-weight: 600;
 }
 </style>

@@ -15,7 +15,7 @@
         },
         computed: {
             item() {
-                return this.context.id2item[this.id];
+                return this.context.item_mapping[this.id];
             },
             style() {
                 const style = {

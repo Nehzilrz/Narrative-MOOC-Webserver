@@ -8,7 +8,7 @@
 
 <script>
 
-import Slideshow from "./Slideshow/SlideshowDynamic.vue";
+import Slideshow from "./Slideshows/Slideshow.vue";
 export default {
   data() {
     return {
@@ -23,7 +23,7 @@ export default {
   },
   watch: {
     page() {
-        /* this.$sr.reveal('.slideshow-content', {
+        /* this.$sr.reveal('.slide', {
         }, 2000);
         */
     }
@@ -42,58 +42,6 @@ export default {
   overflow-x: hidden;
   overflow-y: scroll;
   padding-bottom: 10vh;
-}
-
-.slideshow-page {
-  position: relative;
-  margin-top: 0.5vh;
-  margin-bottom: 0.5vh;
-  padding-top: 1vh;
-  padding-bottom: 1vh;
-}
-
-.slideshow-content {
-  width: 90%;
-  left: 1vw;
-  transition: 0.2s;
-  transition-timing-function: ease-in-out;
-}
-
-.slideshow-content.title {
-  font-weight: 800;
-  text-align: center;
-}
-
-.slideshow-content.title h1,
-h2,
-h3,
-h4 {
-  font-weight: 800;
-}
-
-.slideshow-content h5,h6 {
-  font-weight: 600;
-}
-
-
-.slideshow-content {
-  margin-left: 1vw;
-  margin-right: 1vw;
-  position: relative;
-}
-
-.mooc-content {
-  transition: 0.2s;
-  transition-timing-function: ease-in-out;
-}
-
-.slideshow-content.graph {
-  perspective: 200px;
-  background-attachment: fixed;
-}
-
-.slideshow-content.text {
-  margin-left: 3vw;
 }
 </style>
 

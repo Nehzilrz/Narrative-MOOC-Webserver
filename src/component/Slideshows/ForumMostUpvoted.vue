@@ -1,18 +1,18 @@
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content mooc-content title">
+            <div class="slide nm-block title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content mooc-content upvoted">
-                <div class="content-block mooc-content">
+            <div class="slide nm-block upvoted">
+                <div class="content-block nm-block">
                     <h5> 
                         Most upvoted replies:
                     </h5>
                 </div>
                 <transition-group name="list" tag="p">
-                    <div class="mooc-content" v-for="(thread, i) in threads" v-bind:key="i">
+                    <div class="nm-block" v-for="(thread, i) in threads" v-bind:key="i">
                         <div class="content-block-parent" style="padding-left: 3vw;">
                             <div class="content-block">
                                 <h6 style="width: 25vw;" @click="displayed = displayed == i ? -1 : i">
@@ -68,11 +68,11 @@
 </script>
 
 <style scope>
-.slideshow-content.text h6 {
+.slide.text h6 {
     font-weight: 600;
 }
 
-.slideshow-content.upvoted {
+.slide.upvoted {
     padding-top: 2vh;
     padding-bottom: 1vh;
     height: 100%;

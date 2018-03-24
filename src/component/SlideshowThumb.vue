@@ -31,7 +31,7 @@
         methods: {
             /*
             isActive(item) {
-                const elements = document.getElementsByClassName('slideshow-page');
+                const elements = document.getElementsByClassName('slide-page');
                 var index = -1;
                 if ((index = this.context.page.indexOf(item)) != -1) {
                     const element = elements[index];
@@ -52,7 +52,7 @@
             click(item) {
                 var index = -1;
                 if ((index = this.context.page.indexOf(item)) != -1) {
-                    const element = document.getElementsByClassName('slideshow-page')[index];
+                    const element = document.getElementsByClassName('slide-page')[index];
                     this.context.moveto.move(element); 
                 }
             },

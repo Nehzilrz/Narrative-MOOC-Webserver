@@ -1,18 +1,18 @@
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content mooc-content title">
+            <div class="slide nm-block title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content mooc-content discussed">
+            <div class="slide nm-block discussed">
                 <div class="content-block">
                     <h5> 
                         Popular topics:
                     </h5>
                 </div>
                 <template v-for="(thread, i) in threads">
-                    <div class="content-block mooc-content" style="padding-left: 3vw;">
+                    <div class="content-block nm-block" style="padding-left: 3vw;">
                         <styled-text style="width: 25vw;" :context="context">
                             {{ thread.title }}
                         </styled-text>
@@ -44,14 +44,14 @@
                     </b-card>
                 </div>
             </div>
-            <div class="slideshow-content mooc-content keyword">
-                <div class="content-block mooc-content">
+            <div class="slide nm-block keyword">
+                <div class="content-block nm-block">
                     <h5> 
                         Popular keywords:
                     </h5>
                 </div>
                 <wordcloud
-                    class="mooc-content"
+                    class="nm-block"
                     style="padding-left: 3vw; padding-right: 3vw;"
                     :data="keywords"
                     color="Category20c"
@@ -97,7 +97,7 @@
 </script>
 
 <style scope>
-.slideshow-content.text h6 {
+.slide.text h6 {
     font-weight: 600;
 }
 
@@ -128,7 +128,7 @@
     transition-timing-function: ease-in-out;
 }
 
-.slideshow-content.discussed {
+.slide.discussed {
     padding-top: 2vh;
     padding-bottom: 1vh;
     height: 100%;
@@ -136,7 +136,7 @@
     display: flex;
 }
 
-.slideshow-content.keyword {
+.slide.keyword {
     padding-top: 1vh;
     padding-bottom: 1vh;
     height: 30vh;

@@ -1,5 +1,5 @@
 <template>
-    <div class="slideshow-page">
+    <div class="slide-page">
     </div>
 </template>
 

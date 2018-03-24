@@ -74,7 +74,7 @@
       <div class="body-container">
           <div class="slideshow-outter-container">
             <slideshow-container v-for="item in pages" :context="context" :page="item" v-show="item == page">
-              <div class="slideshow-content mooc-content" v-if="(!page || !page.length) && !context.current_chapter">
+              <div class="slide nm-block" v-if="(!page || !page.length) && !context.current_chapter">
                 <b-list-group>
                   <b-list-group-item v-for="chapter in context.chapters" 
                     href="javascript:void(0);"
@@ -86,7 +86,7 @@
                   </b-list-group-item>
                 </b-list-group>
               </div>
-              <div class="slideshow-content mooc-content" v-if="(page && !page.length) && context.current_chapter"
+              <div class="slide nm-block" v-if="(page && !page.length) && context.current_chapter"
                 style="list-style: none; padding-top: 5vh;">
                 <h5> Overall Questions </h5>
                 <ul>
@@ -284,7 +284,7 @@ export default {
       problems: [],
       groups: [null],
       chapters: [],
-      id2item: {},
+      item_mapping: {},
       presentation_mode: false,
       // current_video: null,
       // current_problem: null,
@@ -388,7 +388,7 @@ export default {
       })
       .then(response => {
         this.videos = response.data;
-        this.videos.forEach(d => (this.id2item[d.id] = d));
+        this.videos.forEach(d => (this.item_mapping[d.id] = d));
       })
       .then(() => {
         axios
@@ -399,7 +399,7 @@ export default {
           })
           .then(response => {
             this.problems = response.data;
-            this.problems.forEach(d => (this.id2item[d.id] = d));
+            this.problems.forEach(d => (this.item_mapping[d.id] = d));
           });
       })
       .then(() => {
@@ -411,7 +411,7 @@ export default {
           })
           .then(async response => {
             this.chapters = response.data;
-            this.chapters.forEach(d => (this.id2item[d.id] = d));
+            this.chapters.forEach(d => (this.item_mapping[d.id] = d));
             this.page = [];
             this.pages.push(this.page);
           });
@@ -425,7 +425,7 @@ export default {
       if (this.page && this.page.length == 1) {
         return this.page[0];
       }
-      const elements = document.getElementsByClassName("slideshow-page");
+      const elements = document.getElementsByClassName("slide-page");
       return this.page
         ? this.page.find((item, index) => {
             const element = elements[index];
@@ -461,7 +461,7 @@ export default {
         problems: this.problems,
         history: this.history,
         groups: this.groups,
-        id2item: this.id2item,
+        item_mapping: this.item_mapping,
         addtext_bus: this.addtext_bus,
         refreshchart_bus: this.refreshchart_bus,
         color_schema: this.color_schema,
@@ -533,10 +533,10 @@ export default {
     presentation_mode(val) {
       this.bottom_tip_enabled = true;
       if (val) {
-        const pages = document.getElementsByClassName("slideshow-page");
+        const pages = document.getElementsByClassName("slide-page");
         const elements = [];
         for (const page of pages) {
-          const contents = page.getElementsByClassName("mooc-content");
+          const contents = page.getElementsByClassName("nm-block");
           for (const content of contents) {
             content.style.opacity = 0;
             elements.push({
@@ -554,7 +554,7 @@ export default {
             this.moveto.move(elements[step].cursor);
           }
           else if (event.keyCode == 38 && this.page_index == 0) {
-            while (step > 0 && elements[step - 1].target.getElementsByClassName('mooc-content').length > 1) {
+            while (step > 0 && elements[step - 1].target.getElementsByClassName('nm-block').length > 1) {
               elements[--step].target.style.opacity = 0;
             }
             if (step > 0) {
@@ -580,7 +580,7 @@ export default {
             }
             event.returnValue = false;
           } else if (event.keyCode == 40 && this.page_index == 0) {
-            while (step < elements.length && elements[step].target.getElementsByClassName('mooc-content').length > 1) {
+            while (step < elements.length && elements[step].target.getElementsByClassName('nm-block').length > 1) {
               elements[step++].target.style.opacity = 1;
             }
             if (step < elements.length) {
@@ -617,7 +617,7 @@ export default {
       if (this.page && this.page.length == 1) {
         return this.page[0];
       }
-      const elements = document.getElementsByClassName("slideshow-page");
+      const elements = document.getElementsByClassName("slide-page");
       return this.page
         ? this.page.find((item, index) => {
             const element = elements[index];
@@ -871,7 +871,7 @@ export default {
       localStorage.setItem("groups", JSON.stringify(this.groups));
       console.log("All groups have been saved.");
       /*
-        id2item: {},
+        item_mapping: {},
         */
       // page: null,
     },
@@ -886,10 +886,10 @@ export default {
       console.log("All pages have been loaded.");
       this.groups = JSON.parse(localStorage.getItem("groups"));
       console.log("All groups have been loaded.");
-      this.id2item = {};
-      this.videos.forEach(d => (this.id2item[d.id] = d));
-      this.problems.forEach(d => (this.id2item[d.id] = d));
-      this.chapters.forEach(d => (this.id2item[d.id] = d));
+      this.item_mapping = {};
+      this.videos.forEach(d => (this.item_mapping[d.id] = d));
+      this.problems.forEach(d => (this.item_mapping[d.id] = d));
+      this.chapters.forEach(d => (this.item_mapping[d.id] = d));
       this.page = this.pages && this.pages.length && this.pages[0];
       const current_chapter_id = localStorage.getItem("current_chapter_id");
       this.current_chapter = this.chapters.find(
@@ -1084,7 +1084,7 @@ export default {
       ) {
         var index = -1;
         if ((index = this.page.indexOf(item)) != -1) {
-          const element = document.getElementsByClassName("slideshow-page")[
+          const element = document.getElementsByClassName("slide-page")[
             index
           ];
           this.moveto.move(element);
@@ -1093,7 +1093,7 @@ export default {
           this.page = this.pages.find(page => page.includes(item));
           setTimeout(() => {
             index = this.page.indexOf(item);
-            const element = document.getElementsByClassName("slideshow-page")[
+            const element = document.getElementsByClassName("slide-page")[
               index
             ];
             this.moveto.move(element);
@@ -1104,7 +1104,7 @@ export default {
         item = state2.item;
         var index = -1;
         if ((index = this.page.indexOf(item)) != -1) {
-          const element = document.getElementsByClassName("slideshow-page")[
+          const element = document.getElementsByClassName("slide-page")[
             index
           ];
           this.moveto.move(element);
@@ -1113,7 +1113,7 @@ export default {
           this.page = this.pages.find(page => page.includes(item));
           setTimeout(() => {
             index = this.page.indexOf(item);
-            const element = document.getElementsByClassName("slideshow-page")[
+            const element = document.getElementsByClassName("slide-page")[
               index
             ];
             this.moveto.move(element);
@@ -1185,7 +1185,7 @@ export default {
       if (this.page != page) {
         this.page = page;
         /*
-          this.$sr.reveal('.slideshow-content', {
+          this.$sr.reveal('.slide', {
             rotate: {x: 65} 
           });
           */
