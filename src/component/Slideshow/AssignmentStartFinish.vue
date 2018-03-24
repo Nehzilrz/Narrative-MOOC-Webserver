@@ -2,23 +2,31 @@
     <div class="slideshow-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content title">
+            <div class="slideshow-content mooc-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content" style="height: 25vh">
-                <div class="graph" style="width: 50%; float: left;">
+            <div class="slideshow-content mooc-content" style="height: 25vh">
+                <div class="graph mooc-content" style="width: 50%; float: left;">
+                    <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                        :style="{
+                            left: `${current_point && current_point.x}px`, 
+                            top: `${current_point && (current_point.y - 5)}px` 
+                        }">
+                    </div>
+                    <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                        {{ tooltip_message }}
+                    </b-tooltip>
                 </div>
                 <div class="text" style="width: 50%; float: left; padding-left: 2vw;
                     padding-top: 1vh;">
-                    <h6> 
-                        Time cost in this week:
-                    </h6>
-                    <div style="padding-left: 2vw;">
+                    <div class="mooc-content" style="padding-left: 2vw;">
                         <styled-text :context="context">
                             The assignment the student started at the latest was 
                             <entity-link :id="max_delay.id" :context="context" :parent="item"></entity-link>
                             , and they started it {{ Number(max_delay.delay).toFixed(1) }} days after the assignment was released.
                         </styled-text>
+                    </div>
+                    <div class="mooc-content" style="padding-left: 2vw;">
                         <styled-text :context="context">
                             The longest assignment for the student working cycle is <entity-link :id="max_duration.id" :context="context" :parent="item"></entity-link>.
                                 {{ Number(max_duration.duration).toFixed(1) }} days.
@@ -33,24 +41,17 @@
 
 <script>
     import Plottable from "plottable";
+    import SlideshowBase from "./SlideshowBase.vue";
 
     export default {
         data() {
             return {
-                show_tooltip: false,
-                tooltip_message: 'Hello World',
-                current_point: {},
-                table: null,
-                lastElement: null,
             };
         },
         created() {
             this.table = this.render(this.item.data, this.context);
-            this.context.bus.$on("add-text-box", this.handle);
         },
-        destroyed() {
-            this.context.bus.$off("add-text-box", this.handle);
-        },
+        extends: SlideshowBase,
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
@@ -84,17 +85,6 @@
             }
         },
         methods: {
-            handle(_id) {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            },
             render(data, context) {
                 const assignment_activies = this.start_finish;
 
@@ -123,6 +113,7 @@
                 if (this.lastElement) {
                     plots.attr("opacity", d => d.id == this.lastElement ? 1 : 0.5);
                 }
+                this.plots = plots;
                 
                 var interaction = new Plottable.Interactions.Click();
                 interaction.onClick(point => {
@@ -158,7 +149,7 @@
                 interaction2.onPointerMove(point => {
                     var element = plots.entitiesAt(point)[0];
                     if (!element) {
-                        this.show_tooltip = false;
+                        setTimeout(() => { this.show_tooltip = 0; }, 500);
                         return;
                     }
                     var selection = element.selection;
@@ -167,13 +158,13 @@
                     this.current_point.x = point.x + plots.origin().x;
                     this.current_point.y = point.y + plots.origin().y;
                     var x = selection.datum();
-                    this.tooltip_message = `value: ${x.activeness}`;
+                    this.tooltip_message = `Delay: ${Number(x.delay).toFixed(1)} days, Duration: ${Number(x.duration).toFixed(1)} days`;
                     if (!this.context.enable_highlight_chart) {
                         plots.selections().attr("opacity", 0.8);
                         selection.attr("opacity", 1);
                     }
                 }).onPointerExit(point => {
-                    this.show_tooltip = false;
+                    setTimeout(() => { this.show_tooltip = 0; }, 500);
                     if (!this.context.enable_highlight_chart) {
                         plots.selections().attr("opacity", 0.8);
                     }

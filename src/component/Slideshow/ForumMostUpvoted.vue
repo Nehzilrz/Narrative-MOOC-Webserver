@@ -2,17 +2,17 @@
     <div class="slideshow-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content title">
+            <div class="slideshow-content mooc-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content upvoted">
-                <div class="content-block">
+            <div class="slideshow-content mooc-content upvoted">
+                <div class="content-block mooc-content">
                     <h5> 
                         Most upvoted replies:
                     </h5>
                 </div>
                 <transition-group name="list" tag="p">
-                    <div v-for="(thread, i) in threads" v-bind:key="i">
+                    <div class="mooc-content" v-for="(thread, i) in threads" v-bind:key="i">
                         <div class="content-block-parent" style="padding-left: 3vw;">
                             <div class="content-block">
                                 <h6 style="width: 25vw;" @click="displayed = displayed == i ? -1 : i">
@@ -21,7 +21,8 @@
                                     </styled-text>
                                 </h6>
                                 <h5 :style="{ color : context.color_schema[i] }"
-                                    style="width: 15vw; margin-left: 5vw;">
+                                    style="width: 15vw; margin-left: 5vw;
+                                padding-top: .5em;">
                                     upvoted {{ thread.up_count }} times
                                 </h5>
                             </div>
@@ -47,43 +48,22 @@
 </template>
 
 <script>
+    import SlideshowBase from "./SlideshowBase.vue";
+
     export default {
         data() {
             return {
                 displayed: -1,
             };
         },
-        components: {
-        },
-        created() {
-            this.context.bus.$on("add-text-box", this.handle);
-        },
-        destroyed() {
-            this.context.bus.$off("add-text-box", this.handle);
-        },
-        mounted() {
-            // var element = this.$el.getElementsByClassName('graph')[0];
-            // this.table.renderTo(element);
-        },
+        extends: SlideshowBase,
         computed: {
             threads() {
                 return this.item.data.threads.slice(0, 5);
             },
         },
         methods: {
-            handle(_id) {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            },
         },
-        props: ["item", "context", "step"],
     };
 </script>
 

@@ -2,24 +2,23 @@
     <div class="slideshow-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content title">
+            <div class="slideshow-content mooc-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content discussed">
+            <div class="slideshow-content mooc-content discussed">
                 <div class="content-block">
                     <h5> 
                         Popular topics:
                     </h5>
                 </div>
                 <template v-for="(thread, i) in threads">
-                    <div class="content-block" style="padding-left: 3vw;">
-                        <h6 style="width: 25vw;">
-                            <styled-text :context="context">
-                                {{ thread.title }}
-                            </styled-text>
-                        </h6>
+                    <div class="content-block mooc-content" style="padding-left: 3vw;">
+                        <styled-text style="width: 25vw;" :context="context">
+                            {{ thread.title }}
+                        </styled-text>
                         <h5 :style="{ color : context.color_schema[i] }"
-                            style="width: 15vw;">
+                            style="width: 15vw;
+                            padding-top: .5em;">
                             discussed {{ thread.comment_count }} times
                         </h5>
                         <ul style="width: 30vw; padding-top: 0.5vh;">
@@ -45,13 +44,14 @@
                     </b-card>
                 </div>
             </div>
-            <div class="slideshow-content keyword">
-                <div class="content-block">
+            <div class="slideshow-content mooc-content keyword">
+                <div class="content-block mooc-content">
                     <h5> 
                         Popular keywords:
                     </h5>
                 </div>
                 <wordcloud
+                    class="mooc-content"
                     style="padding-left: 3vw; padding-right: 3vw;"
                     :data="keywords"
                     color="Category20c"
@@ -66,55 +66,33 @@
 
 <script>
     import wordcloud from 'vue-wordcloud';
+    import SlideshowBase from "./SlideshowBase.vue";
 
     export default {
         data() {
             return {
-                show_tooltip: false,
-                tooltip_message: 'Hello World',
-                current_point: {},
-                current_comment: null,
-                lastElement: null,
+                keywords: [],
             };
         },
+        extends: SlideshowBase,
         components: {
             wordcloud,
         },
-        created() {
-            this.context.bus.$on("add-text-box", this.handle);
-        },
-        destroyed() {
-            this.context.bus.$off("add-text-box", this.handle);
-        },
         mounted() {
+            setTimeout(() => { this.keywords = this.item.data.keywords; }, 50);
             // var element = this.$el.getElementsByClassName('graph')[0];
             // this.table.renderTo(element);
         },
         computed: {
-            keywords() {
-                return this.item.data.keywords;
-            },
             threads() {
                 return this.item.data.threads.slice(0, 5);
             },
         },
         methods: {
-            handle(_id) {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            },
             click(comment) {
                 this.current_comment = this.current_comment == comment ? null : comment;
             }
         },
-        props: ["item", "context", "step"],
     };
 </script>
 

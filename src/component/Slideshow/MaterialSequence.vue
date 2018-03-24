@@ -2,16 +2,25 @@
     <div class="slideshow-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content title">
+            <div class="slideshow-content mooc-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content sequence">
-                <div class="graph">
+            <div class="slideshow-content mooc-content sequence">
+                <div class="graph mooc-content">
                     <svg></svg>
+                    <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                        :style="{
+                            left: `${current_point && current_point.x - 5}px`, 
+                            top: `${current_point && (current_point.y - 10)}px` 
+                        }">
+                    </div>
+                    <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                        {{ tooltip_message }}
+                    </b-tooltip>
                 </div>
                 <div class="patterns">
-                    <h6> General learning sequences: </h6>
-                    <div class="pattern" v-for="(pattern, p) in patterns">
+                    <h6 class="mooc-content"> General learning sequences: </h6>
+                    <div class="pattern mooc-content" v-for="(pattern, p) in patterns">
                         <span class="head">
                             S{{p + 1}}
                         </span>
@@ -33,22 +42,14 @@
 
 <script>
     import * as d3 from "d3";
+    import SlideshowBase from "./SlideshowBase.vue";
 
     export default {
         data() {
             return {
-                show_tooltip: false,
-                tooltip_message: 'Hello World',
-                current_point: {},
-                lastElement: null,
             };
         },
-        created() {
-            this.context.bus.$on("add-text-box", this.handle);
-        },
-        destroyed() {
-            this.context.bus.$off("add-text-box", this.handle);
-        },
+        extends: SlideshowBase,
         mounted() {
             this.render();
         },
@@ -138,17 +139,6 @@
             }
         },
         methods: {
-            handle(_id) {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            },
             click(i) {
                 this.lastElement = this.lastElement == i ? null : i;
                 this.render(); 
@@ -228,7 +218,17 @@
                     .enter()
                     .append("g")
                     .attr("class", "node")
-                    .attr("transform", (d, i) => `translate(${x(i) - node_width / 2},${y - node_height / 2})`);
+                    .attr("transform", (d, i) => `translate(${x(i) - node_width / 2},${y - node_height / 2})`)
+                    .on("mousemove", (d) => {
+                        this.show_tooltip = true;
+                        this.current_point.x = d3.event.layerX;
+                        this.current_point.y = d3.event.layerY;
+                        const x = this.context.id2item[d.id];
+                        this.tooltip_message = `${x.type}: ${x.name}`;
+                    })
+                    .on("mouseout", (d) => {
+                        setTimeout(() => { this.show_tooltip = 0; }, 500);
+                    });
 
                 nodes.append("rect")
                     .attr("width", node_width)
@@ -290,7 +290,7 @@
                     */
             }
         },
-        props: ["item", "context", "step"],
+        props: ["item", "context"],
     };
 </script>
 
@@ -343,6 +343,7 @@
 .slideshow-content.sequence .graph {
     width: 100%;
     height: 400px;
+    position: relative;
 }
 
 .slideshow-content.sequence .graph svg {

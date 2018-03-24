@@ -73,7 +73,6 @@ export const questions = {
     V5: "Where in the video are students struggling with?",
     V6: "Which videos are most discussed in the forum?",
     V7: "What is the content of the interested video segment?",
-    A0: "How much time do students spend on each assignment?",
     A1: "How well do students perform? (correctness)",
     A2: "How many assignments do students finish?",
     A3: "Which assignments have the greatest number of attempts?",
@@ -83,7 +82,6 @@ export const questions = {
     F1: "Which are the most discussed topics/threads/keywords?",
     F2: "Which are the most upvoted replies?",
     F3: "Who are the top questioners/responders?",   
-    F4: "Which are the most discussed keywords?",
 };
 
 export const scopeOf = type => {

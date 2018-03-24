@@ -2,10 +2,10 @@
     <div class="slideshow-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content title">
+            <div class="slideshow-content mooc-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content graph" style="height: 30vh">
+            <div class="slideshow-content mooc-content graph" style="height: 30vh">
                 <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
                     :style="{
                         left: `${current_point && current_point.x}px`, 
@@ -16,14 +16,14 @@
                     {{ tooltip_message }}
                 </b-tooltip>
             </div>
-            <div class="slideshow-content text">
+            <div class="slideshow-content mooc-content text">
                 <styled-text :context="context">
                     The video with highest watch time on average is
                     <entity-link :id="most_watch[0].id" :context="context" :parent="item"></entity-link>
                     , which has been watched {{ Number(most_watch[0].watch_time).toFixed(1) }} minutes.
                 </styled-text>
             </div>
-            <div class="slideshow-content text">
+            <div class="slideshow-content mooc-content text">
                 <styled-text :context="context">
                     The video with lowest watch time on average is
                     <entity-link :id="least_watch[0].id" :context="context" :parent="item"></entity-link>
@@ -37,23 +37,16 @@
 
 <script>
     import Plottable from "plottable";
+    import SlideshowBase from "./SlideshowBase.vue";
 
     export default {
         data() {
             return {
-                show_tooltip: false,
-                tooltip_message: 'Hello World',
-                current_point: {},
-                table: null,
-                lastElement: null,
             };
         },
+        extends: SlideshowBase,
         created() {
             this.table = this.render(this.item.data, this.context);
-            this.context.bus.$on("add-text-box", this.handle);
-        },
-        destroyed() {
-            this.context.bus.$off("add-text-box", this.handle);
         },
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
@@ -72,17 +65,6 @@
             }
         },
         methods: {
-            handle(_id) {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            },
             render(data, context) {
                 const video_activies = data.video_activies;
 
@@ -116,22 +98,22 @@
                         .symbol(() => Plottable.SymbolFactories.circle())
                         .xAlignment("right");
 
+                this.plots = plots;
                 var interaction = new Plottable.Interactions.Click();
-                var lastElement = null;
                 interaction.onClick(point => {
                     if (this.context.enable_highlight_chart) {
                         var element = plots.entitiesAt(point)[0];
                         if (!element) return;
-                        if (lastElement && lastElement.datum == element.datum) {
+                        if (this.lastElement == element.datum.id) {
                             plots.selections().attr("opacity", 1);
-                            lastElement = null;
+                            this.lastElement = null;
                             return;
                         } else {
                             plots.selections().attr("opacity", 0.5);
                         }
                         var selection = element.selection;
                         selection.attr("opacity", 1);
-                        lastElement = element;
+                        this.lastElement = element.datum.id;
                     } else {
                         var element = plots.entitiesAt(point)[0];
                         if (!element) return;
@@ -147,21 +129,28 @@
                     }
                 });
                 interaction.attachTo(plots);
-
                 var interaction2 = new Plottable.Interactions.Pointer();
                 interaction2.onPointerMove(point => {
+                    var element = plots.entitiesAt(point)[0];
+                    if (!element) {
+                        setTimeout(() => { this.show_tooltip = 0; }, 500);
+                        return;
+                    }
+                    var selection = element.selection;
+                    if (!selection) return;
+                    this.show_tooltip = true;
+                    this.current_point.x = point.x + plots.origin().x;
+                    this.current_point.y = point.y + plots.origin().y;
+                    var x = selection.datum();
+                    this.tooltip_message = `value: ${x.video_watch_time}`;
                     if (!this.context.enable_highlight_chart) {
                         plots.selections().attr("opacity", 0.8);
-                        var element = plots.entitiesAt(point)[0];
-                        if (!element) return;
-                        var selection = element.selection;
-                        if (!selection) return;
                         selection.attr("opacity", 1);
-                        var x = selection.datum();
                     }
                 }).onPointerExit(point => {
+                    setTimeout(() => { this.show_tooltip = 0; }, 500);
                     if (!this.context.enable_highlight_chart) {
-                        plots.selections().attr("opacity", 1);
+                        plots.selections().attr("opacity", 0.8);
                     }
                 });
                 interaction2.attachTo(plots);
@@ -176,7 +165,7 @@
                 return table;
             },
         },
-        props: ["item", "context", "step"],
+        props: ["item", "context"],
     };
 </script>
 

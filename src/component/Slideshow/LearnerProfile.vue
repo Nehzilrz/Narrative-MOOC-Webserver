@@ -2,18 +2,18 @@
     <div class="slideshow-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content title">
+            <div class="slideshow-content mooc-content title">
                 <h4> {{ item.name }} of these {{ users.length }} students </h4>
             </div>
-            <div class="slideshow-content learner-profile">
-                <div class="content-block">
+            <div class="slideshow-content mooc-content learner-profile">
+                <div class="content-block mooc-content">
                     <h6 style="width: 25vw;">
                         <styled-text :context="context">
                             Gender distribution:
                         </styled-text>
                     </h6>
                 </div>
-                <div class="content-block detail" v-for="x, i in gender">
+                <div class="content-block mooc-content detail" v-for="x, i in gender">
                     <h5 :style="{ color : context.color_schema[i] }"
                         style="width: 15vw;">
                         {{ x.name }}
@@ -30,14 +30,14 @@
                         </div>
                     </ul>
                 </div>
-                <div class="content-block">
+                <div class="content-block mooc-content">
                     <h6 style="width: 25vw;">
                         <styled-text :context="context">
                             Age distribution:
                         </styled-text>
                     </h6>
                 </div>
-                <div class="content-block detail" v-for="x, i in age">
+                <div class="content-block mooc-content detail" v-for="x, i in age">
                     <h5 :style="{ color : context.color_schema[i] }"
                         style="width: 15vw;">
                         {{ x.name }}
@@ -54,7 +54,7 @@
                         </div>
                     </ul>
                 </div>
-                <div class="content-block">
+                <div class="content-block mooc-content">
                     <h6 style="width: 25vw;">
                         <styled-text :context="context">
                             Education background distribution:
@@ -78,14 +78,14 @@
                         </div>
                     </ul>
                 </div>
-                <div class="content-block">
+                <div class="content-block mooc-content">
                     <h6 style="width: 25vw;">
                         <styled-text :context="context">
                             Country distribution:
                         </styled-text>
                     </h6>
                 </div>
-                <div class="content-block detail" v-for="x, i in [['China', 39.2], ['United States', 17.8], ['Europe', 26.5], ['Other', 16.4]]">
+                <div class="content-block mooc-content detail" v-for="x, i in [['China', 39.2], ['United States', 17.8], ['Europe', 26.5], ['Other', 16.4]]">
                     <h5 :style="{ color : context.color_schema[i] }"
                         style="width: 15vw;">
                         {{ x[0] }}
@@ -110,25 +110,14 @@
 
 <script>
     import Plottable from "plottable";
+    import SlideshowBase from "./SlideshowBase.vue";
 
     export default {
         data() {
             return {
-                show_tooltip: false,
-                tooltip_message: 'Hello World',
-                current_point: {},
-                table: null,
-                lastElement: null,
             };
         },
-        created() {
-            this.context.bus.$on("add-text-box", this.handle);
-        },
-        destroyed() {
-            this.context.bus.$off("add-text-box", this.handle);
-        },
-        mounted() {
-        },
+        extends: SlideshowBase,
         computed: {
             useless() {
                 /*
@@ -165,19 +154,7 @@
             }
         },
         methods: {
-            handle(_id) {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            }
         },
-        props: ["item", "context", "step"],
     };
 </script>
 

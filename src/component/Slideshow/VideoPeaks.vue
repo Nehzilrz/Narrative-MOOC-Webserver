@@ -2,105 +2,95 @@
 <template>
     <div class="slideshow-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item">
-            <div class="slideshow-content title">
-                <h4> {{ item.name }} </h4>
+        <div class="slideshow-content mooc-content title">
+            <h4> {{ item.name }} </h4>
+        </div>
+        <div class="slideshow-content mooc-content graph" style="height: 30vh">
+            <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                :style="{
+                    left: `${current_point && current_point.x}px`, 
+                    top: `${current_point && (current_point.y - 5)}px` 
+                }">
             </div>
-            <div class="slideshow-content graph" style="height: 30vh" v-show = "step > 1">
-                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
-                    :style="{
-                        left: `${current_point && current_point.x}px`, 
-                        top: `${current_point && (current_point.y - 5)}px` 
-                    }">
-                </div>
-                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
-                    {{ tooltip_message }}
-                </b-tooltip>
-            </div>
-            <div class="slideshow-content text">
-                <h6 style="font-weight: 600; padding-top: 1vh; padding-bottom: 0.5vh;"> 
-                    Peaks in this video:
-                </h6>
-            </div>
-            <div class="slideshow-content text">
-                <ul style="padding-left: 2vw"
-                    v-if="item.data.video_peaks && item.data.video_peaks.length">
-                    <li v-for="peak, i in showed_peaks">
-                        <styled-text :context="context">
-                            The 
-                            <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
-                                Peak 
-                                <span class="step" :style="{ background: context.color_schema[i] }">
-                                    {{i}}
-                                </span>
-                            </b-link>
-                            of students' operation appears at the 
-                            <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
-                                {{ ~~(peak.time / 60) }}:{{ ~~(peak.time % 60 / 10) }}{{ peak.time % 10 }} 
-                            </b-link>
-                            of the video, with 
-                            <b-link href="javascript:void(0);" @click="onSelectStudents(item.data.video_peaks[i].users, ' in Peak#' + i)">
-                                {{ peak.student_num }} students
-                            </b-link>
-                            , 
-                            which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
-                        </styled-text>
-                    </li>
-                    <li v-if="item.data.video_peaks.length > showed_peaks_num">
-                        <b-link href="javascript:void(0);" @click="showed_peaks_num += 1">
-                            Show more ...
+            <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                {{ tooltip_message }}
+            </b-tooltip>
+        </div>
+        <div class="slideshow-content mooc-content text">
+            <h6 style="font-weight: 600; padding-top: 1vh; padding-bottom: 0.5vh;"> 
+                Peaks in this video:
+            </h6>
+        </div>
+        <div class="slideshow-content mooc-content text">
+            <ul style="padding-left: 2vw"
+                v-if="item.data.video_peaks && item.data.video_peaks.length">
+                <li class="mooc-content" v-for="peak, i in showed_peaks">
+                    <styled-text :context="context">
+                        The 
+                        <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
+                            Peak 
+                            <span class="step" :style="{ background: context.color_schema[i] }">
+                                {{i}}
+                            </span>
                         </b-link>
-                    </li>
-                </ul>
-            </div>
-            </div>
-            <div class="slideshow-content text">
-                <b-form-row v-show="show_video">
-                    <b-col cols="5">
-                        <h6 style="font-weight: 600"> Screenshot of this peak: </h6>
-                        <b-embed v-if="item.data.video"
-                                type="video"
-                                aspect="16by9"
-                                :src= "item.data.video.html5_sources"
-                                class="peak_embed_video"
-                        ></b-embed>
-                    </b-col>
-                    <b-col cols="1">
-                    </b-col>
-                    <b-col cols="6">
-                        <h6 style="font-weight: 600; padding-bottom: 2vh;"> A comparison of these students' in this peak with the average: </h6>
-                        <div class="peak_embed_chart" 
-                            style="width: 100%; height: 30vh; padding-left: 2vw;">
-                        </div>
-                    </b-col>
-                </b-form-row>
-            </div>
-            <follow-up v-show = "step > 5" :item="item" :context="context"></follow-up>
-        </template>
+                        of students' operation appears at the 
+                        <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
+                            {{ ~~(peak.time / 60) }}:{{ ~~(peak.time % 60 / 10) }}{{ peak.time % 10 }} 
+                        </b-link>
+                        of the video, with 
+                        <b-link href="javascript:void(0);" @click="onSelectStudents(item.data.video_peaks[i].users, ' in Peak#' + i)">
+                            {{ peak.student_num }} students
+                        </b-link>
+                        , 
+                        which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
+                    </styled-text>
+                </li>
+                <li class="mooc-content" v-if="item.data.video_peaks.length > showed_peaks_num">
+                    <b-link href="javascript:void(0);" @click="showed_peaks_num += 1">
+                        Show more ...
+                    </b-link>
+                </li>
+            </ul>
+        </div>
+        <div class="slideshow-content mooc-content text">
+            <b-form-row v-show="show_video">
+                <b-col cols="5">
+                    <h6 style="font-weight: 600"> Screenshot of this peak: </h6>
+                    <b-embed v-if="item.data.video"
+                            type="video"
+                            aspect="16by9"
+                            :src= "item.data.video.html5_sources"
+                            class="peak_embed_video"
+                    ></b-embed>
+                </b-col>
+                <b-col cols="1">
+                </b-col>
+                <b-col cols="6">
+                    <h6 style="font-weight: 600; padding-bottom: 2vh;"> A comparison of these students' in this peak with the average: </h6>
+                    <div class="peak_embed_chart" 
+                        style="width: 100%; height: 30vh; padding-left: 2vw;">
+                    </div>
+                </b-col>
+            </b-form-row>
+        </div>
+        <follow-up :item="item" :context="context"></follow-up>
     </div>
 </template>
 
 <script>
     import Plottable from "plottable";
+    import SlideshowBase from "./SlideshowBase.vue";
 
     export default {
         data() {
             return {
-                show_tooltip: false,
-                tooltip_message: 'Hello World',
-                current_point: {},
-                table: null,
-                lastElement: null,
                 show_video: false,
                 showed_peaks_num: 3,
             };
         },
+        extends: SlideshowBase,
         created() {
             this.table = this.render(this.item.data, this.context);
-            this.context.bus.$on("add-text-box", this.handle);
-        },
-        destroyed() {
-            this.context.bus.$off("add-text-box", this.handle);
         },
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
@@ -126,17 +116,6 @@
             }
         },
         methods: {
-            handle(_id) {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            },
             render(data, context) {
                 let video_logs = data.video_logs;
                 let video_peaks = data.video_peaks;
@@ -326,7 +305,6 @@
                 });
             },
         },
-        props: ["item", "context", "step"],
     };
 </script>
 

@@ -73,7 +73,58 @@
       </div>
       <div class="body-container">
           <div class="slideshow-outter-container">
-            <slideshow-container v-for="item in pages" :context="context" :page="item" v-if="item == page">
+            <slideshow-container v-for="item in pages" :context="context" :page="item" v-show="item == page">
+              <div class="slideshow-content mooc-content" v-if="(!page || !page.length) && !context.current_chapter">
+                <b-list-group>
+                  <b-list-group-item v-for="chapter in context.chapters" 
+                    href="javascript:void(0);"
+                    @click="current_chapter = chapter"
+                    >{{ chapter.name }}
+                      (
+                        {{ new Date(chapter.start).toDateString().slice(4) }}
+                      ) 
+                  </b-list-group-item>
+                </b-list-group>
+              </div>
+              <div class="slideshow-content mooc-content" v-if="(page && !page.length) && context.current_chapter"
+                style="list-style: none; padding-top: 5vh;">
+                <h5> Overall Questions </h5>
+                <ul>
+                  <li v-for="id in 'O1 O2 O3 O4'.split(' ')">
+                    <b-link href="javascript:void(0);"
+                    @click="startPage(id)">
+                      {{ questions[id] }}
+                    </b-link>
+                  </li>
+                </ul>
+                <h5> Assignment Questions </h5>
+                <ul>
+                  <li v-for="id in 'A1 A2 A3 A4'.split(' ')">
+                    <b-link href="javascript:void(0);"
+                    @click="startPage(id)">
+                      {{ questions[id] }}
+                    </b-link>
+                  </li>
+                </ul>
+                <h5> Video Questions </h5>
+                <ul>
+                  <li v-for="id in 'V1 V2 V3 V4'.split(' ')">
+                    <b-link href="javascript:void(0);"
+                    @click="startPage(id)">
+                      {{ questions[id] }}
+                    </b-link>
+                  </li>
+                </ul>
+                <h5> Forum Questions </h5>
+                <ul>
+                  <li v-for="id in 'F1 F2 F3'.split(' ')">
+                    <b-link href="javascript:void(0);"
+                    @click="startPage(id)">
+                      {{ questions[id] }}
+                    </b-link>
+                  </li>
+                </ul>
+              </div>
             </slideshow-container>
             <div class="carousel-switcher" v-if="pages && !presentation_mode">
               <b-button-toolbar key-nav aria-label="Toolbar with button groups">
@@ -92,6 +143,11 @@
                   >&rsaquo;</b-btn>
                 </b-button-group>
               </b-button-toolbar>
+            </div>
+            <div class="screen-bottom-tips" 
+              v-if="pages && presentation_mode && bottom_tip_enabled"
+              @click="bottom_tip_enabled = false">
+              <h3> {{ page_index == 0 ? 'Press ↓ to Next' : 'Press ← to Back'}} </h3>
             </div>
           </div>
           <div class="sidebar-container tool" :class="{ open: sidebar_active }">
@@ -135,7 +191,7 @@
                   </ul>
                 </div>
                 <div class="text-highlighter" v-if="!presentation_mode">
-                  <p >
+                  <p>
                   Text Highlighter
                   </p>
                   <svg @click="enable_highlight_text = enable_highlight_text == 1 ? 0 : 1" viewBox="0 0 512 512">
@@ -151,13 +207,7 @@
                   Chart Highlighter
                   </p>
                   <svg @click="onChartHighlight" x="0px" y="0px" viewBox="0 0 483.8 483.8" style="enable-background:new 0 0 483.8 483.8;" xml:space="preserve" width="512px" height="512px">
-                  <g>
-                    <g>
-                      <path d="M123.2,134H15.7C7,134,0,141,0,149.7v310.6C0,469,7,476,15.7,476h107.5c8.7,0,15.7-7,15.7-15.7V149.7    C139,141,131.9,134,123.2,134z M107.5,444.6H31.4V165.4h76.1V444.6z" fill="#FFFFFF"/>
-                      <path d="M468.1,216.4H360.6c-8.7,0-15.7,7-15.7,15.7v228.2c0,8.7,7,15.7,15.7,15.7h107.5c8.7,0,15.7-7,15.7-15.7V232.1    C483.8,223.4,476.8,216.4,468.1,216.4z M376.3,247.8h24.4l-24.4,24.4V247.8z M376.3,297.2l49.3-49.3h24.9l-74.2,74.2L376.3,297.2    L376.3,297.2z M452.4,444.6h-24.5l24.5-24.5V444.6z M452.4,395.2L403,444.6h-24.9l74.2-74.2v24.8H452.4z M452.4,345.5l-76.1,76.1    v-24.9l76.1-76.1V345.5z M452.4,295.7l-76.1,76.1v-24.9l76.1-76.1V295.7z" fill="#FFFFFF"/>
-                      <path d="M295.7,7.8H188.1c-8.7,0-15.7,7-15.7,15.7v436.8c0,8.7,7,15.7,15.7,15.7h107.5c8.7,0,15.7-7,15.7-15.7V23.5    C311.4,14.8,304.4,7.8,295.7,7.8z" fill="#FFFFFF"/>
-                    </g>
-                  </g>
+                    <path d="M123.2,134H15.7C7,134,0,141,0,149.7v310.6C0,469,7,476,15.7,476h107.5c8.7,0,15.7-7,15.7-15.7V149.7    C139,141,131.9,134,123.2,134z M107.5,444.6H31.4V165.4h76.1V444.6z M468.1,216.4H360.6c-8.7,0-15.7,7-15.7,15.7v228.2c0,8.7,7,15.7,15.7,15.7h107.5c8.7,0,15.7-7,15.7-15.7V232.1    C483.8,223.4,476.8,216.4,468.1,216.4z M376.3,247.8h24.4l-24.4,24.4V247.8z M376.3,297.2l49.3-49.3h24.9l-74.2,74.2L376.3,297.2    L376.3,297.2z M452.4,444.6h-24.5l24.5-24.5V444.6z M452.4,395.2L403,444.6h-24.9l74.2-74.2v24.8H452.4z M452.4,345.5l-76.1,76.1    v-24.9l76.1-76.1V345.5z M452.4,295.7l-76.1,76.1v-24.9l76.1-76.1V295.7z M295.7,7.8H188.1c-8.7,0-15.7,7-15.7,15.7v436.8c0,8.7,7,15.7,15.7,15.7h107.5c8.7,0,15.7-7,15.7-15.7V23.5    C311.4,14.8,304.4,7.8,295.7,7.8z" fill="#FFFFFF"/>
                   </svg>
                 </div>
                 <div class="text-box" @click="addTextbox"  v-if="!presentation_mode">
@@ -165,20 +215,12 @@
                   Add Textbox
                   </p>
                   <svg x="0px" y="0px" viewBox="0 0 379.254 379.254" style="enable-background:new 0 0 379.254 379.254;" xml:space="preserve" width="512px" height="512px">
-                    <g>
-                      <path d="M371.582,310.87V68.384c4.592-2.778,7.672-7.805,7.672-13.564c0-8.759-7.101-15.86-15.86-15.86   c-6.046,0-11.299,3.384-13.975,8.36H29.834c-2.676-4.976-7.929-8.36-13.974-8.36C7.101,38.96,0,46.061,0,54.82   c0,6.318,3.703,11.756,9.049,14.306v241.002C3.703,312.678,0,318.116,0,324.434c0,8.759,7.101,15.86,15.86,15.86   c6.317,0,11.756-3.704,14.306-9.05h318.919c2.551,5.346,7.989,9.05,14.308,9.05c8.76,0,15.86-7.101,15.86-15.86   C379.254,318.675,376.174,313.648,371.582,310.87z M349.83,316.244H29.423c-1.331-2.198-3.175-4.043-5.374-5.373V68.383   c2.428-1.469,4.437-3.557,5.785-6.063h319.585c1.595,2.966,4.113,5.352,7.163,6.806v241.002   C353.775,311.467,351.431,313.6,349.83,316.244z" fill="#FFFFFF"/>
-                      <path d="M61.025,114.702c4.142,0,7.5-3.358,7.5-7.5v-4.05h19.65v80.499h-1.233c-4.142,0-7.5,3.358-7.5,7.5   c0,4.142,3.358,7.5,7.5,7.5h17.466c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5h-1.233v-80.499h19.65v4.05   c0,4.142,3.358,7.5,7.5,7.5c4.142,0,7.5-3.358,7.5-7.5v-11.55c0-4.142-3.358-7.5-7.5-7.5h-69.3c-4.142,0-7.5,3.358-7.5,7.5v11.55   C53.525,111.344,56.883,114.702,61.025,114.702z" fill="#FFFFFF"/>
-                      <path d="M163.255,193.448c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h21.024c4.142,0,7.5-3.358,7.5-7.5   c0-4.142-3.358-7.5-7.5-7.5h-3.013V92.66h3.013c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5h-21.024   c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h3.012v100.789H163.255z" fill="#FFFFFF"/>
-                      <path d="M315.814,112.482h-87.572c-4.143,0-7.5,3.358-7.5,7.5c0,4.142,3.357,7.5,7.5,7.5h87.572c4.143,0,7.5-3.358,7.5-7.5   C323.314,115.84,319.956,112.482,315.814,112.482z" fill="#FFFFFF"/>
-                      <path d="M315.814,151.097h-87.572c-4.143,0-7.5,3.358-7.5,7.5s3.357,7.5,7.5,7.5h87.572c4.143,0,7.5-3.358,7.5-7.5   S319.956,151.097,315.814,151.097z" fill="#FFFFFF"/>
-                      <path d="M315.814,235.222H61.025c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h254.788c4.143,0,7.5-3.358,7.5-7.5   C323.314,238.58,319.956,235.222,315.814,235.222z" fill="#FFFFFF"/>
-                      <path d="M315.814,273.837H61.025c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h254.788c4.143,0,7.5-3.358,7.5-7.5   C323.314,277.195,319.956,273.837,315.814,273.837z" fill="#FFFFFF"/>
-                    </g>
+                    <path d="M371.582,310.87V68.384c4.592-2.778,7.672-7.805,7.672-13.564c0-8.759-7.101-15.86-15.86-15.86   c-6.046,0-11.299,3.384-13.975,8.36H29.834c-2.676-4.976-7.929-8.36-13.974-8.36C7.101,38.96,0,46.061,0,54.82   c0,6.318,3.703,11.756,9.049,14.306v241.002C3.703,312.678,0,318.116,0,324.434c0,8.759,7.101,15.86,15.86,15.86   c6.317,0,11.756-3.704,14.306-9.05h318.919c2.551,5.346,7.989,9.05,14.308,9.05c8.76,0,15.86-7.101,15.86-15.86   C379.254,318.675,376.174,313.648,371.582,310.87z M349.83,316.244H29.423c-1.331-2.198-3.175-4.043-5.374-5.373V68.383   c2.428-1.469,4.437-3.557,5.785-6.063h319.585c1.595,2.966,4.113,5.352,7.163,6.806v241.002   C353.775,311.467,351.431,313.6,349.83,316.244z M61.025,114.702c4.142,0,7.5-3.358,7.5-7.5v-4.05h19.65v80.499h-1.233c-4.142,0-7.5,3.358-7.5,7.5   c0,4.142,3.358,7.5,7.5,7.5h17.466c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5h-1.233v-80.499h19.65v4.05   c0,4.142,3.358,7.5,7.5,7.5c4.142,0,7.5-3.358,7.5-7.5v-11.55c0-4.142-3.358-7.5-7.5-7.5h-69.3c-4.142,0-7.5,3.358-7.5,7.5v11.55   C53.525,111.344,56.883,114.702,61.025,114.702z M163.255,193.448c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h21.024c4.142,0,7.5-3.358,7.5-7.5   c0-4.142-3.358-7.5-7.5-7.5h-3.013V92.66h3.013c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5h-21.024   c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h3.012v100.789H163.255z M315.814,112.482h-87.572c-4.143,0-7.5,3.358-7.5,7.5c0,4.142,3.357,7.5,7.5,7.5h87.572c4.143,0,7.5-3.358,7.5-7.5   C323.314,115.84,319.956,112.482,315.814,112.482z M315.814,151.097h-87.572c-4.143,0-7.5,3.358-7.5,7.5s3.357,7.5,7.5,7.5h87.572c4.143,0,7.5-3.358,7.5-7.5   S319.956,151.097,315.814,151.097z M315.814,235.222H61.025c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h254.788c4.143,0,7.5-3.358,7.5-7.5   C323.314,238.58,319.956,235.222,315.814,235.222z M315.814,273.837H61.025c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h254.788c4.143,0,7.5-3.358,7.5-7.5   C323.314,277.195,319.956,273.837,315.814,273.837z" fill="#FFFFFF"/>
                   </svg>
                 </div>
                 <div class="box interaction-box" @click="addTextbox"  v-if="!presentation_mode">
                   <p>
-                    Related Question
+                    Add Related Question
                   </p>
                   <svg x="0px" y="0px" width="512px" height="512px" viewBox="0 0 459 459" style="enable-background:new 0 0 459 459;" xml:space="preserve">
                     <g id="share">
@@ -191,22 +233,14 @@
                     Presentation Mode
                   </p>
                   <svg :style="{ opacity: presentation_mode ? 1 : 0.5 }" width="512px" height="512px" viewBox="0 0 16 16">
-                    <path fill="#FFFFFF" d="M16 1h-7v-1h-2v1h-7v11h5l-2 4h2.2l2-4h1.5l2 4h2.3l-2-4h5v-11zM15 11h-14v-9h14v9z"/>
-                    <path fill="#FFFFFF" d="M6 4v5l4-2.5z"/>
+                    <path fill="#FFFFFF" d="M16 1h-7v-1h-2v1h-7v11h5l-2 4h2.2l2-4h1.5l2 4h2.3l-2-4h5v-11zM15 11h-14v-9h14v9z M6 4v5l4-2.5z"/>
                   </svg>
                 </div>
                 <div class="box file-box">
                   <p>
                     File
                   </p>
-                  <svg @click="loadCaseStudy()" x="0px" y="0px" width="512px" height="512px" viewBox="0 0 536.461 536.46" xml:space="preserve">
-                    <g>
-                      <g>
-                        <path d="M144.752,263.52c19.603-9.038,38.354-13.559,56.243-13.559h237.548v-45.683c0-17.511-6.283-32.555-18.85-45.118    c-12.565-12.562-27.596-18.842-45.11-18.842H219.266v-9.136c0-17.511-6.28-32.548-18.842-45.107    c-12.563-12.562-27.6-18.846-45.111-18.846h-91.36c-17.511,0-32.548,6.283-45.111,18.846C6.279,98.635,0,113.672,0,131.183    v274.084c0,0.764,0.049,1.955,0.144,3.576c0.094,1.615,0.144,2.807,0.144,3.566l1.426-1.704L97.93,297.637    C109.54,283.931,125.148,272.556,144.752,263.52z" fill="#FFFFFF"/>
-                        <path d="M528.898,290.214c-5.041-2.478-10.797-3.72-17.272-3.72H200.995c-12.562,0-26.219,3.381-40.968,10.14    c-14.75,6.766-26.219,14.986-34.401,24.701l-95.93,113.059c-5.902,6.662-8.853,12.945-8.853,18.849    c0,5.708,2.523,9.802,7.566,12.272c5.043,2.478,10.8,3.716,17.273,3.716h310.64c12.56,0,26.21-3.381,40.963-10.136    c14.75-6.756,26.214-14.989,34.399-24.701l95.931-113.059c5.899-6.663,8.846-12.939,8.846-18.849    C536.465,296.779,533.946,292.689,528.898,290.214z" fill="#FFFFFF"/>
-                      </g>
-                    </g>
-                  </svg>
+                  <svg @click="loadCaseStudy()" viewBox="0 0 536.461 536.46" xml:space="preserve"><path d="M144.752,263.52c19.603-9.038,38.354-13.559,56.243-13.559h237.548v-45.683c0-17.511-6.283-32.555-18.85-45.118    c-12.565-12.562-27.596-18.842-45.11-18.842H219.266v-9.136c0-17.511-6.28-32.548-18.842-45.107    c-12.563-12.562-27.6-18.846-45.111-18.846h-91.36c-17.511,0-32.548,6.283-45.111,18.846C6.279,98.635,0,113.672,0,131.183    v274.084c0,0.764,0.049,1.955,0.144,3.576c0.094,1.615,0.144,2.807,0.144,3.566l1.426-1.704L97.93,297.637    C109.54,283.931,125.148,272.556,144.752,263.52z M528.898,290.214c-5.041-2.478-10.797-3.72-17.272-3.72H200.995c-12.562,0-26.219,3.381-40.968,10.14    c-14.75,6.766-26.219,14.986-34.401,24.701l-95.93,113.059c-5.902,6.662-8.853,12.945-8.853,18.849    c0,5.708,2.523,9.802,7.566,12.272c5.043,2.478,10.8,3.716,17.273,3.716h310.64c12.56,0,26.21-3.381,40.963-10.136    c14.75-6.756,26.214-14.989,34.399-24.701l95.931-113.059c5.899-6.663,8.846-12.939,8.846-18.849    C536.465,296.779,533.946,292.689,528.898,290.214z" fill="#FFFFFF"/></svg>
                   <svg @click="saveCaseStudy()" viewBox="0 0 448 512"><path fill="#ffffff" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z" class=""></path></svg>
                   <svg @click="removeCaseStudy()" viewBox="0 0 448 512"><path fill="#ffffff" d="M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm415.2 56.7L394.8 467c-1.6 25.3-22.6 45-47.9 45H101.1c-25.3 0-46.3-19.7-47.9-45L32.8 140.7c-.4-6.9 5.1-12.7 12-12.7h358.5c6.8 0 12.3 5.8 11.9 12.7z" class=""></path></svg>
                 </div>
@@ -235,13 +269,17 @@ export default {
   name: "app",
   data() {
     return {
+      page_index: 0,
+      bottom_tip_enabled: true,
       current_case_study: "",
       case_studys: [],
       enable_highlight_text: false,
       current_color: "#fff",
+      current_element_id: null,
       colors: colors,
       pages: [],
       page: null,
+      questions: JSON.parse(JSON.stringify(SlideTemplate.questions)),
       videos: [],
       problems: [],
       groups: [null],
@@ -262,12 +300,13 @@ export default {
         "#fdbf6f",
         "#ff7f00",
         "#cab2d6",
-        "#6a3d9a"
+        "#6a3d9a",
       ],
       enable_highlight_chart: false,
       course_name: "Introduction to Computing with Java",
       course_id: "HKUSTx_COMP102x_2T2014",
-      bus: new Vue(),
+      addtext_bus: new Vue(),
+      refreshchart_bus: new Vue(),
       overview: {
         width: 800,
         height: 400,
@@ -301,7 +340,7 @@ export default {
   },
   components: {
     SlideshowContainer,
-    draggable
+    draggable,
   },
   mounted() {
     const colors = d3
@@ -355,7 +394,7 @@ export default {
         axios
           .get(`${serverUrl}getProblemList`, {
             params: {
-              courseId: this.course_id
+              courseId: this.course_id,
             }
           })
           .then(response => {
@@ -373,6 +412,8 @@ export default {
           .then(async response => {
             this.chapters = response.data;
             this.chapters.forEach(d => (this.id2item[d.id] = d));
+            this.page = [];
+            this.pages.push(this.page);
           });
       });
   },
@@ -412,6 +453,8 @@ export default {
     },
     context() {
       return {
+        presentation_mode: this.presentation_mode,
+        current_element_id: this.current_element_id,
         current_chapter: this.current_chapter,
         videos: this.videos,
         chapters: this.chapters,
@@ -419,7 +462,8 @@ export default {
         history: this.history,
         groups: this.groups,
         id2item: this.id2item,
-        bus: this.bus,
+        addtext_bus: this.addtext_bus,
+        refreshchart_bus: this.refreshchart_bus,
         color_schema: this.color_schema,
         video_color: this.color_schema[1],
         assignment_color: this.color_schema[3],
@@ -428,6 +472,12 @@ export default {
         enable_highlight_text: this.enable_highlight_text,
         enable_highlight_chart: this.enable_highlight_chart,
         current_color: this.current_color,
+        selectChapter: (item) => {
+          console.log(item);
+          if (!this.current_chapter) {
+            this.current_chapter = item;
+          }
+        },
         selectVideo: (item, parent) =>
           this.findNext(parent, {
             id: "V5",
@@ -467,22 +517,26 @@ export default {
         followupSlides: slide =>
           slide.follow_ups.map(d => ({
             name: SlideTemplate.questions[d],
-            type: d
+            type: d,
           })),
         moveto: this.moveto
       };
     }
   },
   watch: {
+    page(val) {
+      this.page_index = this.pages.indexOf(val);
+    },
     slides(val) {
       // this.bubblechart_layout = getBubbleChart(d3.select("#overview"), this.slide_structure);
     },
     presentation_mode(val) {
+      this.bottom_tip_enabled = true;
       if (val) {
         const pages = document.getElementsByClassName("slideshow-page");
         const elements = [];
         for (const page of pages) {
-          const contents = page.getElementsByClassName("slideshow-content");
+          const contents = page.getElementsByClassName("mooc-content");
           for (const content of contents) {
             content.style.opacity = 0;
             elements.push({
@@ -495,30 +549,60 @@ export default {
         this.paintOverview();
 
         document.onkeydown = event => {
-          if (event.keyCode == 38) {
+          if (event.keyCode == 37) {
+            this.page = this.pages[0];
+            this.moveto.move(elements[step].cursor);
+          }
+          else if (event.keyCode == 38 && this.page_index == 0) {
+            while (step > 0 && elements[step - 1].target.getElementsByClassName('mooc-content').length > 1) {
+              elements[--step].target.style.opacity = 0;
+            }
             if (step > 0) {
               elements[--step].target.style.opacity = 0;
-              this.moveto.move(elements[Math.max(0, step - 1)].cursor);
+              if (step > 0) {
+                this.moveto.move(elements[step - 1].cursor);
+                const entities = elements[step - 1].target.getElementsByClassName('entity');
+                if (entities.length) {
+                  const entity_id = entities[0].title;
+                  this.current_element_id = entity_id;
+                  this.refreshchart_bus.$emit("refresh-chart", entity_id);
+                } else {
+                  this.refreshchart_bus.$emit("refresh-chart", '');
+                }
+              }
               this.viewport = {
                 top: window.visualViewport.pageTop,
                 bottom:
                   window.visualViewport.pageTop + window.visualViewport.height,
                 height: window.visualViewport.height
               };
-              this.adjustOverviewViewport(this.slide);
+              this.adjustOverviewViewport();
             }
             event.returnValue = false;
-          } else if (event.keyCode == 40) {
-            if (step <= elements.length) {
-              this.moveto.move(elements[step].cursor);
+          } else if (event.keyCode == 40 && this.page_index == 0) {
+            while (step < elements.length && elements[step].target.getElementsByClassName('mooc-content').length > 1) {
               elements[step++].target.style.opacity = 1;
+            }
+            if (step < elements.length) {
+              elements[step].target.style.opacity = 1;
+              this.moveto.move(elements[step].cursor);
+              elements[step].target.style.opacity = 1;
+              const entities = elements[step].target.getElementsByClassName('entity');
+              if (entities.length) {
+                const entity_id = entities[0].title;
+                this.current_element_id = entity_id;
+                this.refreshchart_bus.$emit("refresh-chart", entity_id);
+              } else {
+                this.refreshchart_bus.$emit("refresh-chart", '');
+              }
               this.viewport = {
                 top: window.visualViewport.pageTop,
                 bottom:
                   window.visualViewport.pageTop + window.visualViewport.height,
                 height: window.visualViewport.height
               };
-              this.adjustOverviewViewport(this.slide);
+              this.adjustOverviewViewport();
+              step += 1;
             }
             event.returnValue = false;
           }
@@ -529,6 +613,36 @@ export default {
     }
   },
   methods: {
+    getSlide() {
+      if (this.page && this.page.length == 1) {
+        return this.page[0];
+      }
+      const elements = document.getElementsByClassName("slideshow-page");
+      return this.page
+        ? this.page.find((item, index) => {
+            const element = elements[index];
+            if (!element) return false;
+            const top = element.getBoundingClientRect().top;
+            const bottom = element.getBoundingClientRect().bottom;
+            const height = element.getBoundingClientRect().height;
+            const view_height = this.viewport.height;
+            if (
+              0 <= bottom &&
+              bottom <= view_height &&
+              bottom > height * 0.66
+            ) {
+              return true;
+            } else if (
+              0 <= top &&
+              top <= view_height &&
+              view_height - top > height * 0.66
+            ) {
+              return true;
+            }
+            return false;
+          })
+        : null;
+    },
     overview_graph() {
       let nodes = [];
       let edges = [];
@@ -960,8 +1074,8 @@ export default {
       let item = null;
       if (
         !state2.item &&
-        (Array.isArray(this.page) &&
-          (item = this.page.find(
+        (Array.isArray(this.history) &&
+          (item = this.history.find(
             d =>
               d.resource_id == state2.resource_id &&
               d.id == state2.id &&
@@ -1035,7 +1149,7 @@ export default {
             this.page && this.page.length && this.page[this.page.length - 1];
           if (
             !this.page ||
-            (last && !SlideTemplate.relation.isAdjacent(last.id, item.id)) ||
+            // (last && !SlideTemplate.relation.isAdjacent(last.id, item.id)) ||
             (last && last.group != item.group)
           ) {
             this.page = [];
@@ -1059,6 +1173,14 @@ export default {
         item: null
       });
     },
+    async startPage(id) {
+      await this.findNext(null, {
+        id: id,
+        resource_id: this.current_chapter.id,
+        group: 0,
+        item: null
+      });
+    },
     onChangePage(page) {
       if (this.page != page) {
         this.page = page;
@@ -1075,7 +1197,7 @@ export default {
     },
     addTextbox() {
       if (this.slide) {
-        this.bus.$emit("add-text-box", this.slide._id);
+        this.addtext_bus.$emit("add-textbox", this.slide._id);
       }
     },
     onChartHighlight() {
@@ -1098,7 +1220,7 @@ export default {
           y: 0
         };
       } else {
-        item = item || this.slide;
+        item = item || this.getSlide();
         if (!item) return;
         const node = this.overview_graph().nodes.find(d =>
           d.data.map(e => e._id).includes(item._id)
@@ -1425,7 +1547,7 @@ body {
   overflow-x: hidden;
   overflow-y: scroll;
 }
-
+/*
 .sidebar-container .content::-webkit-scrollbar {
   width: 10px;
 }
@@ -1439,12 +1561,40 @@ body {
   background-color: rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
 }
+*/
 
 .carousel-switcher {
   position: fixed;
   top: 92vh;
   left: 65vw;
   opacity: 0.6;
+}
+
+.screen-left-tips {
+
+}
+
+.screen-bottom-tips {
+  z-index: 5;
+  opacity: 0.3;
+  position: fixed;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.4));
+  bottom: 0vh;
+  left: 0vw;
+  height: 10vh;
+  width: 83%;
+  text-align: center;
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
+}
+
+.screen-bottom-tips:hover {
+  opacity: 0.7;
+}
+
+.screen-bottom-tips h3 {
+  padding-top: 3.5vh;
+  color: #212121;
 }
 
 .page {

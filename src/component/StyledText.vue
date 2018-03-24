@@ -1,5 +1,5 @@
 <template>
-    <p class="styled nar" @click="click" 
+    <p class="styled nar" @click="click" @mousemove="mousemove" @mouseout="mouseout"
     :style="{
         background: color
     }">
@@ -20,6 +20,19 @@
             }
         },
         methods: {
+            mousemove() {
+                if (!this.context.presentation_mode) return;
+                const entities = this.$el.getElementsByClassName('entity');
+                if (entities.length) {
+                  const entity_id = entities[0].title;
+                  this.current_element_id = entity_id;
+                  this.context.refreshchart_bus.$emit("refresh-chart", entity_id);
+                }
+            },
+            mouseout() {
+                if (!this.context.presentation_mode) return;
+                this.context.refreshchart_bus.$emit("refresh-chart", '');
+            },
             click() {
                 if (this.context.enable_highlight_text) {
                     this.color = 
@@ -53,7 +66,6 @@ p.nar.styled {
     font-size: 22px;
     font-weight: normal;    
     color: #2c3e50;
-    text-align: center;
 }
 
 p.nar.styled:hover {

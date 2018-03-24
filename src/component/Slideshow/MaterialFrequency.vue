@@ -2,10 +2,10 @@
     <div class="slideshow-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content title">
+            <div class="slideshow-content mooc-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content graph" style="height: 40vh">
+            <div class="slideshow-content mooc-content graph" style="height: 40vh">
                 <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
                     :style="{
                         left: `${current_point && current_point.x}px`, 
@@ -16,40 +16,33 @@
                     {{ tooltip_message }}
                 </b-tooltip>
             </div>
-            <div class="slideshow-content text">
-                <h6> 
-                    Activies in this week:
-                </h6>
-                <ul>
-                    <li v-if="max_video_activies">
-                    <styled-text :context="context">
-                        The most tried video was 
-                        <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
-                        , each students visited the video {{ Number(max_video_activies.attempts).toFixed(1) }} times.
-                    </styled-text>
-                    </li>
-                    <li v-if="min_video_activies">
-                    <styled-text :context="context">
-                        The least tried video was 
-                        <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
-                        , each students visited the video {{ Number(min_video_activies.attempts).toFixed(1) }} times.
-                    </styled-text>
-                    </li>
-                    <li v-if="max_assignment_activies">
-                    <styled-text :context="context">
-                        The most tried assignment was 
-                        <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
-                        , each students submitted this assignment {{ Number(max_assignment_activies.attempts).toFixed(1) }} times.
-                    </styled-text>
-                    </li>
-                    <li v-if="min_assignment_activies">
-                    <styled-text :context="context">
-                        The least tried assignment was 
-                        <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
-                        , each students submitted this assignment {{ Number(min_assignment_activies.attempts).toFixed(1) }} times.
-                    </styled-text>
-                    </li>
-                </ul>
+            <div class="slideshow-content mooc-content text">
+                <styled-text :context="context">
+                    The most tried video was 
+                    <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
+                    , each students visited the video {{ Number(max_video_activies.attempts).toFixed(1) }} times.
+                </styled-text>
+            </div>
+            <div class="slideshow-content mooc-content text">
+                <styled-text :context="context">
+                    The least tried video was 
+                    <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
+                    , each students visited the video {{ Number(min_video_activies.attempts).toFixed(1) }} times.
+                </styled-text>
+            </div>
+            <div class="slideshow-content mooc-content text">
+                <styled-text :context="context">
+                    The most tried assignment was 
+                    <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
+                    , each students submitted this assignment {{ Number(max_assignment_activies.attempts).toFixed(1) }} times.
+                </styled-text>
+            </div>
+            <div class="slideshow-content mooc-content text">
+                <styled-text :context="context">
+                    The least tried assignment was 
+                    <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
+                    , each students submitted this assignment {{ Number(min_assignment_activies.attempts).toFixed(1) }} times.
+                </styled-text>
             </div>
             <follow-up :item="item" :context="context"></follow-up>
         </template>
@@ -58,15 +51,11 @@
 
 <script>
     import Plottable from "plottable";
+    import SlideshowBase from "./SlideshowBase.vue";
 
     export default {
         data() {
             return {
-                show_tooltip: false,
-                tooltip_message: 'Hello World',
-                current_point: {},
-                table: null,
-                lastElement: null,
             };
         },
         watch: {
@@ -74,13 +63,10 @@
                 this.item.cache.lastElement = val;
             },
         },
+        extends: SlideshowBase,
         created() {
             this.lastElement = this.item.cache.lastElement;
             this.table = this.render(this.item.data, this.context);
-            this.context.bus.$on("add-text-box", this.handle);
-        },
-        destroyed() {
-            this.context.bus.$off("add-text-box", this.handle);
         },
         mounted() {
             var element = this.$el.getElementsByClassName('graph')[0];
@@ -109,17 +95,6 @@
             },
         },
         methods: {
-            handle(_id) {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            },
             render(data, context) {
                 const video_activies = data.video_activies;
                 const problem_activies = data.problem_activies;
@@ -147,25 +122,20 @@
                 var attemptAxisLable = new Plottable.Components.AxisLabel("Frequency", "0");
                 var attemptPlotLable = new Plottable.Components.AxisLabel("", "0");
 
-                if (this.lastElement) {
-                    plots.attr("opacity", d => d.id == this.lastElement ? 1 : 0.5);
+                if (this.last_element) {
+                    plots.attr("opacity", d => d.id == this.last_element ? 1 : 0.5);
                 }
-                
+                this.plots = plots;
+
                 var interaction = new Plottable.Interactions.Click();
                 interaction.onClick(point => {
                     if (this.context.enable_highlight_chart) {
                         var element = plots.entitiesAt(point)[0];
-                        if (!element) return;
-                        if (this.lastElement == element.datum.id) {
-                            plots.selections().attr("opacity", 1);
-                            this.lastElement = null;
-                            return;
+                        if (!element) {
+                            this.last_element = null;
                         } else {
-                            plots.selections().attr("opacity", 0.5);
+                            this.last_element = element.datum.id;
                         }
-                        var selection = element.selection;
-                        selection.attr("opacity", 1);
-                        this.lastElement = element.datum.id;
                     } else {
                         var element = plots.entitiesAt(point)[0];
                         if (!element) return;
@@ -185,7 +155,7 @@
                 interaction2.onPointerMove(point => {
                     var element = plots.entitiesAt(point)[0];
                     if (!element) {
-                        this.show_tooltip = false;
+                        setTimeout(() => { this.show_tooltip = 0; }, 500);
                         return;
                     }
                     var selection = element.selection;
@@ -200,7 +170,7 @@
                         selection.attr("opacity", 1);
                     }
                 }).onPointerExit(point => {
-                    this.show_tooltip = false;
+                    setTimeout(() => { this.show_tooltip = 0; }, 500);
                     if (!this.context.enable_highlight_chart) {
                         plots.selections().attr("opacity", 0.8);
                     }
@@ -215,7 +185,6 @@
                 return table;
             },
         },
-        props: ["item", "context", "step"],
     };
 </script>
 

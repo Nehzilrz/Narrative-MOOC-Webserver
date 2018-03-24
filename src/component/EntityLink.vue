@@ -1,5 +1,5 @@
 <template>
-    <b-link class="entity" v-if="item" @click="click">
+    <b-link :title="id" class="entity" v-if="item" @click="click">
         <span class="step" :style="style">
             {{ (item.type || 'U').slice(0, 1).toUpperCase() }}
         </span>
@@ -77,6 +77,11 @@ span.step {
 }
 .entity {
     padding-left: .5rem;
+    color: #0055b4;
+}
+
+.entity:hover {
+    color: #003167;
 }
 
 </style>

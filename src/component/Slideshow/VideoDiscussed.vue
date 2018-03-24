@@ -2,10 +2,10 @@
     <div class="slideshow-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content title">
+            <div class="slideshow-content mooc-content title">
                 <h4> {{ item.name }} </h4>
             </div>
-            <div class="slideshow-content discussed">
+            <div class="slideshow-content mooc-content discussed">
                 <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
                     :style="{
                         left: `${current_point && current_point.x}px`, 
@@ -16,17 +16,15 @@
                     {{ tooltip_message }}
                 </b-tooltip>
                 <template v-for="(assignment, i) in videos">
-                    <div class="content-block">
-                        <h6 style="padding-left: 2vw; width: 25vw;">
-                            <styled-text :context="context">
-                                {{ assignment.name }}
-                            </styled-text>
-                        </h6>
-                        <h5 :style="{ color : context.color_schema[i] }"
-                            style="width: 15vw;">
+                    <div class="content-block mooc-content">
+                        <styled-text style="padding-left: 2vw; width: 23vw;" :context="context">
+                            {{ assignment.name }}
+                        </styled-text>
+                        <styled-text :style="{ color : context.color_schema[i] }"
+                            style="width: 18vw; font-weight: 500;" :context="context">
                             discussed {{ assignment.val }} times
-                        </h5>
-                        <ul style="width: 20vw; padding-top: 0.5vh;">
+                        </styled-text>
+                        <ul style="width: 20vw; margin-top: 1vh;">
                             <li :style="{ background : context.color_schema[i] }"
                                 :class="{ active: post == current_post }"
                                 class="circle" v-for="post in assignment.posts"
@@ -50,24 +48,21 @@
 
 <script>
     import Plottable from "plottable";
+    import SlideshowBase from "./SlideshowBase.vue";
 
     export default {
         data() {
             return {
-                show_tooltip: false,
-                tooltip_message: 'Hello World',
-                current_point: {},
-                current_post: null,
-                lastElement: null,
             };
         },
-        created() {
-            this.context.bus.$on("add-text-box", this.handle);
+        watch: {
+            current_post(val) {
+                this.item.cache.current_post = val;
+            }
         },
-        destroyed() {
-            this.context.bus.$off("add-text-box", this.handle);
-        },
+        extends: SlideshowBase,
         mounted() {
+            this.current_post = this.item.cache.current_post;
             // var element = this.$el.getElementsByClassName('graph')[0];
             // this.table.renderTo(element);
         },
@@ -80,22 +75,10 @@
             }
         },
         methods: {
-            handle(_id) {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            },
             click(post) {
                 this.current_post = this.current_post == post ? null : post;
             }
         },
-        props: ["item", "context", "step"],
     };
 </script>
 

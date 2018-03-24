@@ -2,10 +2,10 @@
     <div class="slideshow-page">
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <template v-if="item && item.loaded">
-            <div class="slideshow-content title">
+            <div class="slideshow-content mooc-content title">
                 <h3> {{ item.name }} </h3>
             </div>
-            <div class="slideshow-content graph" style="height: 40vh;">
+            <div class="slideshow-content mooc-content graph" style="height: 40vh;">
                 <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
                     :style="{
                         left: `${current_point && current_point.x}px`, 
@@ -16,7 +16,7 @@
                     {{ tooltip_message }}
                 </b-tooltip>
             </div>
-            <div class="slideshow-content text">
+            <div class="slideshow-content mooc-content text">
                 <styled-text :context="context">
                     The most visited video was 
                     <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
@@ -24,7 +24,7 @@
                     students visited the video.
                 </styled-text>
             </div>
-            <div class="slideshow-content text">
+            <div class="slideshow-content mooc-content text">
                 <styled-text :context="context">
                 The least visited video was 
                 <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
@@ -32,7 +32,7 @@
                 students visited the video.
                 </styled-text>
             </div>
-            <div class="slideshow-content text">
+            <div class="slideshow-content mooc-content text">
                 <styled-text :context="context">
                 The most visited assignment was 
                 <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
@@ -40,7 +40,7 @@
                 students visited the assignment.
                 </styled-text>
             </div>
-            <div class="slideshow-content text">
+            <div class="slideshow-content mooc-content text">
                 <styled-text :context="context">
                 The least visited assignment was 
                 <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
@@ -54,20 +54,15 @@
 </template>
 
 <script>
+    import SlideshowBase from "./SlideshowBase.vue";
     import Plottable from "plottable";
 
     export default {
         data() {
             return {
-                show_tooltip: false,
-                tooltip_message: 'Hello World',
-                current_point: {},
-                last_element: null,
-                table: null,
-                plots: null,
-                step: 10,
             };
         },
+        extends: SlideshowBase,
         watch: {
             last_element(val) {
                 this.item.cache.last_element = val;
@@ -77,13 +72,8 @@
         created() {
             this.last_element = this.item.cache.last_element;
             this.table = this.render(this.item.data, this.context);
-            this.context.bus.$on("add-text-box", this.handle);
-        },
-        destroyed() {
-            this.context.bus.$off("add-text-box", this.handle);
         },
         mounted() {
-            this.item.num_step = this.$el.getElementsByClassName('slideshow-content').length;
             var element = this.$el.getElementsByClassName('graph')[0];
             this.table.renderTo(element);
         },
@@ -110,17 +100,6 @@
             },
         },
         methods: {
-            handle(_id) {
-                if (_id == this.item._id) {
-                    this.item.notes = this.item.notes.filter(d => d.value.text);
-                    this.item.notes.push({
-                        value: {
-                            text: 'Click to edit',
-                            position: { x: 50, y: 50 },
-                        } 
-                    });
-                }
-            },
             render(data, context) {
                 const video_activies = data.video_activies;
                 const problem_activies = data.problem_activies;
@@ -156,7 +135,7 @@
                 if (this.last_element) {
                     plots.attr("opacity", d => d.id == this.last_element ? 1 : 0.5);
                 }
-                
+
                 var interaction = new Plottable.Interactions.Click();
                 interaction.onClick(point => {
                     if (this.context.enable_highlight_chart) {
@@ -185,7 +164,7 @@
                 interaction2.onPointerMove(point => {
                     var element = plots.entitiesAt(point)[0];
                     if (!element) {
-                        this.show_tooltip = false;
+                        setTimeout(() => { this.show_tooltip = 0; }, 500);
                         return;
                     }
                     var selection = element.selection;
@@ -200,7 +179,7 @@
                         selection.attr("opacity", 1);
                     }
                 }).onPointerExit(point => {
-                    this.show_tooltip = false;
+                    setTimeout(() => { this.show_tooltip = 0; }, 500);
                     if (!this.context.enable_highlight_chart) {
                         plots.selections().attr("opacity", 0.8);
                     }
@@ -218,7 +197,6 @@
                 return table;
             },
         },
-        props: ["item", "context", "step"],
     };
 </script>
 
