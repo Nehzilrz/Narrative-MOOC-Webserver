@@ -1,67 +1,60 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h4> {{ item.name }} </h4>
+<div>
+    <div class="b4w bh nm-block discussed">
+        <div class="content-block">
+            <h5> 
+                Popular topics:
+            </h5>
+        </div>
+        <template v-for="(thread, i) in threads">
+            <div class="content-block nm-block" style="padding-left: 3vw;">
+                <styled-text style="width: 25vw;" :context="context">
+                    {{ thread.title }}
+                </styled-text>
+                <h5 :style="{ color : context.color_schema[i] }"
+                    style="width: 15vw;
+                    padding-top: .5em;">
+                    discussed {{ thread.comment_count }} times
+                </h5>
+                <ul style="width: 30vw; padding-top: 0.5vh;">
+                    <li :style="{
+                        background : context.color_schema[i],
+                        width: thread.comment_count < 50 ? '15px' : '12px',
+                        height: thread.comment_count < 50 ? '15px' : '12px',
+                        'margin-right': thread.comment_count < 50 ? '5px' : '3px',
+                        'margin-bottom': thread.comment_count < 50 ? '5px' : '3px',
+                    }"
+                        :class="{ active: comment == current_comment }"
+                        class="circle" v-for="comment in thread.comments"
+                        @click="click(comment)"
+                    ></li>
+                </ul>
             </div>
-            <div class="slide nm-block discussed">
-                <div class="content-block">
-                    <h5> 
-                        Popular topics:
-                    </h5>
-                </div>
-                <template v-for="(thread, i) in threads">
-                    <div class="content-block nm-block" style="padding-left: 3vw;">
-                        <styled-text style="width: 25vw;" :context="context">
-                            {{ thread.title }}
-                        </styled-text>
-                        <h5 :style="{ color : context.color_schema[i] }"
-                            style="width: 15vw;
-                            padding-top: .5em;">
-                            discussed {{ thread.comment_count }} times
-                        </h5>
-                        <ul style="width: 30vw; padding-top: 0.5vh;">
-                            <li :style="{
-                                background : context.color_schema[i],
-                                width: thread.comment_count < 50 ? '15px' : '12px',
-                                height: thread.comment_count < 50 ? '15px' : '12px',
-                                'margin-right': thread.comment_count < 50 ? '5px' : '3px',
-                                'margin-bottom': thread.comment_count < 50 ? '5px' : '3px',
-                            }"
-                                :class="{ active: comment == current_comment }"
-                                class="circle" v-for="comment in thread.comments"
-                                @click="click(comment)"
-                            ></li>
-                        </ul>
-                    </div>
-                </template>
-                <div class="content-block">
-                    <b-card v-if="current_comment" :sub-title="current_comment.title">
-                        <p class="card-text">
-                            {{ current_comment.username }} : {{ current_comment.body }}
-                        </p>
-                    </b-card>
-                </div>
-            </div>
-            <div class="slide nm-block keyword">
-                <div class="content-block nm-block">
-                    <h5> 
-                        Popular keywords:
-                    </h5>
-                </div>
-                <wordcloud
-                    class="nm-block"
-                    style="padding-left: 3vw; padding-right: 3vw;"
-                    :data="keywords"
-                    color="Category20c"
-                    nameKey="word"
-                    valueKey="val">
-                </wordcloud>
-            </div>
-            <follow-up :item="item" :context="context"></follow-up>
         </template>
+        <div class="content-block">
+            <b-card v-if="current_comment" :sub-title="current_comment.title">
+                <p class="card-text">
+                    {{ current_comment.username }} : {{ current_comment.body }}
+                </p>
+            </b-card>
+        </div>
     </div>
+    <div class="slide nm-block keyword">
+        <div class="content-block nm-block">
+            <h5> 
+                Popular keywords:
+            </h5>
+        </div>
+        <wordcloud
+            class="nm-block"
+            style="padding-left: 3vw; padding-right: 3vw;"
+            :data="keywords"
+            color="Category20c"
+            nameKey="word"
+            valueKey="val">
+        </wordcloud>
+    </div>
+</div>
 </template>
 
 <script>
@@ -71,6 +64,7 @@
     export default {
         data() {
             return {
+                current_comment: null,
                 keywords: [],
             };
         },

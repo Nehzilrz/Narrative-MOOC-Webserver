@@ -305,8 +305,7 @@ export default {
       enable_highlight_chart: false,
       course_name: "Introduction to Computing with Java",
       course_id: "HKUSTx_COMP102x_2T2014",
-      addtext_bus: new Vue(),
-      refreshchart_bus: new Vue(),
+      $bus: new Vue(),
       overview: {
         width: 800,
         height: 400,
@@ -380,6 +379,55 @@ export default {
         height: window.visualViewport.height
       };
     };
+
+    this.$bus.$on("select_chapter", item => {
+      if (!this.current_chapter) {
+        this.current_chapter = item;
+      }
+    });
+
+    this.$bus.$on("select_video", (item, parent) => {
+      this.findNext(parent, {
+        id: "V5",
+        resource_id: item.id,
+        group: parent.group
+      });
+    });
+
+    this.$bus.$on("select_assignment", (item, parent) => {
+      this.findNext(parent, {
+        id: "A6",
+        resource_id: item.id,
+        group: parent.group,
+      });
+    });
+
+    this.$bus.$on("select_student", (item, parent) => {
+      this.groups.push(item.users);
+      request(
+        this,
+        {
+          id: this.groups.length - 1,
+          users: item.users
+        },
+        "save_student_group"
+      );
+      this.findNext(parent, {
+        id: "S1",
+        resource_id: this.current_chapter.id,
+        resource_data: item.users,
+        group: this.groups.length - 1
+      });
+    });
+
+    this.$bus.$on("load_slide", (id, resource_id, parent) => {
+      this.findNext(parent, {
+        id,
+        resource_id,
+        group: parent.group
+      });
+    });
+
     axios
       .get(`${serverUrl}getVideoList`, {
         params: {
@@ -462,8 +510,7 @@ export default {
         history: this.history,
         groups: this.groups,
         item_mapping: this.item_mapping,
-        addtext_bus: this.addtext_bus,
-        refreshchart_bus: this.refreshchart_bus,
+        $bus: this.$bus,
         color_schema: this.color_schema,
         video_color: this.color_schema[1],
         assignment_color: this.color_schema[3],
@@ -472,48 +519,6 @@ export default {
         enable_highlight_text: this.enable_highlight_text,
         enable_highlight_chart: this.enable_highlight_chart,
         current_color: this.current_color,
-        selectChapter: (item) => {
-          console.log(item);
-          if (!this.current_chapter) {
-            this.current_chapter = item;
-          }
-        },
-        selectVideo: (item, parent) =>
-          this.findNext(parent, {
-            id: "V5",
-            resource_id: item.id,
-            group: parent.group
-          }),
-        selectAssignment: (item, parent) =>
-          this.findNext(parent, {
-            id: "A6",
-            resource_id: item.id,
-            group: parent.group
-          }),
-        selectStudent: (item, parent) => {
-          this.groups.push(item.users);
-          request(
-            this,
-            {
-              id: this.groups.length - 1,
-              users: item.users
-            },
-            "save_student_group"
-          );
-          this.findNext(parent, {
-            id: "S1",
-            resource_id: this.current_chapter.id,
-            resource_data: item.users,
-            group: this.groups.length - 1
-          });
-        },
-        selectChapter: (item, parent) => {},
-        loadSlide: (id, resource_id, parent) =>
-          this.findNext(parent, {
-            id,
-            resource_id,
-            group: parent.group
-          }),
         followupSlides: slide =>
           slide.follow_ups.map(d => ({
             name: SlideTemplate.questions[d],
@@ -565,9 +570,9 @@ export default {
                 if (entities.length) {
                   const entity_id = entities[0].title;
                   this.current_element_id = entity_id;
-                  this.refreshchart_bus.$emit("refresh-chart", entity_id);
+                  this.$bus.$emit("refresh-chart", entity_id);
                 } else {
-                  this.refreshchart_bus.$emit("refresh-chart", '');
+                  this.$bus.$emit("refresh-chart", '');
                 }
               }
               this.viewport = {
@@ -591,9 +596,9 @@ export default {
               if (entities.length) {
                 const entity_id = entities[0].title;
                 this.current_element_id = entity_id;
-                this.refreshchart_bus.$emit("refresh-chart", entity_id);
+                this.$bus.$emit("refresh-chart", entity_id);
               } else {
-                this.refreshchart_bus.$emit("refresh-chart", '');
+                this.$bus.$emit("refresh-chart", '');
               }
               this.viewport = {
                 top: window.visualViewport.pageTop,
@@ -792,9 +797,11 @@ export default {
         const nodes_i = nodes
           .filter(d => d.depth == i)
           .sort(
-            (a, b) =>
-              edges.find(d => d.target == a).source.x -
-              edges.find(d => d.target == b).source.x
+            (a, b) => {
+              const asrc = edges.find(d => d.target == a).source;
+              const bsrc = edges.find(d => d.target == b).source;
+              return (asrc && asrc.x) - (bsrc && bsrc.x);
+            }
           );
         const n = nodes_i.length;
 
@@ -1197,7 +1204,7 @@ export default {
     },
     addTextbox() {
       if (this.slide) {
-        this.addtext_bus.$emit("add-textbox", this.slide._id);
+        this.$bus.$emit("add-textbox", this.slide._id);
       }
     },
     onChartHighlight() {

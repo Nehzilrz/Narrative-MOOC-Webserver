@@ -1,5 +1,6 @@
 <template>
-    <div class="slide-page">
+    <div>
+        <h6> This is a empty page. </h6>
     </div>
 </template>
 

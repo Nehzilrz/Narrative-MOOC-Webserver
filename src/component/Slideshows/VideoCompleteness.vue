@@ -1,38 +1,22 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h4> {{ item.name }} </h4>
-            </div>
-            <div class="slide nm-block graph" style="height: 25vh">
-                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
-                    :style="{
-                        left: `${current_point && current_point.x}px`, 
-                        top: `${current_point && (current_point.y - 5)}px` 
-                    }">
-                </div>
-                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
-                    {{ tooltip_message }}
-                </b-tooltip>
-            </div>
-            <div class="slide nm-block text">
-                <styled-text :context="context">
-                    The video with highest completeness on average is
-                    <entity-link :id="max_video[0].id" :context="context" :parent="item"></entity-link>
-                    , {{ Number(max_video[0].completeness * 100).toFixed(1) }}% students completed this video.
-                </styled-text>
-            </div>
-            <div class="slide nm-block text">
-                <styled-text :context="context">
-                    The video with lowest completeness on average is
-                    <entity-link :id="min_video[0].id" :context="context" :parent="item"></entity-link>
-                    , {{ Number(min_video[0].completeness * 100).toFixed(1) }}% students completed this video.
-                </styled-text>
-            </div>
-            <follow-up :item="item" :context="context"></follow-up>
-        </template>
+<div>
+    <div class="b4w b4h nm-block graph">
     </div>
+    <div class="b4w bh nm-block text">
+        <styled-text :context="context">
+            The video with highest completeness on average is
+            <entity-link :id="max_video[0].id" :context="context" :parent="item"></entity-link>
+            , {{ Number(max_video[0].completeness * 100).toFixed(1) }}% students completed this video.
+        </styled-text>
+    </div>
+    <div class="b4w bh nm-block text">
+        <styled-text :context="context">
+            The video with lowest completeness on average is
+            <entity-link :id="min_video[0].id" :context="context" :parent="item"></entity-link>
+            , {{ Number(min_video[0].completeness * 100).toFixed(1) }}% students completed this video.
+        </styled-text>
+    </div>
+</div>
 </template>
 
 <script>

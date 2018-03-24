@@ -53,7 +53,7 @@ export default {
     };
   },
   created() {
-    this.context.addtext_bus.$on("add-textbox", this.handle_addtext);
+    this.$bus.$on("add-textbox", this.handle_addtext);
     const component_mapping = {
       O1: "MaterialPopularitySlide",
       O2: "MaterialFrequencySlide",
@@ -81,7 +81,7 @@ export default {
     this.current_view = component_mapping[this.item.id] || "EmptySlide";
   },
   destroyed() {
-    this.context.addtext_bus.$off("add-textbox", this.handle_addtext);
+    this.$bus.$off("add-textbox", this.handle_addtext);
   },
   components: {
     MaterialPopularitySlide,

@@ -5,7 +5,7 @@
         </h5>
         <ul>
             <li v-for="q in context.followupSlides(item)">
-                <b-link href="javascript:void(0);" @click="context.loadSlide(q.type, item.resource_id, item)">
+                <b-link href="javascript:void(0);" @click="$bus.$emit('load_slide', q.type, item.resource_id, item)">
                     {{ q.name }}
                 </b-link>
             </li>

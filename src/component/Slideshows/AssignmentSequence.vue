@@ -1,52 +1,45 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h4> {{ item.name }} </h4>
+<div>
+    <div class="b4w bh nm-block sequence">
+        <div class="graph nm-block">
+            <svg></svg>
+        </div>
+        <div class="patterns">
+            <div class="pattern nm-block">
+                <span class="head">
+                    Frequently watched videos
+                </span>
+                <span v-for="i in frequent" class="node" 
+                    :class="{ active: current == i }"
+                    @click="click(i)"
+                    :style="{ 'background-color':
+                    elements[i].type == 'video' ? context.color_schema[1] : context.color_schema[3]
+                    }">
+                    {{ i }}. {{ elements[i].name }}
+                </span>
             </div>
-            <div class="slide nm-block sequence">
-                <div class="graph nm-block">
-                    <svg></svg>
-                </div>
-                <div class="patterns">
-                    <div class="pattern nm-block">
-                        <span class="head">
-                            Frequently watched videos
-                        </span>
-                        <span v-for="i in frequent" class="node" 
-                            :class="{ active: current == i }"
-                            @click="click(i)"
-                            :style="{ 'background-color':
-                            elements[i].type == 'video' ? context.color_schema[1] : context.color_schema[3]
-                            }">
-                            {{ i }}. {{ elements[i].name }}
-                        </span>
-                    </div>
-                    <div class="pattern infrequent nm-block">
-                        <span class="head">
-                            Infrequently watched videos
-                        </span>
-                        <span v-for="i in infrequent" class="node" 
-                            :class="{ active: current == i }"
-                            @click="click(i)"
-                            :style="{ 'background-color':
-                            elements[i].type == 'video' ? context.color_schema[1] : context.color_schema[3]
-                            }">
-                            {{ i }}. {{ elements[i].name }}
-                        </span>
-                    </div>
-                </div>
+            <div class="pattern infrequent nm-block">
+                <span class="head">
+                    Infrequently watched videos
+                </span>
+                <span v-for="i in infrequent" class="node" 
+                    :class="{ active: current == i }"
+                    @click="click(i)"
+                    :style="{ 'background-color':
+                    elements[i].type == 'video' ? context.color_schema[1] : context.color_schema[3]
+                    }">
+                    {{ i }}. {{ elements[i].name }}
+                </span>
             </div>
-            <div class="slide nm-block text">
-                <styled-text :context="context" style="margin-left: 3vw;">
-                    The current assignment is {{ assignment.name }}, the weight of this assignment is {{ assignment.weight }}. 
-                    Assignment released on {{ assignment_release_date }}.
-                </styled-text>
-            </div>
-            <follow-up :item="item" :context="context"></follow-up>
-        </template>
+        </div>
     </div>
+    <div class="slide nm-block text">
+        <styled-text :context="context" style="margin-left: 3vw;">
+            The current assignment is {{ assignment.name }}, the weight of this assignment is {{ assignment.weight }}. 
+            Assignment released on {{ assignment_release_date }}.
+        </styled-text>
+    </div>
+</div>
 </template>
 
 <script>

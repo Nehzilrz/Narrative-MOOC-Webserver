@@ -26,12 +26,12 @@
                 if (entities.length) {
                   const entity_id = entities[0].title;
                   this.current_element_id = entity_id;
-                  this.context.refreshchart_bus.$emit("refresh-chart", entity_id);
+                  this.$bus.$emit("refresh-chart", entity_id);
                 }
             },
             mouseout() {
                 if (!this.context.presentation_mode) return;
-                this.context.refreshchart_bus.$emit("refresh-chart", '');
+                this.$bus.$emit("refresh-chart", '');
             },
             click() {
                 if (this.context.enable_highlight_text) {

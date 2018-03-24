@@ -1,56 +1,40 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h3> {{ item.name }} </h3>
-            </div>
-            <div class="slide nm-block graph" style="height: 40vh;">
-                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
-                    :style="{
-                        left: `${current_point && current_point.x}px`, 
-                        top: `${current_point && (current_point.y - 5)}px` 
-                    }">
-                </div>
-                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
-                    {{ tooltip_message }}
-                </b-tooltip>
-            </div>
-            <div class="slide nm-block text">
-                <styled-text :context="context">
-                    The most visited video was 
-                    <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
-                    , {{ max_video_activies.activeness }} 
-                    students visited the video.
-                </styled-text>
-            </div>
-            <div class="slide nm-block text">
-                <styled-text :context="context">
-                The least visited video was 
-                <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
-                , {{ min_video_activies.activeness }} 
-                students visited the video.
-                </styled-text>
-            </div>
-            <div class="slide nm-block text">
-                <styled-text :context="context">
-                The most visited assignment was 
-                <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
-                , {{ max_assignment_activies.activeness }} 
-                students visited the assignment.
-                </styled-text>
-            </div>
-            <div class="slide nm-block text">
-                <styled-text :context="context">
-                The least visited assignment was 
-                <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
-                , {{ min_assignment_activies.activeness }} 
-                students visited the assignment.
-                </styled-text>
-            </div>
-            <follow-up :item="item" :context="context"></follow-up>
-        </template>
+<div>
+    <div class="b4w b5h nm-block graph">
     </div>
+    <div class="b4w bh nm-block text">
+        <styled-text :context="context">
+            The most visited video was 
+            <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
+            , {{ max_video_activies.activeness }} 
+            students visited the video.
+        </styled-text>
+    </div>
+    <div class="b4w bh nm-block text">
+        <styled-text :context="context">
+        The least visited video was 
+        <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
+        , {{ min_video_activies.activeness }} 
+        students visited the video.
+        </styled-text>
+    </div>
+    <div class="b4w bh nm-block text">
+        <styled-text :context="context">
+        The most visited assignment was 
+        <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
+        , {{ max_assignment_activies.activeness }} 
+        students visited the assignment.
+        </styled-text>
+    </div>
+    <div class="b4w bh nm-block text">
+        <styled-text :context="context">
+        The least visited assignment was 
+        <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
+        , {{ min_assignment_activies.activeness }} 
+        students visited the assignment.
+        </styled-text>
+    </div>
+</div>
 </template>
 
 <script>
@@ -139,7 +123,4 @@
 </script>
 
 <style scope>
-.slide.text h6 {
-    font-weight: 600;
-}
 </style>

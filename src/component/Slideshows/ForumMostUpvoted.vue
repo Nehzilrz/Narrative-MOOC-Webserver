@@ -1,50 +1,43 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h4> {{ item.name }} </h4>
-            </div>
-            <div class="slide nm-block upvoted">
-                <div class="content-block nm-block">
-                    <h5> 
-                        Most upvoted replies:
-                    </h5>
-                </div>
-                <transition-group name="list" tag="p">
-                    <div class="nm-block" v-for="(thread, i) in threads" v-bind:key="i">
-                        <div class="content-block-parent" style="padding-left: 3vw;">
-                            <div class="content-block">
-                                <h6 style="width: 25vw;" @click="displayed = displayed == i ? -1 : i">
-                                    <styled-text :context="context">
-                                        {{ thread.title }}
-                                    </styled-text>
-                                </h6>
-                                <h5 :style="{ color : context.color_schema[i] }"
-                                    style="width: 15vw; margin-left: 5vw;
-                                padding-top: .5em;">
-                                    upvoted {{ thread.up_count }} times
-                                </h5>
-                            </div>
-                            <div class="content-block">
-                                <transition name="fade">
-                                    <b-card v-if="displayed == i" style="
-                                        margin-left: 4vw;
-                                        margin-bottom: 2vh;
-                                        width: 100%;">
-                                        <p class="card-text">
-                                            {{ thread.username }} : {{ thread.body }}
-                                        </p>
-                                    </b-card>
-                                </transition>
-                            </div>
-                        </div>
+<div>
+    <div class="b4w bh nm-block upvoted">
+        <div class="content-block nm-block">
+            <h5> 
+                Most upvoted replies:
+            </h5>
+        </div>
+        <transition-group name="list" tag="p">
+            <div class="nm-block" v-for="(thread, i) in threads" v-bind:key="i">
+                <div class="content-block-parent" style="padding-left: 3vw;">
+                    <div class="content-block">
+                        <h6 style="width: 25vw;" @click="displayed = displayed == i ? -1 : i">
+                            <styled-text :context="context">
+                                {{ thread.title }}
+                            </styled-text>
+                        </h6>
+                        <h5 :style="{ color : context.color_schema[i] }"
+                            style="width: 15vw; margin-left: 5vw;
+                        padding-top: .5em;">
+                            upvoted {{ thread.up_count }} times
+                        </h5>
                     </div>
-                </transition-group>
+                    <div class="content-block">
+                        <transition name="fade">
+                            <b-card v-if="displayed == i" style="
+                                margin-left: 4vw;
+                                margin-bottom: 2vh;
+                                width: 100%;">
+                                <p class="card-text">
+                                    {{ thread.username }} : {{ thread.body }}
+                                </p>
+                            </b-card>
+                        </transition>
+                    </div>
+                </div>
             </div>
-            <follow-up :item="item" :context="context"></follow-up>
-        </template>
+        </transition-group>
     </div>
+</div>
 </template>
 
 <script>

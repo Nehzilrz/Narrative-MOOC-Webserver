@@ -1,32 +1,14 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block nm-block title">
-                <h4> {{ item.name }} </h4>
-            </div>
-            <div class="slide nm-block" style="height: 25vh;">
-                <div class="graph nm-block" style="width: 50%; float: left;">
-                    <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
-                        :style="{
-                            left: `${current_point && current_point.x}px`, 
-                            top: `${current_point && (current_point.y - 5)}px` 
-                        }">
-                    </div>
-                    <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
-                        {{ tooltip_message }}
-                    </b-tooltip>
-                </div>
-                <div class="text nm-block" style="width: 50%; float: left;">
-                    <styled-text :context="context" v-if="video_time > 0 || assignment_time > 0">
-                        Students spend an average of {{ Number(video_time / 60).toFixed(1) }} minutes watching the video 
-                            and {{ Number(assignment_time / 60).toFixed(1) }} minutes completing the assignment.
-                    </styled-text>
-                </div>
-            </div>
-            <follow-up :item="item" :context="context"></follow-up>
-        </template>
+<div>
+    <div class="b4w b4h graph nm-block">
     </div>
+    <div class="b4w bh text nm-block">
+        <styled-text :context="context" v-if="video_time > 0 || assignment_time > 0">
+            Students spend an average of {{ Number(video_time / 60).toFixed(1) }} minutes watching the video 
+                and {{ Number(assignment_time / 60).toFixed(1) }} minutes completing the assignment.
+        </styled-text>
+    </div>
+</div>
 </template>
 
 <script>

@@ -1,47 +1,40 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h4> {{ item.name }} </h4>
+<div>
+    <div class="b4w bh nm-block learner-profile">
+        <div class="content-block nm-block">
+            <div class="circle" v-for="k in difficulties">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512">
+                    <path :fill="context.color_schema[0]" d="M96 0c35.346 0 64 28.654 64 64s-28.654 64-64 64-64-28.654-64-64S60.654 0 96 0m48 144h-11.36c-22.711 10.443-49.59 10.894-73.28 0H48c-26.51 0-48 21.49-48 48v136c0 13.255 10.745 24 24 24h16v136c0 13.255 10.745 24 24 24h64c13.255 0 24-10.745 24-24V352h16c13.255 0 24-10.745 24-24V192c0-26.51-21.49-48-48-48z"/>
+                </svg>
             </div>
-            <div class="slide nm-block learner-profile">
-                <div class="content-block nm-block">
-                    <div class="circle" v-for="k in difficulties">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512">
-                            <path :fill="context.color_schema[0]" d="M96 0c35.346 0 64 28.654 64 64s-28.654 64-64 64-64-28.654-64-64S60.654 0 96 0m48 144h-11.36c-22.711 10.443-49.59 10.894-73.28 0H48c-26.51 0-48 21.49-48 48v136c0 13.255 10.745 24 24 24h16v136c0 13.255 10.745 24 24 24h64c13.255 0 24-10.745 24-24V352h16c13.255 0 24-10.745 24-24V192c0-26.51-21.49-48-48-48z"/>
-                        </svg>
-                    </div>
-                    <h3 :style="{ color : context.color_schema[0] }"
-                        style="padding-left:1vw;padding-right:2vw">
-                        {{ difficulties.length }} students
-                    </h3>
-                    <h5>
-                    spend
-                        {{ ~~(difficulties.map(d => d.time).reduce((a, b) => a + b, 0) / difficulties.length / 60) }}
-                        minutes in average but got grade less than 2 in this chapter.
-                    </h5>
-                </div>
-                <div class="content-block nm-block">
-                    <div class="circle" v-for="k in difficulties2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512">
-                            <path :fill="context.color_schema[1]" d="M96 0c35.346 0 64 28.654 64 64s-28.654 64-64 64-64-28.654-64-64S60.654 0 96 0m48 144h-11.36c-22.711 10.443-49.59 10.894-73.28 0H48c-26.51 0-48 21.49-48 48v136c0 13.255 10.745 24 24 24h16v136c0 13.255 10.745 24 24 24h64c13.255 0 24-10.745 24-24V352h16c13.255 0 24-10.745 24-24V192c0-26.51-21.49-48-48-48z"/>
-                        </svg>
-                    </div>
-                    <h3 :style="{ color : context.color_schema[1] }"
-                        style="padding-left:1vw;padding-right:2vw">
-                        {{ difficulties2.length }} students
-                    </h3>
-                    <h5>
-                    spend
-                        {{~~(difficulties2.map(d => d.time).reduce((a, b) => a + b, 0) / difficulties2.length / 60)}} minutes
-                        in average but got grade zero in this chapter.
-                    </h5>
-                </div>
+            <h3 :style="{ color : context.color_schema[0] }"
+                style="padding-left:1vw;padding-right:2vw">
+                {{ difficulties.length }} students
+            </h3>
+            <h5>
+            spend
+                {{ ~~(difficulties.map(d => d.time).reduce((a, b) => a + b, 0) / difficulties.length / 60) }}
+                minutes in average but got grade less than 2 in this chapter.
+            </h5>
+        </div>
+        <div class="content-block nm-block">
+            <div class="circle" v-for="k in difficulties2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512">
+                    <path :fill="context.color_schema[1]" d="M96 0c35.346 0 64 28.654 64 64s-28.654 64-64 64-64-28.654-64-64S60.654 0 96 0m48 144h-11.36c-22.711 10.443-49.59 10.894-73.28 0H48c-26.51 0-48 21.49-48 48v136c0 13.255 10.745 24 24 24h16v136c0 13.255 10.745 24 24 24h64c13.255 0 24-10.745 24-24V352h16c13.255 0 24-10.745 24-24V192c0-26.51-21.49-48-48-48z"/>
+                </svg>
             </div>
-            <follow-up :item="item" :context="context"></follow-up>
-        </template>
+            <h3 :style="{ color : context.color_schema[1] }"
+                style="padding-left:1vw;padding-right:2vw">
+                {{ difficulties2.length }} students
+            </h3>
+            <h5>
+            spend
+                {{~~(difficulties2.map(d => d.time).reduce((a, b) => a + b, 0) / difficulties2.length / 60)}} minutes
+                in average but got grade zero in this chapter.
+            </h5>
+        </div>
     </div>
+</div>
 </template>
 
 <script>

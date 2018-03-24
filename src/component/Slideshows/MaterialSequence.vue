@@ -1,43 +1,27 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h4> {{ item.name }} </h4>
+<div>
+    <div class="slide b4w bh nm-block sequence">
+        <div class="graph nm-block">
+            <svg></svg>
+        </div>
+        <div class="patterns">
+            <h6 class="nm-block"> General learning sequences: </h6>
+            <div class="pattern nm-block" v-for="(pattern, p) in patterns">
+                <span class="head">
+                    S{{p + 1}}
+                </span>
+                <span v-for="i in pattern.path" class="node" 
+                    :class="{ active: lastElement == i }"
+                    @click="click(i)"
+                    :style="{ 'background-color':
+                    elements[i].type == 'video' ? context.color_schema[1] : context.color_schema[3]
+                    }">
+                    {{ elements[i].tag }}. {{ elements[i].name }}
+                </span>
             </div>
-            <div class="slide nm-block sequence">
-                <div class="graph nm-block">
-                    <svg></svg>
-                    <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
-                        :style="{
-                            left: `${current_point && current_point.x - 5}px`, 
-                            top: `${current_point && (current_point.y - 10)}px` 
-                        }">
-                    </div>
-                    <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
-                        {{ tooltip_message }}
-                    </b-tooltip>
-                </div>
-                <div class="patterns">
-                    <h6 class="nm-block"> General learning sequences: </h6>
-                    <div class="pattern nm-block" v-for="(pattern, p) in patterns">
-                        <span class="head">
-                            S{{p + 1}}
-                        </span>
-                        <span v-for="i in pattern.path" class="node" 
-                            :class="{ active: lastElement == i }"
-                            @click="click(i)"
-                            :style="{ 'background-color':
-                            elements[i].type == 'video' ? context.color_schema[1] : context.color_schema[3]
-                            }">
-                            {{ elements[i].tag }}. {{ elements[i].name }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <follow-up :item="item" :context="context"></follow-up>
-        </template>
+        </div>
     </div>
+</div>
 </template>
 
 <script>

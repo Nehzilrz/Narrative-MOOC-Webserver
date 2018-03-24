@@ -1,85 +1,78 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h4> {{ item.name }} </h4>
+<div>
+    <div class="b4w bh nm-block upvoted">
+        <div class="content-block nm-block" style="padding-top: 2vh; padding-bottom: 2vh;">
+            <h5> 
+                Top 3 Questioners:
+            </h5>
+        </div>
+        <template v-for="(user, i) in questioners">
+            <div class="content-block nm-block" style="padding-left: 6vw;">
+                <h6 style="width: 15vw;">
+                    <styled-text :context="context">
+                        {{ user.username }}
+                    </styled-text>
+                </h6>
+                <h5 :style="{ color : context.color_schema[i] }"
+                    style="width: 15vw; 
+                    padding-top: .5em;">
+                    posts {{ user.val }} topics
+                </h5>
+                <ul style="width: 30vw; padding-top: 0.5vh;">
+                    <li :style="{
+                        background : context.color_schema[i],
+                        width: user.posts.length < 50 ? '15px' : '12px',
+                        height: user.posts.length < 50 ? '15px' : '12px',
+                        'margin-right': user.posts.length < 50 ? '5px' : '3px',
+                        'margin-bottom': user.posts.length < 50 ? '5px' : '3px',
+                    }"
+                        :class="{ active: post == current_post }"
+                        class="circle" v-for="post in user.posts"
+                        @click="current_post = current_post == post ? null : post"
+                    ></li>
+                </ul>
             </div>
-            <div class="slide nm-block upvoted">
-                <div class="content-block nm-block" style="padding-top: 2vh; padding-bottom: 2vh;">
-                    <h5> 
-                        Top 3 Questioners:
-                    </h5>
-                </div>
-                <template v-for="(user, i) in questioners">
-                    <div class="content-block nm-block" style="padding-left: 6vw;">
-                        <h6 style="width: 15vw;">
-                            <styled-text :context="context">
-                                {{ user.username }}
-                            </styled-text>
-                        </h6>
-                        <h5 :style="{ color : context.color_schema[i] }"
-                            style="width: 15vw; 
-                            padding-top: .5em;">
-                            posts {{ user.val }} topics
-                        </h5>
-                        <ul style="width: 30vw; padding-top: 0.5vh;">
-                            <li :style="{
-                                background : context.color_schema[i],
-                                width: user.posts.length < 50 ? '15px' : '12px',
-                                height: user.posts.length < 50 ? '15px' : '12px',
-                                'margin-right': user.posts.length < 50 ? '5px' : '3px',
-                                'margin-bottom': user.posts.length < 50 ? '5px' : '3px',
-                            }"
-                                :class="{ active: post == current_post }"
-                                class="circle" v-for="post in user.posts"
-                                @click="current_post = current_post == post ? null : post"
-                            ></li>
-                        </ul>
-                    </div>
-                </template>
-                <div class="content-block nm-block" style="padding-top: 2vh; padding-bottom: 2vh;">
-                    <h5> 
-                        Top 3 Responders:
-                    </h5>
-                </div>
-                <template v-for="(user, i) in responders">
-                    <div class="content-block nm-block" style="padding-left: 6vw;">
-                        <h6 style="width: 15vw;">
-                            <styled-text :context="context">
-                                {{ user.username }}
-                            </styled-text>
-                        </h6>
-                        <h5 :style="{ color : context.color_schema[i + questioners.length] }"
-                            style="width: 15vw;">
-                            posts {{ user.val }} replies
-                        </h5>
-                        <ul style="width: 30vw; padding-top: 0.5vh;">
-                            <li :style="{
-                                background : context.color_schema[i],
-                                width: user.posts.length < 50 ? '15px' : '12px',
-                                height: user.posts.length < 50 ? '15px' : '12px',
-                                'margin-right': user.posts.length < 50 ? '5px' : '3px',
-                                'margin-bottom': user.posts.length < 50 ? '5px' : '3px',
-                            }"
-                                :class="{ active: post == current_post }"
-                                class="circle" v-for="post in user.posts"
-                                @click="current_post = current_post == post ? null : post"
-                            ></li>
-                        </ul>
-                    </div>
-                </template>
-                <div class="content-block">
-                    <b-card v-if="current_post" :sub-title="current_post.title">
-                        <p class="card-text">
-                            {{ current_post.username }} : {{ current_post.body }}
-                        </p>
-                    </b-card>
-                </div>
-            </div>
-            <follow-up :item="item" :context="context"></follow-up>
         </template>
+        <div class="content-block nm-block" style="padding-top: 2vh; padding-bottom: 2vh;">
+            <h5> 
+                Top 3 Responders:
+            </h5>
+        </div>
+        <template v-for="(user, i) in responders">
+            <div class="content-block nm-block" style="padding-left: 6vw;">
+                <h6 style="width: 15vw;">
+                    <styled-text :context="context">
+                        {{ user.username }}
+                    </styled-text>
+                </h6>
+                <h5 :style="{ color : context.color_schema[i + questioners.length] }"
+                    style="width: 15vw;">
+                    posts {{ user.val }} replies
+                </h5>
+                <ul style="width: 30vw; padding-top: 0.5vh;">
+                    <li :style="{
+                        background : context.color_schema[i],
+                        width: user.posts.length < 50 ? '15px' : '12px',
+                        height: user.posts.length < 50 ? '15px' : '12px',
+                        'margin-right': user.posts.length < 50 ? '5px' : '3px',
+                        'margin-bottom': user.posts.length < 50 ? '5px' : '3px',
+                    }"
+                        :class="{ active: post == current_post }"
+                        class="circle" v-for="post in user.posts"
+                        @click="current_post = current_post == post ? null : post"
+                    ></li>
+                </ul>
+            </div>
+        </template>
+        <div class="content-block">
+            <b-card v-if="current_post" :sub-title="current_post.title">
+                <p class="card-text">
+                    {{ current_post.username }} : {{ current_post.body }}
+                </p>
+            </b-card>
+        </div>
     </div>
+</div>
 </template>
 
 <script>

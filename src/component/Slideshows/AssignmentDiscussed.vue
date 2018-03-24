@@ -1,40 +1,33 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h4> {{ item.name }} </h4>
+<div>
+    <div class="b4w bh nm-block discussed">
+        <template v-for="(assignment, i) in assignments">
+            <div class="content-block nm-block">
+                <styled-text style="padding-left: 2vw; width: 25vw;" :context="context">
+                    {{ assignment.name }}
+                </styled-text>
+                <styled-text style="width: 15vw; font-weight: 500;" :context="context"
+                :style="{ color : context.color_schema[i] }">
+                    discussed {{ assignment.val }} times
+                </styled-text>
+                <ul style="width: 20vw; padding-top: 1vh;">
+                    <li :style="{ background : context.color_schema[i] }"
+                        :class="{ active: post == current_post }"
+                        class="circle" v-for="post in assignment.posts"
+                        @click ="click(post)"
+                    ></li>
+                </ul>
             </div>
-            <div class="slide nm-block discussed">
-                <template v-for="(assignment, i) in assignments">
-                    <div class="content-block nm-block">
-                        <styled-text style="padding-left: 2vw; width: 25vw;" :context="context">
-                            {{ assignment.name }}
-                        </styled-text>
-                        <styled-text style="width: 15vw; font-weight: 500;" :context="context"
-                        :style="{ color : context.color_schema[i] }">
-                            discussed {{ assignment.val }} times
-                        </styled-text>
-                        <ul style="width: 20vw; padding-top: 1vh;">
-                            <li :style="{ background : context.color_schema[i] }"
-                                :class="{ active: post == current_post }"
-                                class="circle" v-for="post in assignment.posts"
-                                @click ="click(post)"
-                            ></li>
-                        </ul>
-                    </div>
-                </template>
-                <div class="content-block nm-block">
-                    <b-card v-if="current_post" :sub-title="current_post.title">
-                        <p class="card-text">
-                            {{ current_post.username }} : {{ current_post.body }}
-                        </p>
-                    </b-card>
-                </div>
-            </div>
-            <follow-up :item="item" :context="context"></follow-up>
         </template>
+        <div class="content-block nm-block">
+            <b-card v-if="current_post" :sub-title="current_post.title">
+                <p class="card-text">
+                    {{ current_post.username }} : {{ current_post.body }}
+                </p>
+            </b-card>
+        </div>
     </div>
+</div>
 </template>
 
 <script>

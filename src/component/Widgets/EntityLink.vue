@@ -47,13 +47,13 @@
         methods: {
             click() {
                 if (this.item.type == 'video') {
-                    this.context.selectVideo(this.item, this.parent);
+                    this.$bus.$emit('select_video', this.item, this.parent);
                 } else if (this.item.type == 'assignment') {
-                    this.context.selectAssignment(this.item, this.parent);
+                    this.$bus.$emit('select_assignment', this.item, this.parent);
                 } else if (this.item.type == 'chapter') {
-                    this.context.selectChapter(this.item, this.parent);
+                    this.$bus.$emit('select_chapter', this.item, this.parent);
                 } else if (this.item.type == 'student') {
-                    this.context.selectStudent(this.item, this.parent);
+                    this.$bus.$emit('select_student', this.item, this.parent);
                 } else {
                 }
             },

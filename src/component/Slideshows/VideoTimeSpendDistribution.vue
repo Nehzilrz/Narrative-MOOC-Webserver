@@ -1,32 +1,25 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h4> {{ item.name }} </h4>
+    <div>
+        <div class="slide nm-block graph" style="height: 40vh">
+            <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
+                :style="{
+                    left: `${current_point && current_point.x}px`, 
+                    top: `${current_point && (current_point.y - 5)}px` 
+                }">
             </div>
-            <div class="slide nm-block graph" style="height: 40vh">
-                <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
-                    :style="{
-                        left: `${current_point && current_point.x}px`, 
-                        top: `${current_point && (current_point.y - 5)}px` 
-                    }">
-                </div>
-                <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
-                    {{ tooltip_message }}
-                </b-tooltip>
-            </div>
-            <div class="slide nm-block text" v-for="student, i in students">
-                <styled-text :context="context">
-                    {{ student.name }} students pay more attention on these video, which including
-                    <entity-link :id="student.videos[0].id" :context="context" :parent="item"></entity-link>
-                    and
-                    <entity-link :id="student.videos[1].id" :context="context" :parent="item"></entity-link>
-                    .
-                </styled-text>
-            </div>
-            <follow-up :item="item" :context="context"></follow-up>
-        </template>
+            <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
+                {{ tooltip_message }}
+            </b-tooltip>
+        </div>
+        <div class="slide nm-block text" v-for="student, i in students">
+            <styled-text :context="context">
+                {{ student.name }} students pay more attention on these video, which including
+                <entity-link :id="student.videos[0].id" :context="context" :parent="item"></entity-link>
+                and
+                <entity-link :id="student.videos[1].id" :context="context" :parent="item"></entity-link>
+                .
+            </styled-text>
+        </div>
     </div>
 </template>
 
@@ -46,11 +39,7 @@
         },
         extends: SlideshowBase,
         created() {
-            this.table = this.render(this.item.data, this.context);
-        },
-        mounted() {
-            var element = this.$el.getElementsByClassName('graph')[0];
-            this.table.renderTo(element);
+            this.tables.push(this.render(this.item.data, this.context));
         },
         computed: {
             overview() {

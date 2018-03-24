@@ -10,7 +10,7 @@ export default {
         };
     },
     created() {
-        this.context.refreshchart_bus.$on("refresh-chart", this.refreshChart);
+        this.$bus.$on("refresh-chart", this.refreshChart);
     },
     mounted() {
         var elements = this.$el.getElementsByClassName('graph');
@@ -19,7 +19,7 @@ export default {
         }
     },
     destroyed() {
-        this.context.refreshchart_bus.$off("refresh-chart", this.refreshChart);
+        this.$bus.$off("refresh-chart", this.refreshChart);
     },
     methods: {
         refreshChart(element_id) {
@@ -89,9 +89,9 @@ export default {
                     let x = selection.datum();
                     x = this.context.item_mapping[x.id];
                     if (x && x.type == 'video') {
-                        this.context.selectVideo(x, this.item);
+                        this.$bus.$emit('select_video', x, this.item);
                     } else if (x && x.type == 'assignment') {
-                        this.context.selectAssignment(x, this.item);
+                        this.$bus.$emit('select_assignment', x, this.item);
                     }
                 }
             });

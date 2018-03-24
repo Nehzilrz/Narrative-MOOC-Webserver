@@ -14,8 +14,10 @@ import 'eagle.js/dist/eagle.css';
 import 'plottable/plottable.css';
 import App from './App.vue';
 
+const EventBus = new Vue();
 
 Vue.prototype.$sr = scrollReveal({ reset: true });
+Vue.prototype.$bus = EventBus;
 Vue.use(BootstrapVue);
 Vue.component('medium-editor', editor);
 Vue.component('styled-text', StyledText);

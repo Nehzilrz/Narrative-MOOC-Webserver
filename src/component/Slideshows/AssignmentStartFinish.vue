@@ -1,42 +1,23 @@
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <template v-if="item && item.loaded">
-            <div class="slide nm-block title">
-                <h4> {{ item.name }} </h4>
-            </div>
-            <div class="slide nm-block" style="height: 25vh">
-                <div class="graph nm-block" style="width: 50%; float: left;">
-                    <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
-                        :style="{
-                            left: `${current_point && current_point.x}px`, 
-                            top: `${current_point && (current_point.y - 5)}px` 
-                        }">
-                    </div>
-                    <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
-                        {{ tooltip_message }}
-                    </b-tooltip>
-                </div>
-                <div class="text" style="width: 50%; float: left; padding-left: 2vw;
-                    padding-top: 1vh;">
-                    <div class="nm-block" style="padding-left: 2vw;">
-                        <styled-text :context="context">
-                            The assignment the student started at the latest was 
-                            <entity-link :id="max_delay.id" :context="context" :parent="item"></entity-link>
-                            , and they started it {{ Number(max_delay.delay).toFixed(1) }} days after the assignment was released.
-                        </styled-text>
-                    </div>
-                    <div class="nm-block" style="padding-left: 2vw;">
-                        <styled-text :context="context">
-                            The longest assignment for the student working cycle is <entity-link :id="max_duration.id" :context="context" :parent="item"></entity-link>.
-                                {{ Number(max_duration.duration).toFixed(1) }} days.
-                        </styled-text>
-                    </div>
-                </div>
-            </div>
-            <follow-up :item="item" :context="context"></follow-up>
-        </template>
+<div>
+    <div class="b2w b4h graph nm-block">
     </div>
+    <div class="b2w bh text">
+        <div class="nm-block">
+            <styled-text :context="context">
+                The assignment the student started at the latest was 
+                <entity-link :id="max_delay.id" :context="context" :parent="item"></entity-link>
+                , and they started it {{ Number(max_delay.delay).toFixed(1) }} days after the assignment was released.
+            </styled-text>
+        </div>
+        <div class="nm-block">
+            <styled-text :context="context">
+                The longest assignment for the student working cycle is <entity-link :id="max_duration.id" :context="context" :parent="item"></entity-link>.
+                    {{ Number(max_duration.duration).toFixed(1) }} days.
+            </styled-text>
+        </div>
+    </div>
+</div>
 </template>
 
 <script>
