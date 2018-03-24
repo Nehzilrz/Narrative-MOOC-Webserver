@@ -63,19 +63,8 @@
             };
         },
         extends: SlideshowBase,
-        watch: {
-            last_element(val) {
-                this.item.cache.last_element = val;
-                this.plots && this.plots.attr("opacity", d => d.id == this.last_element ? 1 : 0.5);
-            },
-        },
         created() {
-            this.last_element = this.item.cache.last_element;
-            this.table = this.render(this.item.data, this.context);
-        },
-        mounted() {
-            var element = this.$el.getElementsByClassName('graph')[0];
-            this.table.renderTo(element);
+            this.tables.push(this.render(this.item.data, this.context));
         },
         computed: {
             max_video_activies() {
@@ -125,66 +114,15 @@
                     .addDataset(new Plottable.Dataset(video_activies).metadata('video'))
                     .addDataset(new Plottable.Dataset(problem_activies).metadata('assignment'));
 
-                this.plots = plots;
                 var legend = new Plottable.Components.Legend(colorScale);
                     legend.maxEntriesPerRow(1);
                     legend
                         .symbol(() => Plottable.SymbolFactories.circle())
                         .xAlignment("right");
 
-                if (this.last_element) {
-                    plots.attr("opacity", d => d.id == this.last_element ? 1 : 0.5);
-                }
-
-                var interaction = new Plottable.Interactions.Click();
-                interaction.onClick(point => {
-                    if (this.context.enable_highlight_chart) {
-                        var element = plots.entitiesAt(point)[0];
-                        if (!element) {
-                            this.last_element = null;
-                        } else {
-                            this.last_element = element.datum.id;
-                        }
-                    } else {
-                        var element = plots.entitiesAt(point)[0];
-                        if (!element) return;
-                        var selection = element.selection;
-                        if (!selection) return;
-                        var x = selection.datum();
-                        x = context.item_mapping[x.id];
-                        if (x.type == 'video') {
-                            context.selectVideo(x, this.item);
-                        } else if (x.type == 'assignment') {
-                            context.selectAssignment(x, this.item);
-                        }
-                    }
-                });
-                interaction.attachTo(plots);
-                var interaction2 = new Plottable.Interactions.Pointer();
-                interaction2.onPointerMove(point => {
-                    var element = plots.entitiesAt(point)[0];
-                    if (!element) {
-                        setTimeout(() => { this.show_tooltip = 0; }, 500);
-                        return;
-                    }
-                    var selection = element.selection;
-                    if (!selection) return;
-                    this.show_tooltip = true;
-                    this.current_point.x = point.x + plots.origin().x;
-                    this.current_point.y = point.y + plots.origin().y;
-                    var x = selection.datum();
-                    this.tooltip_message = `value: ${x.activeness}`;
-                    if (!this.context.enable_highlight_chart) {
-                        plots.selections().attr("opacity", 0.8);
-                        selection.attr("opacity", 1);
-                    }
-                }).onPointerExit(point => {
-                    setTimeout(() => { this.show_tooltip = 0; }, 500);
-                    if (!this.context.enable_highlight_chart) {
-                        plots.selections().attr("opacity", 0.8);
-                    }
-                });
-                interaction2.attachTo(plots);
+                this.plots.push(plots);
+                this.attachClick(plots);
+                this.attachMousemove(plots, (x) => `value: ${x.activeness}`);
 
                 var yLabel = new Plottable.Components.AxisLabel("Popularity", "0");
 

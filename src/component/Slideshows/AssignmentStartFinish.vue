@@ -49,13 +49,9 @@
             };
         },
         created() {
-            this.table = this.render(this.item.data, this.context);
+            this.tables.push(this.render(this.item.data, this.context));
         },
         extends: SlideshowBase,
-        mounted() {
-            var element = this.$el.getElementsByClassName('graph')[0];
-            this.table.renderTo(element);
-        },
         computed: {
             start_finish() {
                 const assignment_activies = this.item.data.problem_activies;
@@ -110,66 +106,11 @@
                     .addDataset(new Plottable.Dataset(assignment_activies).metadata('delay'))
                     .addDataset(new Plottable.Dataset(assignment_activies).metadata('duration'));
 
-                if (this.lastElement) {
-                    plots.attr("opacity", d => d.id == this.lastElement ? 1 : 0.5);
-                }
-                this.plots = plots;
-                
-                var interaction = new Plottable.Interactions.Click();
-                interaction.onClick(point => {
-                    if (this.context.enable_highlight_chart) {
-                        var element = plots.entitiesAt(point)[0];
-                        if (!element) return;
-                        if (this.lastElement == element.datum.id) {
-                            plots.selections().attr("opacity", 1);
-                            this.lastElement = null;
-                            return;
-                        } else {
-                            plots.selections().attr("opacity", 0.5);
-                        }
-                        var selection = element.selection;
-                        selection.attr("opacity", 1);
-                        this.lastElement = element.datum.id;
-                    } else {
-                        var element = plots.entitiesAt(point)[0];
-                        if (!element) return;
-                        var selection = element.selection;
-                        if (!selection) return;
-                        var x = selection.datum();
-                        x = context.item_mapping[x.id];
-                        if (x.type == 'video') {
-                            context.selectVideo(x, this.item);
-                        } else if (x.type == 'assignment') {
-                            context.selectAssignment(x, this.item);
-                        }
-                    }
-                });
-                interaction.attachTo(plots);
-                var interaction2 = new Plottable.Interactions.Pointer();
-                interaction2.onPointerMove(point => {
-                    var element = plots.entitiesAt(point)[0];
-                    if (!element) {
-                        setTimeout(() => { this.show_tooltip = 0; }, 500);
-                        return;
-                    }
-                    var selection = element.selection;
-                    if (!selection) return;
-                    this.show_tooltip = true;
-                    this.current_point.x = point.x + plots.origin().x;
-                    this.current_point.y = point.y + plots.origin().y;
-                    var x = selection.datum();
-                    this.tooltip_message = `Delay: ${Number(x.delay).toFixed(1)} days, Duration: ${Number(x.duration).toFixed(1)} days`;
-                    if (!this.context.enable_highlight_chart) {
-                        plots.selections().attr("opacity", 0.8);
-                        selection.attr("opacity", 1);
-                    }
-                }).onPointerExit(point => {
-                    setTimeout(() => { this.show_tooltip = 0; }, 500);
-                    if (!this.context.enable_highlight_chart) {
-                        plots.selections().attr("opacity", 0.8);
-                    }
-                });
-                interaction2.attachTo(plots);
+                this.plots.push(plots);
+                this.attachClick(plots);
+                this.attachMousemove(plots, (x) =>
+                    `Delay: ${Number(x.delay).toFixed(1)} days, Duration: ${Number(x.duration).toFixed(1)} days`
+                );
 
                 var timeLabel = new Plottable.Components.AxisLabel("Days", "0");
                 var plotsLabel = new Plottable.Components.AxisLabel("days", "0");
@@ -187,9 +128,5 @@
                 return table;
             },
         },
-        props: ["item", "context"],
     };
 </script>
-
-<style scope>
-</style>

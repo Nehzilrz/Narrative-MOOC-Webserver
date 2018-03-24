@@ -33,10 +33,10 @@ export default {
 
 <style scope>
 .slideshow-inner-container {
-  left: 0px;
+  padding-left: 2em;
   top: 0px;
   height: 100%;
-  width: 80vw;
+  width: 78vw;
   display: inline-flex;
   flex-direction: column;
   overflow-x: hidden;

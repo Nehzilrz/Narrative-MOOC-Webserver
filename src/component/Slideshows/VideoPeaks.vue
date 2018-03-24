@@ -1,80 +1,66 @@
 
 <template>
-    <div class="slide-page">
-        <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <div class="slide nm-block title">
-            <h4> {{ item.name }} </h4>
-        </div>
-        <div class="slide nm-block graph" style="height: 30vh">
-            <div class="p-2" :id="'tooltip' + $vnode.tag" style="opacity:0; position: absolute;"
-                :style="{
-                    left: `${current_point && current_point.x}px`, 
-                    top: `${current_point && (current_point.y - 5)}px` 
-                }">
-            </div>
-            <b-tooltip :show="show_tooltip" :target="'tooltip' + $vnode.tag">
-                {{ tooltip_message }}
-            </b-tooltip>
-        </div>
-        <div class="slide nm-block text">
-            <h6 style="font-weight: 600; padding-top: 1vh; padding-bottom: 0.5vh;"> 
-                Peaks in this video:
-            </h6>
-        </div>
-        <div class="slide nm-block text">
-            <ul style="padding-left: 2vw"
-                v-if="item.data.video_peaks && item.data.video_peaks.length">
-                <li class="nm-block" v-for="peak, i in showed_peaks">
-                    <styled-text :context="context">
-                        The 
-                        <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
-                            Peak 
-                            <span class="step" :style="{ background: context.color_schema[i] }">
-                                {{i}}
-                            </span>
-                        </b-link>
-                        of students' operation appears at the 
-                        <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
-                            {{ ~~(peak.time / 60) }}:{{ ~~(peak.time % 60 / 10) }}{{ peak.time % 10 }} 
-                        </b-link>
-                        of the video, with 
-                        <b-link href="javascript:void(0);" @click="onSelectStudents(item.data.video_peaks[i].users, ' in Peak#' + i)">
-                            {{ peak.student_num }} students
-                        </b-link>
-                        , 
-                        which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
-                    </styled-text>
-                </li>
-                <li class="nm-block" v-if="item.data.video_peaks.length > showed_peaks_num">
-                    <b-link href="javascript:void(0);" @click="showed_peaks_num += 1">
-                        Show more ...
-                    </b-link>
-                </li>
-            </ul>
-        </div>
-        <div class="slide nm-block text">
-            <b-form-row v-show="show_video">
-                <b-col cols="5">
-                    <h6 style="font-weight: 600"> Screenshot of this peak: </h6>
-                    <b-embed v-if="item.data.video"
-                            type="video"
-                            aspect="16by9"
-                            :src= "item.data.video.html5_sources"
-                            class="peak_embed_video"
-                    ></b-embed>
-                </b-col>
-                <b-col cols="1">
-                </b-col>
-                <b-col cols="6">
-                    <h6 style="font-weight: 600; padding-bottom: 2vh;"> A comparison of these students' in this peak with the average: </h6>
-                    <div class="peak_embed_chart" 
-                        style="width: 100%; height: 30vh; padding-left: 2vw;">
-                    </div>
-                </b-col>
-            </b-form-row>
-        </div>
-        <follow-up :item="item" :context="context"></follow-up>
+<div>
+    <div class="b4w b5h nm-block graph">
     </div>
+    <div class="b4w bh nm-block text">
+        <h6 style="font-weight: 600; padding-top: 1vh; padding-bottom: 0.5vh;"> 
+            Peaks in this video:
+        </h6>
+    </div>
+    <div class="slide nm-block text">
+        <ul style="padding-left: 2vw"
+            v-if="item.data.video_peaks && item.data.video_peaks.length">
+            <li class="nm-block" v-for="peak, i in showed_peaks">
+                <styled-text :context="context">
+                    The 
+                    <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
+                        Peak 
+                        <span class="step" :style="{ background: context.color_schema[i] }">
+                            {{i}}
+                        </span>
+                    </b-link>
+                    of students' operation appears at the 
+                    <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
+                        {{ ~~(peak.time / 60) }}:{{ ~~(peak.time % 60 / 10) }}{{ peak.time % 10 }} 
+                    </b-link>
+                    of the video, with 
+                    <b-link href="javascript:void(0);" @click="onSelectStudents(item.data.video_peaks[i].users, ' in Peak#' + i)">
+                        {{ peak.student_num }} students
+                    </b-link>
+                    , 
+                    which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
+                </styled-text>
+            </li>
+            <li class="nm-block" v-if="item.data.video_peaks.length > showed_peaks_num">
+                <b-link href="javascript:void(0);" @click="showed_peaks_num += 1">
+                    Show more ...
+                </b-link>
+            </li>
+        </ul>
+    </div>
+    <div class="slide nm-block text">
+        <b-form-row v-show="show_video">
+            <b-col cols="5">
+                <h6 style="font-weight: 600"> Screenshot of this peak: </h6>
+                <b-embed v-if="item.data.video"
+                        type="video"
+                        aspect="16by9"
+                        :src= "item.data.video.html5_sources"
+                        class="peak_embed_video"
+                ></b-embed>
+            </b-col>
+            <b-col cols="1">
+            </b-col>
+            <b-col cols="6">
+                <h6 style="font-weight: 600; padding-bottom: 2vh;"> A comparison of these students' in this peak with the average: </h6>
+                <div class="peak_embed_chart" 
+                    style="width: 100%; height: 30vh; padding-left: 2vw;">
+                </div>
+            </b-col>
+        </b-form-row>
+    </div>
+</div>
 </template>
 
 <script>
@@ -90,12 +76,7 @@
         },
         extends: SlideshowBase,
         created() {
-            this.table = this.render(this.item.data, this.context);
-        },
-        mounted() {
-            var element = this.$el.getElementsByClassName('graph')[0];
-            this.table.renderTo(element);
-            this.$forceUpdate();
+            this.tables.push(this.render(this.item.data, this.context));
         },
         computed: {
             showed_peaks() {

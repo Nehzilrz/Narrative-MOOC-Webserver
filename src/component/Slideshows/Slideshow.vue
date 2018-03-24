@@ -1,6 +1,6 @@
 <template>
     <div class="slide-page">
-        <div class="slide nm-block title">
+        <div class="nm-block title">
             <h4> {{ item.name }} </h4>
         </div>
         <div class="p-2 nm-tooltip base" :id="'tooltip' + $vnode.tag" ref="tooltip">
@@ -9,7 +9,7 @@
             {{ tooltip_message }}
         </b-tooltip>
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <component v-bind:is="current_view" :context="context" :item="item"
+        <component class="nm-block main-content" v-bind:is="current_view" :context="context" :item="item"
             @showtooltip="showTooltip">
         </component>
         <follow-up :item="item" :context="context"></follow-up>
@@ -142,11 +142,16 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .nm-tooltip.base {
     opacity: 0;
     position: absolute;
     z-index: 10;
+}
+
+.nm-block {
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
 }
 
 .slide-page {
@@ -157,38 +162,91 @@ export default {
   padding-bottom: 1vh;
 }
 
-.slide {
-  width: 90%;
-  left: 1vw;
-  transition: 0.2s;
-  transition-timing-function: ease-in-out;
-}
-
-.slide.title {
+.slide-page .title {
   font-weight: 800;
   text-align: center;
 }
-
-.slide.title h1,h2,h3,h4 {
-  font-weight: 800;
-}
-
-.slide h5,h6 {
+.slide-page h5,h6 {
   font-weight: 600;
 }
 
-.slide {
-  margin-left: 1vw;
-  margin-right: 1vw;
+.slide-page .main-content {
+  margin: 1em;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: space-around;
 }
 
-.nm-block {
-  transition: 0.2s;
-  transition-timing-function: ease-in-out;
+.slide-page .text.nm-block {
+  padding-left: 2em;
 }
 
-.slide.text {
-  margin-left: 3vw;
+.b1w {
+  width: 16em;
+  padding-left: .5em;
+  padding-right: .5em;
+  margin-left: .5em;
+  margin-right: .5em;
+}
+.b2w {
+  width: 32em;
+  padding-left: .5em;
+  padding-right: .5em;
+  margin-left: .5em;
+  margin-right: .5em;
+}
+.b3w {
+  width: 48em;
+  padding-left: .75em;
+  padding-right: .75em;
+  margin-left: .75em;
+  margin-right: .75em;
+}
+.b4w {
+  width: 64em;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+.bh {
+  height: 100%;
+  margin-bottom: .5em;
+}
+.b1h {
+  height: 50px;
+  margin-bottom: 1em;
+}
+.b2h {
+  height: 100px;
+  margin-bottom: 1em;
+}
+.b3h {
+  height: 150px;
+  margin-bottom: 2em;
+}
+.b4h {
+  height: 200px;
+  margin-bottom: 2em;
+}
+.b5h {
+  height: 250px;
+  margin-bottom: 2em;
+}
+.b6h {
+  height: 300px;
+  margin-bottom: 2em;
+}
+.b7h {
+  height: 350px;
+  margin-bottom: 2em;
+}
+.b8h {
+  height: 400px;
+  margin-bottom: 3em;
 }
 
 </style>

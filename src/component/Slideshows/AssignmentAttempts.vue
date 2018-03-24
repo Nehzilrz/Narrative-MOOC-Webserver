@@ -1,17 +1,16 @@
 <template>
-    <div class="slide nm-block" style="height: 25vh">
-        <div class="graph nm-block" ref="chart" style="float: left; width: 50%;">
+    <div class="nm-block">
+        <div class="graph nm-block b2w b4h" ref="chart">
         </div>
-        <div class="text" style="width: 50%; float: left; padding-left: 2vw;
-            padding-top: 1vh;">
-            <div class="nm-block" style="padding-left: 2vw;">
+        <div class="text nm-block b2w b4h">
+            <div class="nm-block">
                 <styled-text :context="context">
                     The assignment with highest attempts on average is
                     <entity-link :id="max_assignment[0].id" :context="context" :parent="item"></entity-link>
                     with the attempts of {{ Number(max_assignment[0].attempts).toFixed(1) }}.
                 </styled-text>
             </div>
-            <div class="nm-block" style="padding-left: 2vw;">
+            <div class="nm-block">
                 <styled-text :context="context">
                     The assignment with lowest attempts on average is
                     <entity-link :id="min_assignment[0].id" :context="context" :parent="item"></entity-link>

@@ -1,45 +1,39 @@
 <template>
 <div>
-    <div class="slide nm-block" style="height: 25vh;">
-        <div class="graph nm-block" ref="graph1" style="width: 50%; float: left;">
+    <div class="graph nm-block b2w b4h" ref="graph1">
+    </div>
+    <div class="text nm-block b2w b4h">
+        <div class="nm-block">
+            <styled-text :context="context">
+                The assignment with highest working time on average is
+                <entity-link :id="most_work[0].id" :context="context" :parent="item"></entity-link>
+                , which has been spent {{ Number(most_work[0].work_time / 60).toFixed(1) }} minutes.
+            </styled-text>
         </div>
-        <div class="text" style="width: 50%; float: left; padding-left: 2vw;
-            padding-top: 1vh;">
-            <div class="nm-block" style="padding-left: 2vw;">
-                <styled-text :context="context">
-                    The assignment with highest working time on average is
-                    <entity-link :id="most_work[0].id" :context="context" :parent="item"></entity-link>
-                    , which has been spent {{ Number(most_work[0].work_time / 60).toFixed(1) }} minutes.
-                </styled-text>
-            </div>
-            <div class="nm-block" style="padding-left: 2vw;">
-                <styled-text :context="context">
-                    The assignment with lowest working time on average is
-                    <entity-link :id="least_work[0].id" :context="context" :parent="item"></entity-link>
-                    , which has been spent {{ Number(least_work[0].work_time / 60).toFixed(1) }} minutes.
-                </styled-text>
-            </div>
+        <div class="nm-block">
+            <styled-text :context="context">
+                The assignment with lowest working time on average is
+                <entity-link :id="least_work[0].id" :context="context" :parent="item"></entity-link>
+                , which has been spent {{ Number(least_work[0].work_time / 60).toFixed(1) }} minutes.
+            </styled-text>
         </div>
     </div>
-    <div class="slide nm-block" style="height: 25vh;">
-        <div class="graph nm-block" ref="graph2" style="float:left; width: 50%">
+    <div class="graph nm-block b2w b4h" ref="graph2">
+    </div>
+    <div class="text nm-block b2w b4h">
+        <div class="nm-block">
+            <styled-text :context="context">
+                The assignment with highest completeness on average is
+                <entity-link :id="max_assignment[0].id" :context="context" :parent="item"></entity-link>
+                , {{ Number(max_assignment[0].completeness * 100).toFixed(1) }}% students completed this assignment.
+            </styled-text>
         </div>
-        <div class="text" style="width: 50%; float: left; padding-left: 2vw;
-            padding-top: 1vh;">
-            <div class="nm-block" style="padding-left: 2vw;">
-                <styled-text :context="context">
-                    The assignment with highest completeness on average is
-                    <entity-link :id="max_assignment[0].id" :context="context" :parent="item"></entity-link>
-                    , {{ Number(max_assignment[0].completeness * 100).toFixed(1) }}% students completed this assignment.
-                </styled-text>
-            </div>
-            <div class="nm-block" style="padding-left: 2vw;">
-                <styled-text :context="context">
-                    The assignment with lowest completeness on average is
-                    <entity-link :id="min_assignment[0].id" :context="context" :parent="item"></entity-link>
-                    , {{ Number(min_assignment[0].completeness * 100).toFixed(1) }}% students completed this assignment.
-                </styled-text>
-            </div>
+        <div class="nm-block">
+            <styled-text :context="context">
+                The assignment with lowest completeness on average is
+                <entity-link :id="min_assignment[0].id" :context="context" :parent="item"></entity-link>
+                , {{ Number(min_assignment[0].completeness * 100).toFixed(1) }}% students completed this assignment.
+            </styled-text>
         </div>
     </div>
 </div>
