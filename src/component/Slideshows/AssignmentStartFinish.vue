@@ -2,17 +2,17 @@
 <div>
     <div class="b2w b4h graph nm-block">
     </div>
-    <div class="b2w bh text">
+    <div class="b2w b4h text nm-block">
         <div class="nm-block">
             <styled-text :context="context">
                 The assignment the student started at the latest was 
-                <entity-link :id="max_delay.id" :context="context" :parent="item"></entity-link>
+                <entity-link :id="max_delay.id" :parent="item"></entity-link>
                 , and they started it {{ Number(max_delay.delay).toFixed(1) }} days after the assignment was released.
             </styled-text>
         </div>
         <div class="nm-block">
             <styled-text :context="context">
-                The longest assignment for the student working cycle is <entity-link :id="max_duration.id" :context="context" :parent="item"></entity-link>.
+                The longest assignment for the student working cycle is <entity-link :id="max_duration.id" :parent="item"></entity-link>.
                     {{ Number(max_duration.duration).toFixed(1) }} days.
             </styled-text>
         </div>
@@ -37,10 +37,9 @@
             start_finish() {
                 const assignment_activies = this.item.data.problem_activies;
                 if (!assignment_activies) return [];
-                const context = this.context;
                 return assignment_activies.map(d => {
                     d.duration = (d.modified - d.created) / 86400000;
-                    d.delay = (d.created - (context.item_mapping[d.id] && context.item_mapping[d.id].chapter_start)) / 86400000;
+                    d.delay = (d.created - (this.$mapping[d.id] && this.$mapping[d.id].chapter_start)) / 86400000;
                     return {
                         duration: d.duration,
                         delay: d.delay,

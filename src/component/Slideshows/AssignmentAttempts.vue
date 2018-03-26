@@ -6,14 +6,14 @@
             <div class="nm-block">
                 <styled-text :context="context">
                     The assignment with highest attempts on average is
-                    <entity-link :id="max_assignment[0].id" :context="context" :parent="item"></entity-link>
+                    <entity-link :id="max_assignment[0].id" :parent="item"></entity-link>
                     with the attempts of {{ Number(max_assignment[0].attempts).toFixed(1) }}.
                 </styled-text>
             </div>
             <div class="nm-block">
                 <styled-text :context="context">
                     The assignment with lowest attempts on average is
-                    <entity-link :id="min_assignment[0].id" :context="context" :parent="item"></entity-link>
+                    <entity-link :id="min_assignment[0].id" :parent="item"></entity-link>
                     with the attempts of {{ Number(min_assignment[0].attempts).toFixed(1) }}.
                 </styled-text>
             </div>

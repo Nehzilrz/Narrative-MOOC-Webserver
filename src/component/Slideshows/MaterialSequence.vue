@@ -207,7 +207,7 @@
                         this.show_tooltip = true;
                         this.current_point.x = d3.event.layerX;
                         this.current_point.y = d3.event.layerY;
-                        const x = this.context.item_mapping[d.id];
+                        const x = this.$mapping[d.id];
                         this.tooltip_message = `${x.type}: ${x.name}`;
                     })
                     .on("mouseout", (d) => {

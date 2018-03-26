@@ -24,47 +24,14 @@
       <div class="sidebar-container slideshow">
         <div class="header">
           <h5 class="title"> History </h5>
-          <svg class="icon" width="32" height="32">
-            <path transform="translate(-3, 4) scale(1.8)" fill="#ffffff" d="
-              M10 1c3.866 0 7 3.134 7 7s-3.134 7-7 7v-1.5c1.469 0 2.85-0.572 3.889-1.611s1.611-2.42 1.611-3.889c0-1.469-0.572-2.85-1.611-3.889s-2.42-1.611-3.889-1.611c-1.469 0-2.85 0.572-3.889 1.611-0.799 0.799-1.322 1.801-1.52 2.889h2.909l-3.5 4-3.5-4h2.571c0.485-3.392 3.402-6 6.929-6zM13 7v2h-4v-5h2v3z">
-            </path>
-          </svg>
+          <n-svg type="history" class="icon"></n-svg>
         </div>
         <div class="content">
           <template v-for="page, index in pages">
             <draggable :list="page">
               <div v-for="item in page" class="page" @click="findNext(null, item)" :class="{ active: item == slide }">
                 <div> {{`${item.name}`}} </div>
-                <svg v-if="item.chart_type =='piechart'" width="16" height="16" viewBox="0 0 16 16">
-                    <path fill="#ffffff" opacity=0.15 d="
-                      M7 9v-7c-3.866 0-7 3.134-7 7s3.134 7 7 7 7-3.134 7-7c0-1.126-0.266-2.189-0.738-3.131l-6.262 3.131zM14.262 3.869c-1.149-2.294-3.521-3.869-6.262-3.869v7l6.262-3.131z">
-                    </path>
-                </svg>
-                <svg v-else-if="item.chart_type =='linechart'" width="16" height="16" viewBox="0 0 16 16">
-                    <path fill="#ffffff" opacity=0.15 d="
-                      M2 14h14v2h-16v-16h2zM4.5 13c-0.828 0-1.5-0.672-1.5-1.5s0.672-1.5 1.5-1.5c0.044 0 0.088 0.002 0.131 0.006l1.612-2.687c-0.154-0.235-0.243-0.517-0.243-0.819 0-0.828 0.672-1.5 1.5-1.5s1.5 0.672 1.5 1.5c0 0.302-0.090 0.583-0.243 0.819l1.612 2.687c0.043-0.004 0.087-0.006 0.131-0.006 0.033 0 0.066 0.001 0.099 0.004l2.662-4.658c-0.165-0.241-0.261-0.532-0.261-0.845 0-0.828 0.672-1.5 1.5-1.5s1.5 0.672 1.5 1.5c0 0.828-0.672 1.5-1.5 1.5-0.033 0-0.066-0.001-0.099-0.004l-2.662 4.658c0.165 0.241 0.261 0.532 0.261 0.845 0 0.828-0.672 1.5-1.5 1.5s-1.5-0.672-1.5-1.5c0-0.302 0.090-0.583 0.243-0.819l-1.612-2.687c-0.043 0.004-0.087 0.006-0.131 0.006s-0.088-0.002-0.131-0.006l-1.612 2.687c0.154 0.235 0.243 0.517 0.243 0.819 0 0.828-0.672 1.5-1.5 1.5z">
-                    </path>
-                </svg>
-                <svg v-else-if="item.chart_type =='barchart'" width="16" height="16" viewBox="0 0 16 16">
-                    <path fill="#ffffff" opacity=0.15 d="
-                      M0 13h16v2h-16zM2 9h2v3h-2zM5 5h2v7h-2zM8 8h2v4h-2zM11 2h2v10h-2z">
-                    </path>
-                </svg>
-                <svg v-else-if="item.chart_type =='stackedbarchart'" width="16" height="16" viewBox="0 0 16 16">
-                    <path fill="#ffffff" opacity=0.15 d="
-                      M4.5 6h-3c-0.275 0-0.5 0.225-0.5 0.5v9c0 0.275 0.225 0.5 0.5 0.5h3c0.275 0 0.5-0.225 0.5-0.5v-9c0-0.275-0.225-0.5-0.5-0.5zM4.5 15h-3v-4h3v4zM9.5 4h-3c-0.275 0-0.5 0.225-0.5 0.5v11c0 0.275 0.225 0.5 0.5 0.5h3c0.275 0 0.5-0.225 0.5-0.5v-11c0-0.275-0.225-0.5-0.5-0.5zM9.5 15h-3v-5h3v5zM14.5 2h-3c-0.275 0-0.5 0.225-0.5 0.5v13c0 0.275 0.225 0.5 0.5 0.5h3c0.275 0 0.5-0.225 0.5-0.5v-13c0-0.275-0.225-0.5-0.5-0.5zM14.5 15h-3v-6h3v6z">
-                    </path>
-                </svg>
-                <svg v-else-if="item.chart_type =='areachart'" viewBox="0 0 512 512" class="svg-inline--fa fa-chart-area fa-w-16" style="font-size: 64px;">
-                    <path fill="#ffffff" opacity=0.15 d="
-                      M500 384c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H12c-6.6 0-12-5.4-12-12V76c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v308h436zM372.7 159.5L288 216l-85.3-113.7c-5.1-6.8-15.5-6.3-19.9 1L96 248v104h384l-89.9-187.8c-3.2-6.5-11.4-8.7-17.4-4.7z" class="">
-                    </path>
-                </svg>
-                <svg v-else xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-                    <path fill="#ffffff" opacity=0.15 d="
-                      M6 1h10v2h-10v-2zM6 7h10v2h-10v-2zM6 13h10v2h-10v-2zM0 2c0-1.105 0.895-2 2-2s2 0.895 2 2c0 1.105-0.895 2-2 2s-2-0.895-2-2zM0 8c0-1.105 0.895-2 2-2s2 0.895 2 2c0 1.105-0.895 2-2 2s-2-0.895-2-2zM0 14c0-1.105 0.895-2 2-2s2 0.895 2 2c0 1.105-0.895 2-2 2s-2-0.895-2-2z">
-                    </path>
-                </svg>
+                <n-svg :type="item.chart_type" style="opacity:0.15"></n-svg>
               </div>
             </draggable>
             <hr v-if="index != pages.length - 1">
@@ -72,181 +39,184 @@
         </div>
       </div>
       <div class="body-container">
-          <div class="slideshow-outter-container">
-            <slideshow-container v-for="item in pages" :context="context" :page="item" v-show="item == page">
-              <div class="slide nm-block" v-if="(!page || !page.length) && !context.current_chapter">
-                <b-list-group>
-                  <b-list-group-item v-for="chapter in context.chapters" 
-                    href="javascript:void(0);"
-                    @click="current_chapter = chapter"
-                    >{{ chapter.name }}
-                      (
-                        {{ new Date(chapter.start).toDateString().slice(4) }}
-                      ) 
-                  </b-list-group-item>
-                </b-list-group>
-              </div>
-              <div class="slide nm-block" v-if="(page && !page.length) && context.current_chapter"
-                style="list-style: none; padding-top: 5vh;">
-                <h5> Overall Questions </h5>
-                <ul>
-                  <li v-for="id in 'O1 O2 O3 O4'.split(' ')">
-                    <b-link href="javascript:void(0);"
-                    @click="startPage(id)">
-                      {{ questions[id] }}
-                    </b-link>
-                  </li>
-                </ul>
-                <h5> Assignment Questions </h5>
-                <ul>
-                  <li v-for="id in 'A1 A2 A3 A4'.split(' ')">
-                    <b-link href="javascript:void(0);"
-                    @click="startPage(id)">
-                      {{ questions[id] }}
-                    </b-link>
-                  </li>
-                </ul>
-                <h5> Video Questions </h5>
-                <ul>
-                  <li v-for="id in 'V1 V2 V3 V4'.split(' ')">
-                    <b-link href="javascript:void(0);"
-                    @click="startPage(id)">
-                      {{ questions[id] }}
-                    </b-link>
-                  </li>
-                </ul>
-                <h5> Forum Questions </h5>
-                <ul>
-                  <li v-for="id in 'F1 F2 F3'.split(' ')">
-                    <b-link href="javascript:void(0);"
-                    @click="startPage(id)">
-                      {{ questions[id] }}
-                    </b-link>
-                  </li>
-                </ul>
-              </div>
-            </slideshow-container>
-            <div class="carousel-switcher" v-if="pages && !presentation_mode">
-              <b-button-toolbar key-nav aria-label="Toolbar with button groups">
-                <b-button-group class="mx-1">
-                  <b-btn size="sm" variant="outline-secondary"
-                    @click="onChangePage(pages[Math.max(0, pages.indexOf(page) - 1)])"
-                  >&lsaquo;</b-btn>            
-                  <b-btn size="sm" variant="outline-secondary" v-for="p, index in pages" :class="{ active: p == page }" @click="onChangePage(p)">
-                    {{ index + 1 }}
-                  </b-btn>
-                  <b-btn size="sm" variant="outline-secondary"
-                    @click="page = []; pages.push(page);"
-                  >New</b-btn>
-                  <b-btn size="sm" variant="outline-secondary"
-                    @click="onChangePage(pages[Math.min(pages.length - 1, pages.indexOf(page) + 1)])"
-                  >&rsaquo;</b-btn>
-                </b-button-group>
-              </b-button-toolbar>
+        <slideshow-container v-for="item in pages" :context="context" :page="item" v-show="item == page">
+          <div class="slide nm-block" v-if="(!page || !page.length) && !context.current_chapter">
+            <b-list-group>
+              <b-list-group-item v-for="chapter in context.chapters" 
+                href="javascript:void(0);"
+                @click="current_chapter = chapter"
+                >{{ chapter.name }}
+                  (
+                    {{ new Date(chapter.start).toDateString().slice(4) }}
+                  ) 
+              </b-list-group-item>
+            </b-list-group>
+          </div>
+          <div class="slide nm-block" v-if="(page && !page.length) && context.current_chapter"
+            style="list-style: none; padding-top: 5vh;">
+            <h5> Overall Questions </h5>
+            <ul>
+              <li v-for="id in 'O1 O2 O3 O4'.split(' ')">
+                <b-link href="javascript:void(0);"
+                @click="startPage(id)">
+                  {{ questions[id] }}
+                </b-link>
+              </li>
+            </ul>
+            <h5> Assignment Questions </h5>
+            <ul>
+              <li v-for="id in 'A1 A2 A3 A4'.split(' ')">
+                <b-link href="javascript:void(0);"
+                @click="startPage(id)">
+                  {{ questions[id] }}
+                </b-link>
+              </li>
+            </ul>
+            <h5> Video Questions </h5>
+            <ul>
+              <li v-for="id in 'V1 V2 V3 V4'.split(' ')">
+                <b-link href="javascript:void(0);"
+                @click="startPage(id)">
+                  {{ questions[id] }}
+                </b-link>
+              </li>
+            </ul>
+            <h5> Forum Questions </h5>
+            <ul>
+              <li v-for="id in 'F1 F2 F3'.split(' ')">
+                <b-link href="javascript:void(0);"
+                @click="startPage(id)">
+                  {{ questions[id] }}
+                </b-link>
+              </li>
+            </ul>
+          </div>
+        </slideshow-container>
+        <div class="carousel-remove" v-if="pages.length > 1 && page && !presentation_mode">
+          <b-button-toolbar key-nav aria-label="Toolbar with button groups">
+            <b-button-group class="mx-1">
+              <b-btn size="sm" variant="outline-secondary"
+                @click="removeCurrentPage()"
+              >X</b-btn>
+            </b-button-group>
+          </b-button-toolbar>
+        </div>
+        <div class="carousel-switcher" v-if="pages && !presentation_mode">
+          <b-button-toolbar key-nav aria-label="Toolbar with button groups">
+            <b-button-group class="mx-1">
+              <b-btn size="sm" variant="outline-secondary"
+                @click="onChangePage(pages[Math.max(0, pages.indexOf(page) - 1)])"
+              >&lsaquo;</b-btn>            
+              <b-btn size="sm" variant="outline-secondary" v-for="p, index in pages" :class="{ active: p == page }" @click="onChangePage(p)">
+                {{ index + 1 }}
+              </b-btn>
+              <b-btn size="sm" variant="outline-secondary"
+                @click="page = []; pages.push(page);"
+              >New</b-btn>
+              <b-btn size="sm" variant="outline-secondary"
+                @click="onChangePage(pages[Math.min(pages.length - 1, pages.indexOf(page) + 1)])"
+              >&rsaquo;</b-btn>
+            </b-button-group>
+          </b-button-toolbar>
+        </div>
+        <div class="screen-bottom-tips" 
+          v-if="pages && presentation_mode && bottom_tip_enabled"
+          @click="bottom_tip_enabled = false">
+          <h3> {{ page_index == 0 ? 'Press ↓ to Next' : 'Press ← to Back'}} </h3>
+        </div>
+      </div>
+      <div class="sidebar-container tool" :class="{ open: sidebar_active }">
+        <div class="overview">
+          <div class="header">
+            <h5 class="title"> Overview </h5>
+            <n-svg class="expand" type="expand" v-if="!sidebar_active" @click="adjustSidebar()"></n-svg>
+            <n-svg class="expand" type="shrink" v-if="sidebar_active" @click="adjustSidebar()"></n-svg>
+            <n-svg class="icon" type="overview"></n-svg>
+          </div>
+          <div class="content">
+            <svg id="overview" width="800" height="800">
+            </svg>
+          </div>
+        </div>
+        <div class="marktool">
+          <div class="header">
+            <h5 class="title"> Mark </h5>
+            <n-svg class="icon" type="pencil"></n-svg>
+          </div>
+          <div class="content">
+            <div class="vc-compact" v-if="!presentation_mode">
+              <ul class="vc-compact-colors">
+                <li v-for="color in colors" class="vc-compact-color-item"
+                  :style="{ background: color }" @click="current_color = color">
+                  <div v-if="color == current_color" class="vc-compact-dot">
+                  </div>
+                </li>
+              </ul>
             </div>
-            <div class="screen-bottom-tips" 
-              v-if="pages && presentation_mode && bottom_tip_enabled"
-              @click="bottom_tip_enabled = false">
-              <h3> {{ page_index == 0 ? 'Press ↓ to Next' : 'Press ← to Back'}} </h3>
+            <div class="text-highlighter" v-if="!presentation_mode">
+              <p>
+              Text Highlighter
+              </p>
+              <svg @click="enable_highlight_text = enable_highlight_text == 1 ? 0 : 1" viewBox="0 0 512 512">
+                  <path fill="#fff" :opacity="enable_highlight_text == 1 ? 1 : 0.3" d="M488.96,34.56c-28.16-30.72-76.8-30.72-107.52,0L133.12,282.88l107.52,110.08l248.32-250.88    C519.68,113.92,519.68,65.28,488.96,34.56z"/>
+                  <polygon :fill="current_color" :opacity="enable_highlight_text == 1 ? 1 : 0.6" points="97.28,321.28 23.04,392.96 40.96,446.72 0,500.48 51.2,500.48 79.36,482.56 133.12,500.48 204.8,428.8   "/>
+              </svg>
+              <svg @click="enable_highlight_text = enable_highlight_text == 2 ? 0 : 2; current_color = 'rgba(0, 0, 0, 0)';" viewBox="0 0 512 512">
+                <path fill="#fff" :opacity="enable_highlight_text == 2 ? 1 : 0.3" d="M497.941 273.941c18.745-18.745 18.745-49.137 0-67.882l-160-160c-18.745-18.745-49.136-18.746-67.883 0l-256 256c-18.745 18.745-18.745 49.137 0 67.882l96 96A48.004 48.004 0 0 0 144 480h356c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12H355.883l142.058-142.059zm-302.627-62.627l137.373 137.373L265.373 416H150.628l-80-80 124.686-124.686z"/>
+              </svg>
+            </div>
+            <div class="box chart-highlighter" :class="{ active: enable_highlight_chart }"  v-if="!presentation_mode">
+              <p>
+              Chart Highlighter
+              </p>
+              <n-svg @click="onChartHighlight" type="chart"></n-svg>
+            </div>
+            <div class="text-box" @click="addTextbox"  v-if="!presentation_mode">
+              <p>
+              Add Textbox
+              </p>
+              <n-svg type="textbox"></n-svg>
+            </div>
+            <div class="box interaction-box" @click="addTextbox"  v-if="!presentation_mode">
+              <p>
+                Add Related Question
+              </p>
+              <n-svg type="jump"></n-svg>
+            </div>
+            <div class="box presentation-box">
+              <p>
+                Presentation Mode
+              </p>
+              <n-svg
+                @click="presentation_mode = !presentation_mode"
+                :style="{ opacity: presentation_mode ? 1 : 0.5 }"
+                type="presentation">
+              </n-svg>
+            </div>
+            <div class="box file-box">
+              <p>
+                File
+              </p>
+              <b-dropdown variant="link" size="lg" no-caret>
+                <template slot="button-content">
+                  <n-svg type="load"></n-svg>
+                </template>
+                <b-dropdown-item-button v-for="id in stories" @click="loadStory(id)">
+                  load the story of {{ new Date(id).toISOString().replace(/-/g, '.').replace(/T/, ',').slice(5, 16) }}
+                </b-dropdown-item-button>
+              </b-dropdown>
+              <n-svg @click="saveStory()" type="save"></n-svg>
+              <b-dropdown variant="link" size="lg" no-caret>
+                <template slot="button-content">
+                  <n-svg type="remove"></n-svg>
+                </template>
+                <b-dropdown-item-button v-for="id in stories" @click="removeStory(id)">
+                  remove the story of {{ new Date(id).toISOString().replace(/-/g, '.').replace(/T/, ',').slice(5, 16) }}
+                </b-dropdown-item-button>
+              </b-dropdown>
             </div>
           </div>
-          <div class="sidebar-container tool" :class="{ open: sidebar_active }">
-            <div class="overview">
-              <div class="header">
-                <h5 class="title"> Overview </h5>
-                <svg class="expand" @click="adjustSidebar()" viewBox="0 0 448 512">
-                  <path v-if="!sidebar_active" fill="#ffffff" d="M436 192H312c-13.3 0-24-10.7-24-24V44c0-6.6 5.4-12 12-12h24c6.6 0 12 5.4 12 12v100h100c6.6 0 12 5.4 12 12v24c0 6.6-5.4 12-12 12zm-276-24V44c0-6.6-5.4-12-12-12h-24c-6.6 0-12 5.4-12 12v100H12c-6.6 0-12 5.4-12 12v24c0 6.6 5.4 12 12 12h124c13.3 0 24-10.7 24-24zm0 300V344c0-13.3-10.7-24-24-24H12c-6.6 0-12 5.4-12 12v24c0 6.6 5.4 12 12 12h100v100c0 6.6 5.4 12 12 12h24c6.6 0 12-5.4 12-12zm176 0V368h100c6.6 0 12-5.4 12-12v-24c0-6.6-5.4-12-12-12H312c-13.3 0-24 10.7-24 24v124c0 6.6 5.4 12 12 12h24c6.6 0 12-5.4 12-12z" class=""></path>
-                  <path v-if="sidebar_active" fill="#ffffff" d="M0 180V56c0-13.3 10.7-24 24-24h124c6.6 0 12 5.4 12 12v24c0 6.6-5.4 12-12 12H48v100c0 6.6-5.4 12-12 12H12c-6.6 0-12-5.4-12-12zM288 44v24c0 6.6 5.4 12 12 12h100v100c0 6.6 5.4 12 12 12h24c6.6 0 12-5.4 12-12V56c0-13.3-10.7-24-24-24H300c-6.6 0-12 5.4-12 12zm148 276h-24c-6.6 0-12 5.4-12 12v100H300c-6.6 0-12 5.4-12 12v24c0 6.6 5.4 12 12 12h124c13.3 0 24-10.7 24-24V332c0-6.6-5.4-12-12-12zM160 468v-24c0-6.6-5.4-12-12-12H48V332c0-6.6-5.4-12-12-12H12c-6.6 0-12 5.4-12 12v124c0 13.3 10.7 24 24 24h124c6.6 0 12-5.4 12-12z" class=""></path>
-                </svg>
-                <svg class="icon" width="32" height="32">
-                  <path transform="translate(5, 32) scale(1.6) rotate(270)" fill="#ffffff" d="
-                    M15.25 12h-0.25v-3.25c0-0.965-0.785-1.75-1.75-1.75h-4.25v-2h0.25c0.412 0 0.75-0.338 0.75-0.75v-2.5c0-0.413-0.338-0.75-0.75-0.75h-2.5c-0.412 0-0.75 0.337-0.75 0.75v2.5c0 0.412 0.338 0.75 0.75 0.75h0.25v2h-4.25c-0.965 0-1.75 0.785-1.75 1.75v3.25h-0.25c-0.412 0-0.75 0.338-0.75 0.75v2.5c0 0.412 0.338 0.75 0.75 0.75h2.5c0.413 0 0.75-0.338 0.75-0.75v-2.5c0-0.412-0.337-0.75-0.75-0.75h-0.25v-3h4v3h-0.25c-0.412 0-0.75 0.338-0.75 0.75v2.5c0 0.412 0.338 0.75 0.75 0.75h2.5c0.412 0 0.75-0.338 0.75-0.75v-2.5c0-0.412-0.338-0.75-0.75-0.75h-0.25v-3h4v3h-0.25c-0.412 0-0.75 0.338-0.75 0.75v2.5c0 0.412 0.338 0.75 0.75 0.75h2.5c0.412 0 0.75-0.338 0.75-0.75v-2.5c0-0.412-0.338-0.75-0.75-0.75zM3 15h-2v-2h2v2zM9 15h-2v-2h2v2zM7 4v-2h2v2h-2zM15 15h-2v-2h2v2z">
-                  </path>
-                  <!--path transform="translate(0, 7) scale(1.6)" fill="#ffffff" d="M15.25 12h-0.25v-3.25c0-0.965-0.785-1.75-1.75-1.75h-4.25v-2h0.25c0.412 0 0.75-0.338 0.75-0.75v-2.5c0-0.413-0.338-0.75-0.75-0.75h-2.5c-0.412 0-0.75 0.337-0.75 0.75v2.5c0 0.412 0.338 0.75 0.75 0.75h0.25v2h-4.25c-0.965 0-1.75 0.785-1.75 1.75v3.25h-0.25c-0.412 0-0.75 0.338-0.75 0.75v2.5c0 0.412 0.338 0.75 0.75 0.75h2.5c0.413 0 0.75-0.338 0.75-0.75v-2.5c0-0.412-0.337-0.75-0.75-0.75h-0.25v-3h4v3h-0.25c-0.412 0-0.75 0.338-0.75 0.75v2.5c0 0.412 0.338 0.75 0.75 0.75h2.5c0.412 0 0.75-0.338 0.75-0.75v-2.5c0-0.412-0.338-0.75-0.75-0.75h-0.25v-3h4v3h-0.25c-0.412 0-0.75 0.338-0.75 0.75v2.5c0 0.412 0.338 0.75 0.75 0.75h2.5c0.412 0 0.75-0.338 0.75-0.75v-2.5c0-0.412-0.338-0.75-0.75-0.75zM3 15h-2v-2h2v2zM9 15h-2v-2h2v2zM7 4v-2h2v2h-2zM15 15h-2v-2h2v2z"></path>
-                  -->
-                </svg>
-              </div>
-              <div class="content">
-                <svg id="overview" width="800" height="800">
-                </svg>
-              </div>
-            </div>
-            <div class="marktool">
-              <div class="header">
-                <h5 class="title"> Mark </h5>
-                <svg class="icon" width="32" height="32">
-                  <path transform="translate(0, 7) scale(1.6)" fill="#ffffff" d="
-                    M6 10l2-1 7-7-1-1-7 7-1 2zM4.52 13.548c-0.494-1.043-1.026-1.574-2.069-2.069l1.548-4.262 2-1.217 6-6h-3l-6 6-3 10 10-3 6-6v-3l-6 6-1.217 2z">
-                  </path>
-                </svg>
-              </div>
-              <div class="content">
-                <div class="vc-compact" v-if="!presentation_mode">
-                  <ul class="vc-compact-colors">
-                    <li v-for="color in colors" class="vc-compact-color-item"
-                      :style="{ background: color }" @click="current_color = color">
-                      <div v-if="color == current_color" class="vc-compact-dot">
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                <div class="text-highlighter" v-if="!presentation_mode">
-                  <p>
-                  Text Highlighter
-                  </p>
-                  <svg @click="enable_highlight_text = enable_highlight_text == 1 ? 0 : 1" viewBox="0 0 512 512">
-                      <path fill="#fff" :opacity="enable_highlight_text == 1 ? 1 : 0.3" d="M488.96,34.56c-28.16-30.72-76.8-30.72-107.52,0L133.12,282.88l107.52,110.08l248.32-250.88    C519.68,113.92,519.68,65.28,488.96,34.56z"/>
-                      <polygon :fill="current_color" :opacity="enable_highlight_text == 1 ? 1 : 0.6" points="97.28,321.28 23.04,392.96 40.96,446.72 0,500.48 51.2,500.48 79.36,482.56 133.12,500.48 204.8,428.8   "/>
-                  </svg>
-                  <svg @click="enable_highlight_text = enable_highlight_text == 2 ? 0 : 2; current_color = 'rgba(0, 0, 0, 0)';" viewBox="0 0 512 512">
-                    <path fill="#fff" :opacity="enable_highlight_text == 2 ? 1 : 0.3" d="M497.941 273.941c18.745-18.745 18.745-49.137 0-67.882l-160-160c-18.745-18.745-49.136-18.746-67.883 0l-256 256c-18.745 18.745-18.745 49.137 0 67.882l96 96A48.004 48.004 0 0 0 144 480h356c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12H355.883l142.058-142.059zm-302.627-62.627l137.373 137.373L265.373 416H150.628l-80-80 124.686-124.686z"/>
-                  </svg>
-                </div>
-                <div class="box chart-highlighter" :class="{ active: enable_highlight_chart }"  v-if="!presentation_mode">
-                  <p>
-                  Chart Highlighter
-                  </p>
-                  <svg @click="onChartHighlight" x="0px" y="0px" viewBox="0 0 483.8 483.8" style="enable-background:new 0 0 483.8 483.8;" xml:space="preserve" width="512px" height="512px">
-                    <path d="M123.2,134H15.7C7,134,0,141,0,149.7v310.6C0,469,7,476,15.7,476h107.5c8.7,0,15.7-7,15.7-15.7V149.7    C139,141,131.9,134,123.2,134z M107.5,444.6H31.4V165.4h76.1V444.6z M468.1,216.4H360.6c-8.7,0-15.7,7-15.7,15.7v228.2c0,8.7,7,15.7,15.7,15.7h107.5c8.7,0,15.7-7,15.7-15.7V232.1    C483.8,223.4,476.8,216.4,468.1,216.4z M376.3,247.8h24.4l-24.4,24.4V247.8z M376.3,297.2l49.3-49.3h24.9l-74.2,74.2L376.3,297.2    L376.3,297.2z M452.4,444.6h-24.5l24.5-24.5V444.6z M452.4,395.2L403,444.6h-24.9l74.2-74.2v24.8H452.4z M452.4,345.5l-76.1,76.1    v-24.9l76.1-76.1V345.5z M452.4,295.7l-76.1,76.1v-24.9l76.1-76.1V295.7z M295.7,7.8H188.1c-8.7,0-15.7,7-15.7,15.7v436.8c0,8.7,7,15.7,15.7,15.7h107.5c8.7,0,15.7-7,15.7-15.7V23.5    C311.4,14.8,304.4,7.8,295.7,7.8z" fill="#FFFFFF"/>
-                  </svg>
-                </div>
-                <div class="text-box" @click="addTextbox"  v-if="!presentation_mode">
-                  <p>
-                  Add Textbox
-                  </p>
-                  <svg x="0px" y="0px" viewBox="0 0 379.254 379.254" style="enable-background:new 0 0 379.254 379.254;" xml:space="preserve" width="512px" height="512px">
-                    <path d="M371.582,310.87V68.384c4.592-2.778,7.672-7.805,7.672-13.564c0-8.759-7.101-15.86-15.86-15.86   c-6.046,0-11.299,3.384-13.975,8.36H29.834c-2.676-4.976-7.929-8.36-13.974-8.36C7.101,38.96,0,46.061,0,54.82   c0,6.318,3.703,11.756,9.049,14.306v241.002C3.703,312.678,0,318.116,0,324.434c0,8.759,7.101,15.86,15.86,15.86   c6.317,0,11.756-3.704,14.306-9.05h318.919c2.551,5.346,7.989,9.05,14.308,9.05c8.76,0,15.86-7.101,15.86-15.86   C379.254,318.675,376.174,313.648,371.582,310.87z M349.83,316.244H29.423c-1.331-2.198-3.175-4.043-5.374-5.373V68.383   c2.428-1.469,4.437-3.557,5.785-6.063h319.585c1.595,2.966,4.113,5.352,7.163,6.806v241.002   C353.775,311.467,351.431,313.6,349.83,316.244z M61.025,114.702c4.142,0,7.5-3.358,7.5-7.5v-4.05h19.65v80.499h-1.233c-4.142,0-7.5,3.358-7.5,7.5   c0,4.142,3.358,7.5,7.5,7.5h17.466c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5h-1.233v-80.499h19.65v4.05   c0,4.142,3.358,7.5,7.5,7.5c4.142,0,7.5-3.358,7.5-7.5v-11.55c0-4.142-3.358-7.5-7.5-7.5h-69.3c-4.142,0-7.5,3.358-7.5,7.5v11.55   C53.525,111.344,56.883,114.702,61.025,114.702z M163.255,193.448c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h21.024c4.142,0,7.5-3.358,7.5-7.5   c0-4.142-3.358-7.5-7.5-7.5h-3.013V92.66h3.013c4.142,0,7.5-3.358,7.5-7.5c0-4.142-3.358-7.5-7.5-7.5h-21.024   c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h3.012v100.789H163.255z M315.814,112.482h-87.572c-4.143,0-7.5,3.358-7.5,7.5c0,4.142,3.357,7.5,7.5,7.5h87.572c4.143,0,7.5-3.358,7.5-7.5   C323.314,115.84,319.956,112.482,315.814,112.482z M315.814,151.097h-87.572c-4.143,0-7.5,3.358-7.5,7.5s3.357,7.5,7.5,7.5h87.572c4.143,0,7.5-3.358,7.5-7.5   S319.956,151.097,315.814,151.097z M315.814,235.222H61.025c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h254.788c4.143,0,7.5-3.358,7.5-7.5   C323.314,238.58,319.956,235.222,315.814,235.222z M315.814,273.837H61.025c-4.142,0-7.5,3.358-7.5,7.5c0,4.142,3.358,7.5,7.5,7.5h254.788c4.143,0,7.5-3.358,7.5-7.5   C323.314,277.195,319.956,273.837,315.814,273.837z" fill="#FFFFFF"/>
-                  </svg>
-                </div>
-                <div class="box interaction-box" @click="addTextbox"  v-if="!presentation_mode">
-                  <p>
-                    Add Related Question
-                  </p>
-                  <svg x="0px" y="0px" width="512px" height="512px" viewBox="0 0 459 459" style="enable-background:new 0 0 459 459;" xml:space="preserve">
-                    <g id="share">
-                      <path d="M459,216.75L280.5,38.25v102c-178.5,25.5-255,153-280.5,280.5C63.75,331.5,153,290.7,280.5,290.7v104.55L459,216.75z" fill="#FFFFFF"/>
-                    </g>
-                  </svg>
-                </div>
-                <div class="box presentation-box" @click="presentation_mode = !presentation_mode">
-                  <p>
-                    Presentation Mode
-                  </p>
-                  <svg :style="{ opacity: presentation_mode ? 1 : 0.5 }" width="512px" height="512px" viewBox="0 0 16 16">
-                    <path fill="#FFFFFF" d="M16 1h-7v-1h-2v1h-7v11h5l-2 4h2.2l2-4h1.5l2 4h2.3l-2-4h5v-11zM15 11h-14v-9h14v9z M6 4v5l4-2.5z"/>
-                  </svg>
-                </div>
-                <div class="box file-box">
-                  <p>
-                    File
-                  </p>
-                  <svg @click="loadCaseStudy()" viewBox="0 0 536.461 536.46" xml:space="preserve"><path d="M144.752,263.52c19.603-9.038,38.354-13.559,56.243-13.559h237.548v-45.683c0-17.511-6.283-32.555-18.85-45.118    c-12.565-12.562-27.596-18.842-45.11-18.842H219.266v-9.136c0-17.511-6.28-32.548-18.842-45.107    c-12.563-12.562-27.6-18.846-45.111-18.846h-91.36c-17.511,0-32.548,6.283-45.111,18.846C6.279,98.635,0,113.672,0,131.183    v274.084c0,0.764,0.049,1.955,0.144,3.576c0.094,1.615,0.144,2.807,0.144,3.566l1.426-1.704L97.93,297.637    C109.54,283.931,125.148,272.556,144.752,263.52z M528.898,290.214c-5.041-2.478-10.797-3.72-17.272-3.72H200.995c-12.562,0-26.219,3.381-40.968,10.14    c-14.75,6.766-26.219,14.986-34.401,24.701l-95.93,113.059c-5.902,6.662-8.853,12.945-8.853,18.849    c0,5.708,2.523,9.802,7.566,12.272c5.043,2.478,10.8,3.716,17.273,3.716h310.64c12.56,0,26.21-3.381,40.963-10.136    c14.75-6.756,26.214-14.989,34.399-24.701l95.931-113.059c5.899-6.663,8.846-12.939,8.846-18.849    C536.465,296.779,533.946,292.689,528.898,290.214z" fill="#FFFFFF"/></svg>
-                  <svg @click="saveCaseStudy()" viewBox="0 0 448 512"><path fill="#ffffff" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z" class=""></path></svg>
-                  <svg @click="removeCaseStudy()" viewBox="0 0 448 512"><path fill="#ffffff" d="M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm415.2 56.7L394.8 467c-1.6 25.3-22.6 45-47.9 45H101.1c-25.3 0-46.3-19.7-47.9-45L32.8 140.7c-.4-6.9 5.1-12.7 12-12.7h358.5c6.8 0 12.3 5.8 11.9 12.7z" class=""></path></svg>
-                </div>
-              </div>
-            </div>
-          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -262,13 +232,15 @@ import textwidth from "./lib/text-width";
 import draggable from "vuedraggable";
 import { request, serverUrl } from "./lib/request";
 import SlideshowContainer from "./component/SlideshowContainer.vue";
-import colors from "./lib/colors";
+import { colors, color_schema } from "./lib/colors";
 import { local } from "d3";
+import NSvg from "./component/Widgets/NSvg.vue";
 
 export default {
   name: "app",
   data() {
     return {
+      stories: JSON.parse(localStorage.getItem('narrative_mooc_stories') || '[]'),
       page_index: 0,
       bottom_tip_enabled: true,
       current_case_study: "",
@@ -284,7 +256,6 @@ export default {
       problems: [],
       groups: [null],
       chapters: [],
-      item_mapping: {},
       presentation_mode: false,
       // current_video: null,
       // current_problem: null,
@@ -300,7 +271,7 @@ export default {
         "#fdbf6f",
         "#ff7f00",
         "#cab2d6",
-        "#6a3d9a",
+        "#6a3d9a"
       ],
       enable_highlight_chart: false,
       course_name: "Introduction to Computing with Java",
@@ -340,6 +311,7 @@ export default {
   components: {
     SlideshowContainer,
     draggable,
+    NSvg
   },
   mounted() {
     const colors = d3
@@ -373,10 +345,12 @@ export default {
       }
     }
     window.onscroll = d => {
+      const height = document.documentElement.clientHeight;
+      const top = -document.body.getBoundingClientRect().top;
       this.viewport = {
-        top: window.visualViewport.pageTop,
-        bottom: window.visualViewport.pageTop + window.visualViewport.height,
-        height: window.visualViewport.height
+        top,
+        height,
+        bottom: top + height,
       };
     };
 
@@ -398,24 +372,16 @@ export default {
       this.findNext(parent, {
         id: "A6",
         resource_id: item.id,
-        group: parent.group,
+        group: parent.group
       });
     });
 
     this.$bus.$on("select_student", (item, parent) => {
       this.groups.push(item.users);
-      request(
-        this,
-        {
-          id: this.groups.length - 1,
-          users: item.users
-        },
-        "save_student_group"
-      );
       this.findNext(parent, {
         id: "S1",
         resource_id: this.current_chapter.id,
-        resource_data: item.users,
+        condition: item.users,
         group: this.groups.length - 1
       });
     });
@@ -436,18 +402,18 @@ export default {
       })
       .then(response => {
         this.videos = response.data;
-        this.videos.forEach(d => (this.item_mapping[d.id] = d));
+        this.videos.forEach(d => (this.$mapping[d.id] = d));
       })
       .then(() => {
         axios
           .get(`${serverUrl}getProblemList`, {
             params: {
-              courseId: this.course_id,
+              courseId: this.course_id
             }
           })
           .then(response => {
             this.problems = response.data;
-            this.problems.forEach(d => (this.item_mapping[d.id] = d));
+            this.problems.forEach(d => (this.$mapping[d.id] = d));
           });
       })
       .then(() => {
@@ -459,7 +425,7 @@ export default {
           })
           .then(async response => {
             this.chapters = response.data;
-            this.chapters.forEach(d => (this.item_mapping[d.id] = d));
+            this.chapters.forEach(d => (this.$mapping[d.id] = d));
             this.page = [];
             this.pages.push(this.page);
           });
@@ -509,8 +475,6 @@ export default {
         problems: this.problems,
         history: this.history,
         groups: this.groups,
-        item_mapping: this.item_mapping,
-        $bus: this.$bus,
         color_schema: this.color_schema,
         video_color: this.color_schema[1],
         assignment_color: this.color_schema[3],
@@ -519,11 +483,6 @@ export default {
         enable_highlight_text: this.enable_highlight_text,
         enable_highlight_chart: this.enable_highlight_chart,
         current_color: this.current_color,
-        followupSlides: slide =>
-          slide.follow_ups.map(d => ({
-            name: SlideTemplate.questions[d],
-            type: d,
-          })),
         moveto: this.moveto
       };
     }
@@ -532,10 +491,9 @@ export default {
     page(val) {
       this.page_index = this.pages.indexOf(val);
     },
-    slides(val) {
-      // this.bubblechart_layout = getBubbleChart(d3.select("#overview"), this.slide_structure);
-    },
+    current_color(val) {},
     presentation_mode(val) {
+      this.$bus.$emit("presentation", val);
       this.bottom_tip_enabled = true;
       if (val) {
         const pages = document.getElementsByClassName("slide-page");
@@ -557,54 +515,67 @@ export default {
           if (event.keyCode == 37) {
             this.page = this.pages[0];
             this.moveto.move(elements[step].cursor);
-          }
-          else if (event.keyCode == 38 && this.page_index == 0) {
-            while (step > 0 && elements[step - 1].target.getElementsByClassName('nm-block').length > 1) {
+          } else if (event.keyCode == 38 && this.page_index == 0) {
+            while (
+              step > 0 &&
+              elements[step - 1].target.getElementsByClassName("nm-block")
+                .length > 1
+            ) {
               elements[--step].target.style.opacity = 0;
             }
             if (step > 0) {
               elements[--step].target.style.opacity = 0;
               if (step > 0) {
                 this.moveto.move(elements[step - 1].cursor);
-                const entities = elements[step - 1].target.getElementsByClassName('entity');
+                const entities = elements[
+                  step - 1
+                ].target.getElementsByClassName("entity");
                 if (entities.length) {
                   const entity_id = entities[0].title;
                   this.current_element_id = entity_id;
                   this.$bus.$emit("refresh-chart", entity_id);
                 } else {
-                  this.$bus.$emit("refresh-chart", '');
+                  this.$bus.$emit("refresh-chart", "");
                 }
               }
+              const height = document.documentElement.clientHeight;
+              const top = -document.body.getBoundingClientRect().top;
               this.viewport = {
-                top: window.visualViewport.pageTop,
-                bottom:
-                  window.visualViewport.pageTop + window.visualViewport.height,
-                height: window.visualViewport.height
+                top,
+                height,
+                bottom: top + height,
               };
               this.adjustOverviewViewport();
             }
             event.returnValue = false;
           } else if (event.keyCode == 40 && this.page_index == 0) {
-            while (step < elements.length && elements[step].target.getElementsByClassName('nm-block').length > 1) {
+            while (
+              step < elements.length &&
+              elements[step].target.getElementsByClassName("nm-block").length >
+                1
+            ) {
               elements[step++].target.style.opacity = 1;
             }
             if (step < elements.length) {
               elements[step].target.style.opacity = 1;
               this.moveto.move(elements[step].cursor);
               elements[step].target.style.opacity = 1;
-              const entities = elements[step].target.getElementsByClassName('entity');
+              const entities = elements[step].target.getElementsByClassName(
+                "entity"
+              );
               if (entities.length) {
                 const entity_id = entities[0].title;
                 this.current_element_id = entity_id;
                 this.$bus.$emit("refresh-chart", entity_id);
               } else {
-                this.$bus.$emit("refresh-chart", '');
+                this.$bus.$emit("refresh-chart", "");
               }
+              const height = document.documentElement.clientHeight;
+              const top = -document.body.getBoundingClientRect().top;
               this.viewport = {
-                top: window.visualViewport.pageTop,
-                bottom:
-                  window.visualViewport.pageTop + window.visualViewport.height,
-                height: window.visualViewport.height
+                top,
+                height,
+                bottom: top + height,
               };
               this.adjustOverviewViewport();
               step += 1;
@@ -794,15 +765,13 @@ export default {
       const max_offset = 20;
       const layer_gap = this.overview.layer_gap;
       for (let i = 0; i < max_depth; ++i) {
-        const nodes_i = nodes
-          .filter(d => d.depth == i)
-          .sort(
-            (a, b) => {
-              const asrc = edges.find(d => d.target == a).source;
-              const bsrc = edges.find(d => d.target == b).source;
-              return (asrc && asrc.x) - (bsrc && bsrc.x);
-            }
-          );
+        const nodes_i = nodes.filter(d => d.depth == i).sort((a, b) => {
+          let asrc = edges.find(d => d.target == a);
+          asrc = asrc && asrc.source;
+          let bsrc = edges.find(d => d.target == b);
+          bsrc = bsrc && bsrc.source;
+          return (asrc && asrc.x) - (bsrc && bsrc.x);
+        });
         const n = nodes_i.length;
 
         let x1 = 0;
@@ -862,55 +831,45 @@ export default {
 
       return {
         nodes,
-        edges
+        edges,
       };
     },
-    saveCaseStudy() {
-      localStorage.setItem("videos", JSON.stringify(this.videos));
-      console.log("All videos have been saved.");
-      localStorage.setItem("problems", JSON.stringify(this.problems));
-      console.log("All problems have been saved.");
-      localStorage.setItem("chapters", JSON.stringify(this.chapters));
-      localStorage.setItem("current_chapter_id", this.current_chapter.id);
-      console.log("All chapters have been saved.");
-      localStorage.setItem("pages", JSON.stringify(this.pages));
-      console.log("All pages have been saved.");
-      localStorage.setItem("groups", JSON.stringify(this.groups));
-      console.log("All groups have been saved.");
-      /*
-        item_mapping: {},
-        */
-      // page: null,
+    saveStory() {
+      const data = JSON.stringify({
+        videos: this.videos,
+        problems: this.problems,
+        chapters: this.chapters,
+        current_chapter_id: this.current_chapter.id,
+        pages: this.pages,
+        groups: this.groups,
+      });
+      const time = +new Date();
+      this.stories.push(time);
+      localStorage.setItem('narrative_mooc_stories', JSON.stringify(this.stories));
+      localStorage.setItem(`narrative_mooc_${time}`, JSON.stringify(data));
+      alert('Save successful!');
     },
-    loadCaseStudy() {
-      this.videos = JSON.parse(localStorage.getItem("videos"));
-      console.log("All videos have been loaded.");
-      this.problems = JSON.parse(localStorage.getItem("problems"));
-      console.log("All problems have been loaded.");
-      this.chapters = JSON.parse(localStorage.getItem("chapters"));
-      console.log("All chapters have been loaded.");
-      this.pages = JSON.parse(localStorage.getItem("pages"));
-      console.log("All pages have been loaded.");
-      this.groups = JSON.parse(localStorage.getItem("groups"));
-      console.log("All groups have been loaded.");
-      this.item_mapping = {};
-      this.videos.forEach(d => (this.item_mapping[d.id] = d));
-      this.problems.forEach(d => (this.item_mapping[d.id] = d));
-      this.chapters.forEach(d => (this.item_mapping[d.id] = d));
-      this.page = this.pages && this.pages.length && this.pages[0];
-      const current_chapter_id = localStorage.getItem("current_chapter_id");
+    loadStory(id) {
+      const data = JSON.parse(localStorage.getItem(`narrative_mooc_${id}`));
+      this.videos = data.videos;
+      this.problems = data.problems;
+      this.chapters = data.chapters;
+      this.groups = data.groups;
+      this.videos.forEach(d => (this.$mapping[d.id] = d));
+      this.problems.forEach(d => (this.$mapping[d.id] = d));
+      this.chapters.forEach(d => (this.$mapping[d.id] = d));
+      const current_chapter_id = data.current_chapter_id;
       this.current_chapter = this.chapters.find(
         d => d.id == current_chapter_id
       );
+      this.pages = data.pages;
+      this.page = this.pages && this.pages.length && this.pages[0];
       this.paintOverview();
     },
-    removeCaseStudy() {
-      localStorage.removeItem("videos");
-      localStorage.removeItem("problems");
-      localStorage.removeItem("chapters");
-      localStorage.removeItem("current_chapter_id");
-      localStorage.removeItem("pages");
-      localStorage.removeItem("groups");
+    removeStory(id) {
+      localStorage.removeItem(`narrative_mooc_${id}`);
+      this.stories.splice(this.stories.indexOf(id));
+      localStorage.setItem('narrative_mooc_stories', JSON.stringify(this.stories));
     },
     paintOverview() {
       const graph = this.overview_graph();
@@ -1091,9 +1050,7 @@ export default {
       ) {
         var index = -1;
         if ((index = this.page.indexOf(item)) != -1) {
-          const element = document.getElementsByClassName("slide-page")[
-            index
-          ];
+          const element = document.getElementsByClassName("slide-page")[index];
           this.moveto.move(element);
           this.adjustOverviewViewport(item);
         } else {
@@ -1111,9 +1068,7 @@ export default {
         item = state2.item;
         var index = -1;
         if ((index = this.page.indexOf(item)) != -1) {
-          const element = document.getElementsByClassName("slide-page")[
-            index
-          ];
+          const element = document.getElementsByClassName("slide-page")[index];
           this.moveto.move(element);
           this.adjustOverviewViewport(item);
         } else {
@@ -1207,6 +1162,11 @@ export default {
         this.$bus.$emit("add-textbox", this.slide._id);
       }
     },
+    removeCurrentPage() {
+      const current = this.pages.indexOf(this.page);
+      this.pages.splice(current);
+      this.page = this.pages[this.pages.length > current ? current : current - 1];
+    },
     onChartHighlight() {
       this.enable_highlight_chart = !this.enable_highlight_chart;
     },
@@ -1275,28 +1235,46 @@ body {
 
 .page-container {
   width: 100%;
+  padding-right: 10px;
   overflow-x: hidden;
+}
+
+.page-container .body-container {
+  transform: translate3d(0,0,0);
+  -webkit-transform: translate3d(0,0,0);
 }
 
 .body-container {
   height: 100%;
-  width: 120vw;
+  width: 80%;
   display: inline-flex;
   flex-direction: row;
 }
 
+.sidebar-container {
+  height: 100%;
+  overflow-y: hidden;
+  z-index: 2;
+  top: 56px;
+  display: inline-flex;
+  flex-direction: column;
+  opacity: 1;
+  color: white;
+}
+
 .sidebar-container.tool {
-  width: 20vw;
-  left: 80vw;
+  width: 20%;
+  left: 80%;
   background: radial-gradient(circle at top, #333333, #111111);
   position: fixed;
   transition: 0.2s;
+  overflow-y: hidden;
   transition-timing-function: ease-in-out;
 }
 
 .sidebar-container.tool.open {
-  width: 60vw;
-  left: 40vw;
+  width: 60%;
+  left: 40%;
 }
 
 .sidebar-container.tool .header {
@@ -1450,23 +1428,15 @@ body {
   height: 27px;
   opacity: 0.5;
 }
+.sidebar-container.tool .file-box button {
+  padding: 0px;
+}
 
 .slideshow-container {
   height: 100%;
   width: 100%;
   display: inline-flex;
   flex-direction: column;
-}
-
-.sidebar-container {
-  height: 100%;
-  overflow-y: hidden;
-  z-index: 2;
-  top: 56px;
-  display: inline-flex;
-  flex-direction: column;
-  opacity: 1;
-  color: white;
 }
 
 .sidebar-container .header {
@@ -1554,38 +1524,53 @@ body {
   overflow-x: hidden;
   overflow-y: scroll;
 }
-/*
-.sidebar-container .content::-webkit-scrollbar {
+
+::-webkit-scrollbar {
   width: 10px;
+  height: 0px;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-.sidebar-container .content::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
 }
 
-.sidebar-container .content::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.3);
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
 }
-*/
 
 .carousel-switcher {
   position: fixed;
-  top: 92vh;
-  left: 65vw;
+  bottom: 4vh;
+  right: 4%;
   opacity: 0.6;
 }
 
-.screen-left-tips {
+.carousel-remove {
+  position: fixed;
+  top: 1vh;
+  right: 0%;
+}
+.carousel-remove button {
+  height: 22px;
+  width: 24px;
+  border-radius: 0;
+  padding: 0;
+}
 
+
+.screen-left-tips {
 }
 
 .screen-bottom-tips {
   z-index: 5;
   opacity: 0.3;
   position: fixed;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.4));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4));
   bottom: 0vh;
   left: 0vw;
   height: 10vh;

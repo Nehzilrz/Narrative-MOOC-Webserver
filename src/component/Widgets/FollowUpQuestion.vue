@@ -4,8 +4,9 @@
             Related questions:
         </h5>
         <ul>
-            <li v-for="q in context.followupSlides(item)">
-                <b-link href="javascript:void(0);" @click="$bus.$emit('load_slide', q.type, item.resource_id, item)">
+            <li v-for="q in followupSlides(item)">
+                <b-link href="javascript:void(0);"
+                @click="$bus.$emit('load_slide', q.type, item.resource_id, item)">
                     {{ q.name }}
                 </b-link>
             </li>
@@ -14,6 +15,8 @@
 </template>
 
 <script>
+    import * as SlideTemplate from "../../lib/slidetemplate";
+    
     export default {
         data() {
             return {
@@ -22,8 +25,14 @@
         computed: {
         },
         methods: {
+            followupSlides(slide) {
+                return slide.follow_ups.map(d => ({
+                    name: SlideTemplate.questions[d],
+                    type: d,
+                }));
+            }
         },
-        props: ["item", "context"],
+        props: ["item"],
     };
 </script>
 

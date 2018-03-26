@@ -18,6 +18,7 @@ const EventBus = new Vue();
 
 Vue.prototype.$sr = scrollReveal({ reset: true });
 Vue.prototype.$bus = EventBus;
+Vue.prototype.$mapping = {};
 Vue.use(BootstrapVue);
 Vue.component('medium-editor', editor);
 Vue.component('styled-text', StyledText);

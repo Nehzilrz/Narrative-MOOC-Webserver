@@ -34,14 +34,21 @@ export default {
 <style scope>
 .slideshow-inner-container {
   padding-left: 2em;
+  padding-right: 1em;
   top: 0px;
   height: 100%;
-  width: 78vw;
+  width: 100%;
   display: inline-flex;
   flex-direction: column;
   overflow-x: hidden;
-  overflow-y: scroll;
   padding-bottom: 10vh;
+}
+
+.slideshow-inner-container::-webkit-scrollbar {
+  width: 0px;
+  height: 5px;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 </style>
 

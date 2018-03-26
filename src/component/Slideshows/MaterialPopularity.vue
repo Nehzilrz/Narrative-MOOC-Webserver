@@ -5,7 +5,7 @@
     <div class="b4w bh nm-block text">
         <styled-text :context="context">
             The most visited video was 
-            <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
+            <entity-link :id="max_video_activies.id" :parent="item"></entity-link>
             , {{ max_video_activies.activeness }} 
             students visited the video.
         </styled-text>
@@ -13,7 +13,7 @@
     <div class="b4w bh nm-block text">
         <styled-text :context="context">
         The least visited video was 
-        <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
+        <entity-link :id="min_video_activies.id" :parent="item"></entity-link>
         , {{ min_video_activies.activeness }} 
         students visited the video.
         </styled-text>
@@ -21,7 +21,7 @@
     <div class="b4w bh nm-block text">
         <styled-text :context="context">
         The most visited assignment was 
-        <entity-link :id="max_assignment_activies.id" :context="context" :parent="item"></entity-link>
+        <entity-link :id="max_assignment_activies.id" :parent="item"></entity-link>
         , {{ max_assignment_activies.activeness }} 
         students visited the assignment.
         </styled-text>
@@ -29,7 +29,7 @@
     <div class="b4w bh nm-block text">
         <styled-text :context="context">
         The least visited assignment was 
-        <entity-link :id="min_assignment_activies.id" :context="context" :parent="item"></entity-link>
+        <entity-link :id="min_assignment_activies.id" :parent="item"></entity-link>
         , {{ min_assignment_activies.activeness }} 
         students visited the assignment.
         </styled-text>

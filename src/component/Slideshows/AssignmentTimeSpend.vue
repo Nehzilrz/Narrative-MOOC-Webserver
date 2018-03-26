@@ -6,14 +6,14 @@
         <div class="nm-block">
             <styled-text :context="context">
                 The assignment with highest working time on average is
-                <entity-link :id="most_work[0].id" :context="context" :parent="item"></entity-link>
+                <entity-link :id="most_work[0].id" :parent="item"></entity-link>
                 , which has been spent {{ Number(most_work[0].work_time / 60).toFixed(1) }} minutes.
             </styled-text>
         </div>
         <div class="nm-block">
             <styled-text :context="context">
                 The assignment with lowest working time on average is
-                <entity-link :id="least_work[0].id" :context="context" :parent="item"></entity-link>
+                <entity-link :id="least_work[0].id" :parent="item"></entity-link>
                 , which has been spent {{ Number(least_work[0].work_time / 60).toFixed(1) }} minutes.
             </styled-text>
         </div>

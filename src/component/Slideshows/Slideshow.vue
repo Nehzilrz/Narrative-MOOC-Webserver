@@ -1,7 +1,21 @@
 <template>
     <div class="slide-page">
         <div class="nm-block title">
-            <h4> {{ item.name }} </h4>
+          <div class="left-group">
+            <b-alert show variant="secondary">
+              ← back
+            </b-alert>
+          </div>
+          <h4> {{ item.name }} </h4>
+          <div class="right-group">
+            <multiselect
+              v-model="selected"
+              :options="options"
+              :multiple="true"
+              :close-on-select="true"
+              placeholder="General">
+            </multiselect>
+          </div>
         </div>
         <div class="p-2 nm-tooltip base" :id="'tooltip' + $vnode.tag" ref="tooltip">
         </div>
@@ -42,6 +56,7 @@ import LearnerProfileSlide from "./LearnerProfile.vue";
 import LearnerDifficultiesSlide from "./LearnerDifficulties.vue";
 import EmptySlide from "./Empty.vue";
 import { setTimeout } from 'plottable/build/src/utils/windowUtils';
+import Multiselect from 'vue-multiselect';
 
 export default {
   data() {
@@ -50,6 +65,8 @@ export default {
       tooltip_show: false,
       tooltip_message: 'Hello world',
       last_trigger_time: 0,
+      selected: null,
+      options: ['top 10%', 'worst 10%', 'general', 'students with bachelor degree', 'students from China'],
     };
   },
   created() {
@@ -84,6 +101,7 @@ export default {
     this.$bus.$off("add-textbox", this.handle_addtext);
   },
   components: {
+    Multiselect,
     MaterialPopularitySlide,
     MaterialFrequencySlide,
     MaterialSequenceSlide,
@@ -142,6 +160,7 @@ export default {
 };
 </script>
 
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
 .nm-tooltip.base {
     opacity: 0;
@@ -163,8 +182,23 @@ export default {
 }
 
 .slide-page .title {
+  display: inline-flex;
+  flex-direction: row;
+  width: 100%;
+}
+.slide-page .title h4 {
   font-weight: 800;
   text-align: center;
+  width: 100%;
+}
+.slide-page .title .right-group {
+  position: absolute;
+  right: 2%;
+}
+.slide-page .title .left-group {
+  position: absolute;
+  opacity: 0;
+  left: 0%;
 }
 .slide-page h5,h6 {
   font-weight: 600;

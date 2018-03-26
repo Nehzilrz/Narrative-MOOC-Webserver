@@ -1,18 +1,18 @@
 <template>
 <div>
-    <div class="b4w b4h nm-block graph">
+    <div class="b4w b5h nm-block graph">
     </div>
     <div class="b4w bh nm-block text">
         <styled-text :context="context">
             The video with highest watch time on average is
-            <entity-link :id="most_watch[0].id" :context="context" :parent="item"></entity-link>
+            <entity-link :id="most_watch[0].id" :parent="item"></entity-link>
             , which has been watched {{ Number(most_watch[0].watch_time).toFixed(1) }} minutes.
         </styled-text>
     </div>
     <div class="b4w bh nm-block text">
         <styled-text :context="context">
             The video with lowest watch time on average is
-            <entity-link :id="least_watch[0].id" :context="context" :parent="item"></entity-link>
+            <entity-link :id="least_watch[0].id" :parent="item"></entity-link>
             , which has been watched {{ Number(least_watch[0].watch_time).toFixed(1) }} minutes.
         </styled-text>
     </div>
@@ -61,7 +61,7 @@
                 var plots = new Plottable.Plots.ClusteredBar()
                     .y((d, i, dataset) => 
                         dataset.metadata() == 'watch time' ?
-                        d.video_watch_time : context.item_mapping[d.id].duration, watchTimeScale)
+                        d.video_watch_time : this.$mapping[d.id].duration, watchTimeScale)
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", (d, i, dataset) => dataset.metadata(), colorScale)

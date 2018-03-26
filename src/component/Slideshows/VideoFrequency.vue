@@ -1,18 +1,18 @@
 <template>
     <div>
-        <div class="b4w b4h nm-block graph">
+        <div class="b4w b5h nm-block graph">
         </div>
         <div class="b4w bh nm-block text">
             <styled-text :context="context">
                 The most tried video was 
-                <entity-link :id="max_video_activies.id" :context="context" :parent="item"></entity-link>
+                <entity-link :id="max_video_activies.id" :parent="item"></entity-link>
                 , each students visited the video {{ Number(max_video_activies.attempts).toFixed(1) }} times.
             </styled-text>
         </div>
         <div class="b4w bh nm-block text">
             <styled-text :context="context">
                 The least tried video was 
-                <entity-link :id="min_video_activies.id" :context="context" :parent="item"></entity-link>
+                <entity-link :id="min_video_activies.id" :parent="item"></entity-link>
                 , each students visited the video {{ Number(min_video_activies.attempts).toFixed(1) }} times.
             </styled-text>
         </div>

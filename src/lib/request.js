@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-export const serverUrl = 'http://10.89.83.202:3000/';
+export const serverUrl = 'http://http://nezil.me/NarrativeMOOCAPI/';
 
 const cache = {};
 
@@ -33,7 +33,7 @@ export function request(self, item, type) {
         },
         'video_info': () => {
             if (!item.data.video) {
-                item.data.video = self.item_mapping[item.resource_id];
+                item.data.video = self.$mapping[item.resource_id];
             } else {
                 return null;
             }
@@ -57,7 +57,7 @@ export function request(self, item, type) {
         'chapter_problem_activies': () => {
             if (!item.data.problem_activies) {
                 const params = {
-                    problems: self.item_mapping[item.resource_id].problems,
+                    problems: self.$mapping[item.resource_id].problems,
                     chapter: item.resource_id,
                 };
                 const str = 'getProblemsData' + JSON.stringify(params);
@@ -76,7 +76,7 @@ export function request(self, item, type) {
         'chapter_video_activies': () => {
             if (!item.data.video_activies) {
                 const params = {
-                    videos: self.item_mapping[item.resource_id].videos,
+                    videos: self.$mapping[item.resource_id].videos,
                     chapter: item.resource_id,
                 };
                 const str = 'getVideosData' + JSON.stringify(params);
@@ -95,7 +95,7 @@ export function request(self, item, type) {
         'chapter_activies': () => {
             if (!item.data.events) {
                 const params = { params: {
-                    start: self.item_mapping[item.resource_id].start,
+                    start: self.$mapping[item.resource_id].start,
                     time_length: 24 * 8,
                     time_scale: 'hour',
                 }};
@@ -115,7 +115,7 @@ export function request(self, item, type) {
         'video_related_forum': () => {
             if (!item.data.videos) {
                 const params = {
-                    videos: self.item_mapping[item.resource_id].videos,
+                    videos: self.$mapping[item.resource_id].videos,
                     chapter: item.resource_id,
                 };
                 return axios.post(`${serverUrl}getForumThreadVideoRelated`, params).then((response) => {
@@ -129,7 +129,7 @@ export function request(self, item, type) {
         'assignment_related_forum': () => {
             if (!item.data.assignments) {
                 const params = {
-                    problems: self.item_mapping[item.resource_id].problems,
+                    problems: self.$mapping[item.resource_id].problems,
                     chapter: item.resource_id,
                 };
                 return axios.post(`${serverUrl}getForumThreadProblemRelated`, params).then((response) => {
@@ -203,7 +203,7 @@ export function request(self, item, type) {
         'user_info': () => {
             if (!item.data.user_info) {
                 return axios.post(`${serverUrl}getUserBasicInfo`, {
-                    users: item.resource_data,
+                    condition: item.condition,
                     chapter: item.resource_id,
                 }).then((response) => {
                   item.data.user_info = response.data;
@@ -215,7 +215,7 @@ export function request(self, item, type) {
         'user_difficulties': () => {
             if (!item.data.difficulties) {
                 return axios.post(`${serverUrl}getUserDifficulties`, {
-                    users: item.resource_data,
+                    condition: item.condition,
                     chapter: item.resource_id,
                 }).then((response) => {
                   item.data.difficulties = response.data;

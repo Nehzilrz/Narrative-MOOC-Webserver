@@ -87,7 +87,7 @@ export default {
                     const selection = element.selection;
                     if (!selection) return;
                     let x = selection.datum();
-                    x = this.context.item_mapping[x.id];
+                    x = this.$mapping[x.id];
                     if (x && x.type == 'video') {
                         this.$bus.$emit('select_video', x, this.item);
                     } else if (x && x.type == 'assignment') {

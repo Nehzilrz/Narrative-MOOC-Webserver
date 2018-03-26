@@ -49,6 +49,7 @@
     export default {
         data() {
             return {
+                current: null,
             };
         },
         extends: SlideshowBase,
@@ -61,7 +62,7 @@
                     .toISOString().slice(0, 16).replace('T', ' ');
             },
             assignment() {
-                return this.context.item_mapping[this.elements[0].id];
+                return this.$mapping[this.elements[0].id];
             },
             sequence() {
                 return this.item.data.sequence;
@@ -111,7 +112,7 @@
             },
             render() {
                 const svg = d3.select(this.$el)
-                    .select(".slide.sequence .graph svg");
+                    .select(".sequence .graph svg");
                 svg.selectAll("*").remove();
                 const element = this.$el.getElementsByClassName("sequence")[0]
                     .getElementsByClassName("graph")[0]
@@ -227,16 +228,12 @@
 </script>
 
 <style scope>
-.slide.text h6 {
-    font-weight: 600;
-}
-
-.slide.sequence {
+.sequence {
     position: relative;
     height: 100%;
 }
 
-.slide.sequence .patterns {
+.sequence .patterns {
     position: absolute;
     top: 300px;
     left: 3vw;
@@ -244,16 +241,16 @@
     flex-direction: column;
 }
 
-.slide.sequence .patterns .pattern {
+.sequence .patterns .pattern {
     display: block;
     padding-left: 1rem;
 }
 
-.slide.sequence .patterns .pattern .head {
+.sequence .patterns .pattern .head {
     background: rgb(62, 146, 174);
     margin-right: 1rem;
 }
-.slide.sequence .patterns .pattern span {
+.sequence .patterns .pattern span {
     color: white;
     opacity: 0.9;
     float: left;
@@ -264,16 +261,16 @@
     height: 1.5rem;
 }
 
-.slide.sequence .patterns .pattern.infrequent span {
+.sequence .patterns .pattern.infrequent span {
     opacity: 0.7;
 }
 
-.slide.sequence .graph {
+.sequence .graph {
     width: 100%;
     height: 400px;
 }
 
-.slide.sequence .graph svg {
+.sequence .graph svg {
     width: 100%;
     height: 100%;
 }

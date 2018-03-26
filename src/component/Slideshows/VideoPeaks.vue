@@ -3,15 +3,9 @@
 <div>
     <div class="b4w b5h nm-block graph">
     </div>
-    <div class="b4w bh nm-block text">
-        <h6 style="font-weight: 600; padding-top: 1vh; padding-bottom: 0.5vh;"> 
-            Peaks in this video:
-        </h6>
-    </div>
     <div class="slide nm-block text">
-        <ul style="padding-left: 2vw"
-            v-if="item.data.video_peaks && item.data.video_peaks.length">
-            <li class="nm-block" v-for="peak, i in showed_peaks">
+        <template v-if="item.data.video_peaks && item.data.video_peaks.length">
+            <div class="b4w bh nm-block text" v-for="peak, i in showed_peaks">
                 <styled-text :context="context">
                     The 
                     <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
@@ -31,13 +25,13 @@
                     , 
                     which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
                 </styled-text>
-            </li>
-            <li class="nm-block" v-if="item.data.video_peaks.length > showed_peaks_num">
+            </div>
+            <div class="b4w bh nm-block text" v-if="item.data.video_peaks.length > showed_peaks_num">
                 <b-link href="javascript:void(0);" @click="showed_peaks_num += 1">
                     Show more ...
                 </b-link>
-            </li>
-        </ul>
+            </div>
+        </template>
     </div>
     <div class="slide nm-block text">
         <b-form-row v-show="show_video">
@@ -273,7 +267,7 @@
 
             },
             onSelectStudents(users) {
-                this.context.selectStudent({ users }, this.item);
+                this.$bus.$emit('select_student', { users }, this.item);
             },
             onVideoPeakChangeTime(peak) {
                 this.show_video = true;

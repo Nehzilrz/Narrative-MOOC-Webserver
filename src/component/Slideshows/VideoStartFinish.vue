@@ -1,17 +1,17 @@
 <template>
 <div>
-    <div class="b4w b4h nm-block graph">
+    <div class="b4w b5h nm-block graph">
     </div>
     <div class="b4w bh nm-block text">
         <styled-text :context="context">
             The video the student started watching at the latest was 
-            <entity-link :id="max_video_delay.id" :context="context" :parent="item"></entity-link>
+            <entity-link :id="max_video_delay.id" :parent="item"></entity-link>
             , and they started watching it {{ Number(max_video_delay.delay).toFixed(1) }} days after the video was released.
         </styled-text>    
     </div>
     <div class="b4w bh nm-block text">    
         <styled-text :context="context">
-            The longest video for the student viewing cycle is <entity-link :id="max_video_duration.id" :context="context" :parent="item"></entity-link>.
+            The longest video for the student viewing cycle is <entity-link :id="max_video_duration.id" :parent="item"></entity-link>.
                 They watched for {{ Number(max_video_duration.duration).toFixed(1) }} days.
         </styled-text>
     </div>
@@ -38,7 +38,7 @@
                 const context = this.context;
                 return video_activies.map(d => {
                     d.duration = (d.modified - d.created) / 86400000;
-                    d.delay = (d.created - (context.item_mapping[d.id] && context.item_mapping[d.id].chapter_start)) / 86400000;
+                    d.delay = (d.created - ($mapping[d.id] && $mapping[d.id].chapter_start)) / 86400000;
                     return {
                         duration: d.duration,
                         delay: d.delay,

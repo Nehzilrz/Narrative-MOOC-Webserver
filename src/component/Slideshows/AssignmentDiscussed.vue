@@ -37,6 +37,7 @@
     export default {
         data() {
             return {
+                current_post: null,
             };
         },
         watch: {

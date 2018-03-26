@@ -8,6 +8,8 @@
 </template>
 
 <script>
+    import { color_schema } from "../../lib/colors";
+
     export default {
         data() {
             return {
@@ -15,7 +17,7 @@
         },
         computed: {
             item() {
-                return this.context.item_mapping[this.id];
+                return this.$mapping[this.id];
             },
             style() {
                 const style = {
@@ -29,15 +31,15 @@
                     'margin-right': '4px',
                     'text-align': 'center',
                     'width': '1.3em',
-                }
+                };
                 if (this.item.type == 'video') {
-                    style.background = this.context.video_color;
+                    style.background = color_schema[1];
                 } else if (this.item.type == 'assignment') {
-                    style.background = this.context.assignment_color;
+                    style.background = color_schema[3];
                 } else if (this.item.type == 'chapter') {
-                    style.background = this.context.color_schema[5];
+                    style.background = color_schema[5];
                 } else if (this.item.type == 'student') {
-                    style.background = this.context.color_schema[7];
+                    style.background = color_schema[7];
                 } else {
                     style.background = 'lightgray';
                 }
@@ -58,7 +60,7 @@
                 }
             },
         },
-        props: ["id", "context", "parent"],
+        props: ["id", "parent"],
     };
 </script>
 
