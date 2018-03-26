@@ -54,42 +54,55 @@
           </div>
           <div class="slide nm-block" v-if="(page && !page.length) && context.current_chapter"
             style="list-style: none; padding-top: 5vh;">
-            <h5> Overall Questions </h5>
-            <ul>
-              <li v-for="id in 'O1 O2 O3 O4'.split(' ')">
-                <b-link href="javascript:void(0);"
-                @click="startPage(id)">
-                  {{ questions[id] }}
-                </b-link>
-              </li>
-            </ul>
-            <h5> Assignment Questions </h5>
-            <ul>
-              <li v-for="id in 'A1 A2 A3 A4'.split(' ')">
-                <b-link href="javascript:void(0);"
-                @click="startPage(id)">
-                  {{ questions[id] }}
-                </b-link>
-              </li>
-            </ul>
-            <h5> Video Questions </h5>
-            <ul>
-              <li v-for="id in 'V1 V2 V3 V4'.split(' ')">
-                <b-link href="javascript:void(0);"
-                @click="startPage(id)">
-                  {{ questions[id] }}
-                </b-link>
-              </li>
-            </ul>
-            <h5> Forum Questions </h5>
-            <ul>
-              <li v-for="id in 'F1 F2 F3'.split(' ')">
-                <b-link href="javascript:void(0);"
-                @click="startPage(id)">
-                  {{ questions[id] }}
-                </b-link>
-              </li>
-            </ul>
+            <div style="width: 50%; float: left;">
+              <h5> Overall Questions </h5>
+              <ul>
+                <li v-for="id in 'O1 O2 O3 O4'.split(' ')">
+                  <b-link href="javascript:void(0);"
+                  @click="startPage(id)">
+                    {{ questions[id] }}
+                  </b-link>
+                </li>
+              </ul>
+              <h5> Assignment Questions </h5>
+              <ul>
+                <li v-for="id in 'A1 A2 A3 A4'.split(' ')">
+                  <b-link href="javascript:void(0);"
+                  @click="startPage(id)">
+                    {{ questions[id] }}
+                  </b-link>
+                </li>
+              </ul>
+              <h5> Video Questions </h5>
+              <ul>
+                <li v-for="id in 'V1 V2 V3 V4'.split(' ')">
+                  <b-link href="javascript:void(0);"
+                  @click="startPage(id)">
+                    {{ questions[id] }}
+                  </b-link>
+                </li>
+              </ul>
+              <h5> Forum Questions </h5>
+              <ul>
+                <li v-for="id in 'F1 F2 F3'.split(' ')">
+                  <b-link href="javascript:void(0);"
+                  @click="startPage(id)">
+                    {{ questions[id] }}
+                  </b-link>
+                </li>
+              </ul>
+            </div>
+            <div style="width: 50%; float: left;">
+              <h5> Learner Oriented Questions </h5>
+              <ul>
+                <li v-for="id in 'S1 S2 S3'.split(' ')">
+                  <b-link href="javascript:void(0);"
+                  @click="startPage(id)">
+                    {{ questions[id] }}
+                  </b-link>
+                </li>
+              </ul>
+            </div>
           </div>
         </slideshow-container>
         <div class="carousel-remove" v-if="pages.length > 1 && page && !presentation_mode">
@@ -620,16 +633,62 @@ export default {
         : null;
     },
     overview_graph() {
+      /*
+
+      const init_nodes = [0, 1, 2, 3, 8];
+      const _typeof = (x) => {
+        if (x.includes('A')) {
+          return 'assignment';
+        } else if (x.includes('V')) {
+          return 'video';
+        } else if (x.includes('F')) {
+          return 'forum';
+        } else {
+          return 'student';
+        }
+      };
+      for (const i of init_nodes) {
+        const node = SlideTemplate.relation.groups[i]
+          .map(d => {
+            const x = this.pages.find(e => e.id == d);
+            return x ? x : {
+              name: SlideTemplate.questions[d],
+              abbrname: SlideTemplate.abbr_questions[d],
+              type: _typeof(d),
+              id: d,
+              _id: -1,
+              resource_id: this.current_chapter.id,
+            };
+          });
+        nodes.push(node);
+        nodes_num += 1;
+      }
+
+      const group_id_map = {};
+      for (const x of this.page) {
+        const group_x = SlideTemplate.relation.groupIdOf(x.id);
+        if (!init_node.includes(group_x)) {
+          if (!group_id_map[group_x + x.resource_id]) {
+            x.group_id = nodes_num;
+            nodes.push([]);
+            group_id_map[group_x + x.resource_id] = nodes_num;
+            nodes_num++;
+          } else {
+            x.group_id = group_id_map[group_x + x.resource_id];
+          }
+        }
+        nodes[x.group_id].push(x);
+      }
+*/
       let nodes = [];
       let edges = [];
       let nodes_num = 0;
-      for (const x of this.history) {
-        const parent = this.history.find(d => d._id == x.parent);
+      for (const x of this.page) {
+        const parent = this.page.find(d => d._id == x.parent);
         if (
           parent &&
           SlideTemplate.relation.groupIdOf(x.id) ==
-            SlideTemplate.relation.groupIdOf(parent.id) &&
-          x.scope_id == parent.scope_id
+            SlideTemplate.relation.groupIdOf(parent.id)
         ) {
           x.group_id = parent.group_id;
         } else {
@@ -998,14 +1057,14 @@ export default {
         .attr("transform", d => `translate(${d.x},${d.y})`)
         .on("click", d => {
           if (d._id == -1) {
-            const parent = this.history.find(e => e._id == d.parent_id);
+            const parent = this.page.find(e => e._id == d.parent_id);
             this.findNext(parent, {
               id: d.id,
               resource_id: null,
               group: parent.group
             });
           } else {
-            this.findNext(null, this.history.find(e => e._id == d._id));
+            this.findNext(null, this.page.find(e => e._id == d._id));
           }
         });
 
@@ -1139,6 +1198,7 @@ export default {
       await this.findNext(null, {
         id: id,
         resource_id: this.current_chapter.id,
+        condition: {},
         group: 0,
         item: null
       });

@@ -39,6 +39,11 @@
             Assignment released on {{ assignment_release_date }}.
         </styled-text>
     </div>
+    <div class="nm-block">
+        <p class="card-text">
+            {{ assignment.content }}
+        </p>
+    </div>
 </div>
 </template>
 
