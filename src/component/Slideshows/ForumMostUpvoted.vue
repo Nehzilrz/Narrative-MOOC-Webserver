@@ -52,7 +52,7 @@
         extends: SlideshowBase,
         computed: {
             threads() {
-                return this.item.data.threads.slice(0, 5);
+                return this.data.threads.slice(0, 5);
             },
         },
         methods: {

@@ -53,7 +53,7 @@
         },
         computed: {
             assignments() {
-                return this.item.data.assignments;
+                return this.data.assignments;
             }
         },
         methods: {

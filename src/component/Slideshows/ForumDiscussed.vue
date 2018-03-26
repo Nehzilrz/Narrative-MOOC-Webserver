@@ -73,13 +73,13 @@
             wordcloud,
         },
         mounted() {
-            setTimeout(() => { this.keywords = this.item.data.keywords; }, 50);
+            setTimeout(() => { this.keywords = this.data.keywords; }, 50);
             // var element = this.$el.getElementsByClassName('graph')[0];
             // this.table.renderTo(element);
         },
         computed: {
             threads() {
-                return this.item.data.threads.slice(0, 5);
+                return this.data.threads.slice(0, 5);
             },
         },
         methods: {

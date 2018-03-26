@@ -39,7 +39,7 @@
         },
         computed: {
             sequence() {
-                return this.item.data.sequence;
+                return this.data.sequence;
             },
             adjacant() {
                 return this.sequence.adj;

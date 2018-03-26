@@ -30,16 +30,16 @@
         },
         extends: SlideshowBase,
         created() {
-            this.tables.push(this.render(this.item.data, this.context));
+            this.tables.push(this.render(this.data, this.context));
         },
         computed: {
             max_video_activies() {
-                const video_activies = this.item.data.video_activies;
+                const video_activies = this.data.video_activies;
                 const t = Math.max(...video_activies.map(d => d.attempts));
                 return video_activies.find(d => d.attempts == t);
             },
             min_video_activies() {
-                const video_activies = this.item.data.video_activies;
+                const video_activies = this.data.video_activies;
                 const t = Math.min(...video_activies.map(d => d.attempts));
                 return video_activies.find(d => d.attempts == t);
             },

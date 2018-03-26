@@ -32,16 +32,16 @@
         },
         extends: SlideshowBase,
         created() {
-            this.tables.push(this.render(this.item.data, this.context));
+            this.tables.push(this.render(this.data, this.context));
         },
         computed: {
             max_assignment() {
-                return this.item.data.problem_activies.map(d => ({ name: d.name, id: d.id, correctness: d.correctness }))
+                return this.data.problem_activies.map(d => ({ name: d.name, id: d.id, correctness: d.correctness }))
                     .sort((a, b) => b.correctness - a.correctness)
                     .slice(0, 3);
             },
             min_assignment() {
-                return this.item.data.problem_activies.map(d => ({ name: d.name, id: d.id, correctness: d.correctness }))
+                return this.data.problem_activies.map(d => ({ name: d.name, id: d.id, correctness: d.correctness }))
                     .sort((a, b) => a.correctness - b.correctness)
                     .slice(0, 3);
             }

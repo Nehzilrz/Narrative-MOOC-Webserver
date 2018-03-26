@@ -91,10 +91,10 @@
         },
         computed: {
             questioners() {
-                return this.item.data.threads.questioners;
+                return this.data.threads.questioners;
             },
             responders() {
-                return this.item.data.threads.responders;
+                return this.data.threads.responders;
             },
         },
     };

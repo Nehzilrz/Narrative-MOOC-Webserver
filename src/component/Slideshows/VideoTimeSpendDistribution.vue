@@ -30,11 +30,11 @@
         },
         extends: SlideshowBase,
         created() {
-            this.tables.push(this.render(this.item.data, this.context));
+            this.tables.push(this.render(this.data, this.context));
         },
         computed: {
             overview() {
-                return this.item.data.student_overview
+                return this.data.student_overview
                     .filter((d) => this.$mapping[d.id])
                     .sort((a, b) => b.length[3].value - a.length[3].value);
             },

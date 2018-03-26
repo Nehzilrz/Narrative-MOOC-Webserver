@@ -9,23 +9,34 @@
           <h4> {{ item.name }} </h4>
           <div class="right-group">
             <multiselect
-              v-model="selected"
+              v-model="filter"
               :options="options"
               :multiple="true"
               :close-on-select="true"
+              label="name"
+              track-by="name"
               placeholder="General">
             </multiselect>
           </div>
         </div>
-        <div class="p-2 nm-tooltip base" :id="'tooltip' + $vnode.tag" ref="tooltip">
+        <div class="p-2 nm-tooltip base" :id="'tooltip' + _id" ref="tooltip">
         </div>
-        <b-tooltip :show="tooltip_show" :target="'tooltip' + $vnode.tag">
+        <b-tooltip :show="tooltip_show" :target="'tooltip' + _id">
             {{ tooltip_message }}
         </b-tooltip>
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <component class="nm-block main-content" v-bind:is="current_view" :context="context" :item="item"
-            @showtooltip="showTooltip">
-        </component>
+        <div class="component-container">
+          <component ref="left" class="nm-block main-content"
+            v-bind:is="current_view"
+            :context="context" :item="item" :data="item.data"
+              @showtooltip="showTooltip">
+          </component>
+          <component ref="right" v-if="comparison" class="nm-block main-content"
+            v-bind:is="current_view"
+            :context="context" :item="item" :data="item._data"
+              @showtooltip="showTooltip">
+          </component>
+        </div>
         <follow-up :item="item" :context="context"></follow-up>
     </div>
 </template>
@@ -57,19 +68,29 @@ import LearnerDifficultiesSlide from "./LearnerDifficulties.vue";
 import EmptySlide from "./Empty.vue";
 import { setTimeout } from 'plottable/build/src/utils/windowUtils';
 import Multiselect from 'vue-multiselect';
+import { request } from "../../lib/request";
 
 export default {
   data() {
     return {
+      _id: -1,
+      comparison: false,
       current_view: "EmptySlide",
       tooltip_show: false,
       tooltip_message: 'Hello world',
       last_trigger_time: 0,
-      selected: null,
-      options: ['top 10%', 'worst 10%', 'general', 'students with bachelor degree', 'students from China'],
+      filter: [],
+      options: [
+        { name: 'top students', value: { key: 'grade', rule: { $gt: 0.80 } }},
+        { name: 'poor students', value: { key: 'grade', rule: { $lt: 0.20 } }},
+        { name: 'certificated', value: { key: 'mode', rule: 'honor' }},
+        { name: 'audited', value: { key: 'mode', rule: 'audit' }},
+        { name: 'drop out', value: { key: 'last_login', rule: { $lt: this.context.current_chapter.start / 1000 + 86400 * 7 }}},
+      ],
     };
   },
   created() {
+    this._id = ~~(Math.random() * 65536);
     this.$bus.$on("add-textbox", this.handle_addtext);
     const component_mapping = {
       O1: "MaterialPopularitySlide",
@@ -96,6 +117,34 @@ export default {
       S2: "LearnerDifficultiesSlide",
     };
     this.current_view = component_mapping[this.item.id] || "EmptySlide";
+  },
+  watch: {
+    filter(vec) {
+      const condition = {};
+      for (const x of vec) {
+        condition[x.value.key] = x.value.rule;
+      }
+      this.item.condition = condition;
+      this.comparison = false;
+      this.item._data = {};
+      this.item.comparison = true;
+      if (vec.length > 0) {
+        return Promise.all(
+          this.item.resources.map(type => {
+            return request(this, this.item, type);
+          })
+        ).then(async () => {
+          this.comparison = true;
+          this.$refs.left.$forceUpdate();
+        });
+      } else {
+        this.item.comparison = false;
+        this.$refs.left.$forceUpdate();
+        if (this.comparison) {
+          this.comparison = false;
+        }
+      }
+    }
   },
   destroyed() {
     this.$bus.$off("add-textbox", this.handle_addtext);
@@ -205,13 +254,23 @@ export default {
 }
 
 .slide-page .main-content {
-  margin: 1em;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: space-around;
+  min-width: 45%;
+}
+
+.component-container {
+  margin: 1em;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
   align-items: center;
   align-content: space-around;
+  height: 100%;
 }
 
 .slide-page .text.nm-block {
@@ -219,28 +278,28 @@ export default {
 }
 
 .b1w {
-  width: 16em;
+  max-width: 16em;
   padding-left: .5em;
   padding-right: .5em;
   margin-left: .5em;
   margin-right: .5em;
 }
 .b2w {
-  width: 32em;
+  max-width: 32em;
   padding-left: .5em;
   padding-right: .5em;
   margin-left: .5em;
   margin-right: .5em;
 }
 .b3w {
-  width: 48em;
+  max-width: 48em;
   padding-left: .75em;
   padding-right: .75em;
   margin-left: .75em;
   margin-right: .75em;
 }
 .b4w {
-  width: 64em;
+  max-width: 64em;
   padding-left: 1em;
   padding-right: 1em;
   margin-left: 1em;

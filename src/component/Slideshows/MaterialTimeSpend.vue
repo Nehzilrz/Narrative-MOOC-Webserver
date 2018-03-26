@@ -22,33 +22,33 @@
         },
         extends: SlideshowBase,
         created() {
-            this.tables.push(this.render(this.item.data, this.context));
+            this.tables.push(this.render(this.data, this.context));
         },
         computed: {
             max_video() {
-                return this.item.data.video_activies.map(d => ({ name: d.name, id: d.id, time: d.video_watch_time / 60 }))
+                return this.data.video_activies.map(d => ({ name: d.name, id: d.id, time: d.video_watch_time / 60 }))
                     .sort((a, b) => b.time - a.time)
                     .slice(0, 1);
             },
             min_video() {
-                return this.item.data.video_activies.map(d => ({ name: d.name, id: d.id, time: d.video_watch_time / 60 }))
+                return this.data.video_activies.map(d => ({ name: d.name, id: d.id, time: d.video_watch_time / 60 }))
                     .sort((a, b) => a.time - b.time)
                     .slice(0, 1);
             },
             max_assignment() {
-                return this.item.data.problem_activies.map(d => ({ name: d.name, id: d.id, time: d.work_time / 60 }))
+                return this.data.problem_activies.map(d => ({ name: d.name, id: d.id, time: d.work_time / 60 }))
                     .sort((a, b) => b.time - a.time)
                     .slice(0, 1);
             },
             min_assignment() {
-                return this.item.data.problem_activies.map(d => ({ name: d.name, id: d.id, time: d.work_time / 60 }))
+                return this.data.problem_activies.map(d => ({ name: d.name, id: d.id, time: d.work_time / 60 }))
                     .sort((a, b) => a.time - b.time)
                     .slice(0, 1);
             },
             activies() {
-                if (!this.item.data) return [];
-                const video_activies = this.item.data.video_activies;
-                const problem_activies = this.item.data.problem_activies;
+                if (!this.data) return [];
+                const video_activies = this.data.video_activies;
+                const problem_activies = this.data.problem_activies;
                 if (!video_activies && !problem_activies) return [];
                 return video_activies.map(d => ({ id: d.id, name: d.name, val: d.video_watch_time, type: 'video' }))
                 .concat(

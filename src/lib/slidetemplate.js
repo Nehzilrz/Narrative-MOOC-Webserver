@@ -150,6 +150,9 @@ let _id_counter = 0;
 export function create(type, resource_id) {
   const ret = templates[type] ? templates[type](resource_id) : {};
   ret._id = ++_id_counter;
+  ret._data = {};
+  ret.comparison = false;
+  ret.condition = false;
   ret.notes = [];
   ret.cache = {};
   return ret;

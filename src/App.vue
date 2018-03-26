@@ -1160,9 +1160,7 @@ export default {
         item.group =
           state2.group || state2.group == 0 ? state2.group : state1.group;
         return Promise.all(
-          item.resources.map(type => {
-            return request(this, item, type);
-          })
+          item.resources.map(type => request(this, item, type))
         ).then(async () => {
           item.loaded = true;
           item.parent = state1 && state1._id;

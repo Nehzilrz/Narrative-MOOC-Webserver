@@ -32,16 +32,16 @@
         },
         extends: SlideshowBase,
         created() {
-            this.tables.push(this.render(this.item.data, this.context));
+            this.tables.push(this.render(this.data, this.context));
         },
         computed: {
             most_work() {
-                return this.item.data.problem_activies.slice(0)
+                return this.data.problem_activies.slice(0)
                     .sort((a, b) => b.work_time - a.work_time)
                     .slice(0, 3);
             },
             least_work() {
-                return this.item.data.problem_activies.slice(0)
+                return this.data.problem_activies.slice(0)
                     .sort((a, b) => a.work_time - b.work_time)
                     .slice(0, 3);
             }

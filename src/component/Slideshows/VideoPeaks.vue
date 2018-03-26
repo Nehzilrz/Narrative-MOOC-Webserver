@@ -70,11 +70,11 @@
         },
         extends: SlideshowBase,
         created() {
-            this.tables.push(this.render(this.item.data, this.context));
+            this.tables.push(this.render(this.data, this.context));
         },
         computed: {
             showed_peaks() {
-                const data = this.item.data;          
+                const data = this.data;          
                 return data.video_peaks.map((d, i) => {
                     const time = ~~((d.start + d.end) / 2);
                     return {
@@ -214,7 +214,7 @@
                 distributionAxis.formatter(d => ~~(d * 100) + "%");
                 var distributionPlot = new Plottable.Plots.ClusteredBar();
 
-                const video = this.item.data.video;
+                const video = this.data.video;
                 const overall_sum = video.grade_distribution.reduce((a, b) => a + b, 0);
                 distributionPlot.addDataset(
                     new Plottable.Dataset(

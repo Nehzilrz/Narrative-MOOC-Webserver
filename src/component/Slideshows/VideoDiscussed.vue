@@ -53,10 +53,10 @@
         },
         computed: {
             videos() {
-                return this.item.data.videos.filter(d => d.val);
+                return this.data.videos.filter(d => d.val);
             },
             empty_videos() {
-                return this.item.data.videos.filter(d => !d.val);
+                return this.data.videos.filter(d => !d.val);
             }
         },
         methods: {

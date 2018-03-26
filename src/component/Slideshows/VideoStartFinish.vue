@@ -29,16 +29,16 @@
         },
         extends: SlideshowBase,
         created() {
-            this.tables.push(this.render(this.item.data, this.context));
+            this.tables.push(this.render(this.data, this.context));
         },
         computed: {
             video_start_finish() {
-                const video_activies = this.item.data.video_activies;
+                const video_activies = this.data.video_activies;
                 if (!video_activies) return [];
                 const context = this.context;
                 return video_activies.map(d => {
                     d.duration = (d.modified - d.created) / 86400000;
-                    d.delay = (d.created - ($mapping[d.id] && $mapping[d.id].chapter_start)) / 86400000;
+                    d.delay = (d.created - (this.$mapping[d.id] && this.$mapping[d.id].chapter_start)) / 86400000;
                     return {
                         duration: d.duration,
                         delay: d.delay,

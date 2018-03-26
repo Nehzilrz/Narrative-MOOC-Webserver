@@ -30,12 +30,12 @@
             };
         },
         created() {
-            this.tables.push(this.render(this.item.data, this.context));
+            this.tables.push(this.render(this.data, this.context));
         },
         extends: SlideshowBase,
         computed: {
             start_finish() {
-                const assignment_activies = this.item.data.problem_activies;
+                const assignment_activies = this.data.problem_activies;
                 if (!assignment_activies) return [];
                 return assignment_activies.map(d => {
                     d.duration = (d.modified - d.created) / 86400000;

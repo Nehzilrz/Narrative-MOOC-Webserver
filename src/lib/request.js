@@ -2,98 +2,90 @@
 import axios from 'axios';
 
 export const serverUrl = 'http://nezil.me/NarrativeMOOCAPI/';
+// export const serverUrl = 'http://10.89.83.202:3000/';
 
 const cache = {};
 
-export function request(self, item, type) {
+export async function request(self, item, type) {
+    const data = item.data;
     const convert_map = {
-        'save_student_group': () => {
-            return axios.post(`${serverUrl}saveStudentGroup`, {
-                id: item.id,
-                users: item.users,
-            });
-        },
-        'video_peaks': () => {
-            if (!item.data.video_peaks) {
-                return axios.get(`${serverUrl}getVideoPeaks`, { params: { videoId: item.resource_id } }).then((response) => {
-                    item.data.video_peaks = response.data;
-                })
+        'video_peaks': async (data, filter = null) => {
+            if (!data.video_peaks) {
+                data.video_peaks = (await axios.get(`${serverUrl}getVideoPeaks`, { params: { videoId: item.resource_id } })).data;
             } else {
                 return null;
             }
         },
-        'video_logs': () => {
-            if (!item.data.video_logs) {
-                return axios.get(`${serverUrl}getVideoLogs`, { params: { videoId: item.resource_id } }).then((response) => {
-                  item.data.video_logs = response.data;
-                });
+        'video_logs': async (data, filter = null) => {
+            if (!data.video_logs) {
+                data.video_logs = (await axios.get(`${serverUrl}getVideoLogs`, { params: { videoId: item.resource_id } })).data;
             } else {
                 return null;
             }
         },
-        'video_info': () => {
-            if (!item.data.video) {
-                item.data.video = self.$mapping[item.resource_id];
+        'video_info': async (data, filter = null) => {
+            if (!data.video) {
+                data.video = self.$mapping[item.resource_id];
             } else {
                 return null;
             }
         },
-        'problem_activies': () => {
-            if (!item.data.problem_activies) {
+        'problem_activies': async (data, filter = null) => {
+            if (!data.problem_activies) {
                 const params =  { params: { id: item.resource_id } };
                 const str = 'getProblemActivies' + JSON.stringify(params);
                 if (cache[str]) {
-                    item.data.activies = cache[str];
+                    data.activies = cache[str];
                     return null;
                 }
-                return axios.get(`${serverUrl}getProblemActivies`, params).then((response) => {
-                  item.data.activies = response.data;
-                  cache[str] = response.data;
-                });
+                data.activies = (await axios.get(`${serverUrl}getProblemActivies`, params)).data;
+                cache[str] = data.activies;
             } else {
                 return null;
             }
         },
-        'chapter_problem_activies': () => {
-            if (!item.data.problem_activies) {
+        'chapter_problem_activies': async (data, filter = null) => {
+            if (!data.problem_activies) {
                 const params = {
                     problems: self.$mapping[item.resource_id].problems,
                     chapter: item.resource_id,
                 };
+                if (filter) {
+                    params.condition = filter;
+                }
                 const str = 'getProblemsData' + JSON.stringify(params);
                 if (cache[str]) {
-                    item.data.problem_activies = cache[str];
+                    data.problem_activies = cache[str];
                     return null;
                 }
-                return axios.post(`${serverUrl}getProblemsData`, params).then((response) => {
-                  item.data.problem_activies = response.data;
-                  cache[str] = response.data;
-                });
+                data.problem_activies = (await axios.post(`${serverUrl}getProblemsData`, params)).data;
+                cache[str] = data.problem_activies;
             } else {
                 return null;
             }
         },
-        'chapter_video_activies': () => {
-            if (!item.data.video_activies) {
+        'chapter_video_activies': async (data, filter = null) => {
+            if (!data.video_activies) {
                 const params = {
                     videos: self.$mapping[item.resource_id].videos,
                     chapter: item.resource_id,
                 };
+                if (filter) {
+                    params.condition = filter;
+                }
                 const str = 'getVideosData' + JSON.stringify(params);
                 if (cache[str]) {
-                    item.data.video_activies = cache[str];
+                    data.video_activies = cache[str];
                     return null;
                 }
-                return axios.post(`${serverUrl}getVideosData`, params).then((response) => {
-                  item.data.video_activies = response.data;
-                  cache[str] = item.data.video_activies;
-                });
+                data.video_activies = (await axios.post(`${serverUrl}getVideosData`, params)).data;
+                cache[str] = data.video_activies;
             } else {
                 return null;
             }
         },
-        'chapter_activies': () => {
-            if (!item.data.events) {
+        'chapter_activies': async (data, filter = null) => {
+            if (!data.events) {
                 const params = { params: {
                     start: self.$mapping[item.resource_id].start,
                     time_length: 24 * 8,
@@ -101,171 +93,176 @@ export function request(self, item, type) {
                 }};
                 const str = 'countEvent' + JSON.stringify(params);
                 if (cache[str]) {
-                    item.data.events = cache[str];
+                    data.events = cache[str];
                     return null;
                 }
-                return axios.get(`${serverUrl}countEvent`, params).then((response) => {
-                  cache[str] = response.data;
-                  item.data.events = response.data;
-                });
+                data.events = (await axios.get(`${serverUrl}countEvent`, params)).data;
+                cache[str] = data.events;
             } else {
                 return null;
             }
         },
-        'video_related_forum': () => {
-            if (!item.data.videos) {
+        'video_related_forum': async (data, filter = null) => {
+            if (!data.videos) {
                 const params = {
                     videos: self.$mapping[item.resource_id].videos,
                     chapter: item.resource_id,
                 };
-                return axios.post(`${serverUrl}getForumThreadVideoRelated`, params).then((response) => {
-                  item.data.videos = response.data;
-                });
+                if (filter) {
+                    params.condition = filter;
+                }
+                data.videos = (await axios.post(`${serverUrl}getForumThreadVideoRelated`, params)).data;
             } else {
                 return null;
             }
         },
         //most_discussed_threads most_discussed_keywords
-        'assignment_related_forum': () => {
-            if (!item.data.assignments) {
+        'assignment_related_forum': async (data, filter = null) => {
+            if (!data.assignments) {
                 const params = {
                     problems: self.$mapping[item.resource_id].problems,
                     chapter: item.resource_id,
                 };
-                return axios.post(`${serverUrl}getForumThreadProblemRelated`, params).then((response) => {
-                  item.data.assignments = response.data;
-                });
+                if (filter) {
+                    params.condition = filter;
+                }
+                data.assignments = (await axios.post(`${serverUrl}getForumThreadProblemRelated`, params)).data;
             } else {
                 return null;
             }
         },
-        'most_discussed_threads': () => {
-            if (!item.data.threads) {
+        'most_discussed_threads': async (data, filter = null) => {
+            if (!data.threads) {
                 const params = {
                     chapter: item.resource_id,
                 };
-                return axios.post(`${serverUrl}getMostDiscussedThreads`, params).then((response) => {
-                  item.data.threads = response.data;
-                });
+                if (filter) {
+                    params.condition = filter;
+                }
+                data.threads = (await axios.post(`${serverUrl}getMostDiscussedThreads`, params)).data;
             } else {
                 return null;
             }
         },
-        'most_discussed_keywords': () => {
-            if (!item.data.keywords) {
+        'most_discussed_keywords': async (data, filter = null) => {
+            if (!data.keywords) {
                 const params = {
                     chapter: item.resource_id,
                 };
-                return axios.post(`${serverUrl}getMostDiscussedKeywords`, params).then((response) => {
-                  item.data.keywords = response.data;
-                });
+                if (filter) {
+                    params.condition = filter;
+                }
+                data.keywords = (await axios.post(`${serverUrl}getMostDiscussedKeywords`, params)).data;
             } else {
                 return null;
             }
         },
-        'most_upvoted_threads': () => {
-            if (!item.data.keywords) {
+        'most_upvoted_threads': async (data, filter = null) => {
+            if (!data.keywords) {
                 const params = {
                     chapter: item.resource_id,
                 };
-                return axios.post(`${serverUrl}getMostUpvotedThreads`, params).then((response) => {
-                  item.data.threads = response.data;
-                });
+                if (filter) {
+                    params.condition = filter;
+                }
+                data.threads = (await axios.post(`${serverUrl}getMostUpvotedThreads`, params)).data;
             } else {
                 return null;
             }
         },
-        'top_questioner_responser': () => {
-            if (!item.data.keywords) {
+        'top_questioner_responser': async (data, filter = null) => {
+            if (!data.keywords) {
                 const params = {
                     chapter: item.resource_id,
                 };
-                return axios.post(`${serverUrl}getTopQuestioners`, params).then((response) => {
-                  item.data.threads = response.data;
-                });
+                if (filter) {
+                    params.condition = filter;
+                }
+                data.threads = (await axios.post(`${serverUrl}getTopQuestioners`, params)).data;
             } else {
                 return null;
             }
         },
-        'activies_summary': () => {
+        'activies_summary': async (data, filter = null) => {
             if (!items.data.activies_summary) {
-                return axios.get(`${serverUrl}countEvent`, { params: { 
+                self.data.activies_summary = (await axios.get(`${serverUrl}countEvent`, { params: { 
                     start: Math.min(...self.chapters.map(d => d.start)), 
                     time_length: 24 * 90,
                     time_scale: 'hour',
-                  }}).then((response) => {
-                  self.data.activies_summary = response.data;
-                });
+                  }})).data;
             } else {
                 return null;
             }
         },
-        'user_info': () => {
-            if (!item.data.user_info) {
-                return axios.post(`${serverUrl}getUserBasicInfo`, {
+        'user_info': async (data, filter = null) => {
+            if (!data.user_info) {
+                data.user_info = (await axios.post(`${serverUrl}getUserBasicInfo`, {
                     condition: item.condition,
                     chapter: item.resource_id,
-                }).then((response) => {
-                  item.data.user_info = response.data;
-                });
+                })).data;
             } else {
                 return null;
             }
         },
-        'user_difficulties': () => {
-            if (!item.data.difficulties) {
-                return axios.post(`${serverUrl}getUserDifficulties`, {
+        'user_difficulties': async (data, filter = null) => {
+            if (!data.difficulties) {
+                data.difficulties = (await axios.post(`${serverUrl}getUserDifficulties`, {
                     condition: item.condition,
                     chapter: item.resource_id,
-                }).then((response) => {
-                  item.data.difficulties = response.data;
-                });
+                })).data;
             } else {
                 return null;
             }
         },
-        'student_overview': () => {
-            if (!item.data.student_overview) {
+        'student_overview': async (data, filter = null) => {
+            if (!data.student_overview) {
                 const params = {
                     chapter: item.resource_id,
                 };
+                if (filter) {
+                    params.condition = filter;
+                }
                 const str = 'getChapterVideosInfo' + JSON.stringify(params);
                 if (cache[str]) {
-                    item.data.student_overview = cache[str];
+                    data.student_overview = cache[str];
                     return null;
                 }
-                return axios.post(`${serverUrl}getChapterVideosInfo`, params).then((response) => {
-                  item.data.student_overview = response.data;
-                  cache[str] = response.data;
-                });
+                data.student_overview = (await axios.post(`${serverUrl}getChapterVideosInfo`, params)).data;
+                cache[str] = data.student_overview;
             } else {
                 return null;
             }
         },
-        'chapter_sequence': () => {
-            if (!item.data.sequence) {
+        'chapter_sequence': async (data, filter = null) => {
+            if (!data.sequence) {
                 const params = {
                     chapter: item.resource_id,
                 };
-                return axios.post(`${serverUrl}getChapterOperationSequence`, params).then((response) => {
-                  item.data.sequence = response.data;
-                });
+                if (filter) {
+                    params.condition = filter;
+                }
+                data.sequence = (await axios.post(`${serverUrl}getChapterOperationSequence`, params)).data;
             } else {
                 return null;
             }
         },
-        'assignment_sequence': () => {
-            if (!item.data.sequence) {
+        'assignment_sequence': async (data, filter = null) => {
+            if (!data.sequence) {
                 const params = {
                     assignment: item.resource_id,
                 };
-                return axios.post(`${serverUrl}getAssignmentOperationSequence`, params).then((response) => {
-                  item.data.sequence = response.data;
-                });
+                if (filter) {
+                    params.condition = filter;
+                }
+                data.sequence = (await axios.post(`${serverUrl}getAssignmentOperationSequence`, params)).data;
             } else {
                 return null;
             }
         },
     };
-    return convert_map[type]();
+    await convert_map[type](item.data);
+    if (item.comparison) {
+        await convert_map[type](item._data, item.condition);
+    }
+    return;
 }

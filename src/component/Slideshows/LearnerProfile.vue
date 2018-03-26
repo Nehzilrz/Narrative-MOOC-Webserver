@@ -122,7 +122,7 @@
 */
             },
             info() {
-                return this.item.data.user_info;
+                return this.data.user_info;
             },
             education() {
                 return this.info.education;

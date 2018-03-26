@@ -50,27 +50,27 @@
         },
         extends: SlideshowBase,
         created() {
-            this.tables.push(this.render1(this.item.data, this.context));
-            this.tables.push(this.render2(this.item.data, this.context));
+            this.tables.push(this.render1(this.data, this.context));
+            this.tables.push(this.render2(this.data, this.context));
         },
         computed: {
             max_assignment() {
-                return this.item.data.problem_activies.map(d => ({ name: d.name, id: d.id, completeness: d.completeness }))
+                return this.data.problem_activies.map(d => ({ name: d.name, id: d.id, completeness: d.completeness }))
                     .sort((a, b) => b.completeness - a.completeness)
                     .slice(0, 3);
             },
             min_assignment() {
-                return this.item.data.problem_activies.map(d => ({ name: d.name, id: d.id, completeness: d.completeness }))
+                return this.data.problem_activies.map(d => ({ name: d.name, id: d.id, completeness: d.completeness }))
                     .sort((a, b) => a.completeness - b.completeness)
                     .slice(0, 3);
             },
             most_work() {
-                return this.item.data.problem_activies.slice(0)
+                return this.data.problem_activies.slice(0)
                     .sort((a, b) => b.work_time - a.work_time)
                     .slice(0, 3);
             },
             least_work() {
-                return this.item.data.problem_activies.slice(0)
+                return this.data.problem_activies.slice(0)
                     .sort((a, b) => a.work_time - b.work_time)
                     .slice(0, 3);
             }

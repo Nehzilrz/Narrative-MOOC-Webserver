@@ -58,7 +58,7 @@
 */
             },
             info() {
-                return this.item.data.difficulties;
+                return this.data.difficulties;
             },
             users() {
                 return this.info.users;

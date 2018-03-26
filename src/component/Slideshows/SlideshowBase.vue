@@ -12,6 +12,13 @@ export default {
     created() {
         this.$bus.$on("refresh-chart", this.refreshChart);
     },
+    updated() {
+        console.log('updated');
+        var elements = this.$el.getElementsByClassName('graph');
+        for (let i = 0; i < elements.length && i < this.tables.length; ++i) {
+            this.tables[i].renderTo(elements[i]);
+        }
+    },
     mounted() {
         var elements = this.$el.getElementsByClassName('graph');
         for (let i = 0; i < elements.length && i < this.tables.length; ++i) {
@@ -98,6 +105,6 @@ export default {
             interaction.attachTo(plots);
         }
     },
-    props: ["item", "context"],
+    props: ["item", "data", "context"],
 };
 </script>

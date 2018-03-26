@@ -39,10 +39,7 @@
             Assignment released on {{ assignment_release_date }}.
         </styled-text>
     </div>
-    <div class="nm-block">
-        <p class="card-text">
-            {{ assignment.content }}
-        </p>
+    <div class="nm-block" ref="content">
     </div>
 </div>
 </template>
@@ -60,6 +57,7 @@
         extends: SlideshowBase,
         mounted() {
             this.render();
+            this.$refs.content.innerHTML = this.assignment.content;
         },
         computed: {
             assignment_release_date() {
@@ -67,10 +65,10 @@
                     .toISOString().slice(0, 16).replace('T', ' ');
             },
             assignment() {
-                return this.$mapping[this.elements[0].id];
+                return this.$mapping[this.item.resource_id];
             },
             sequence() {
-                return this.item.data.sequence;
+                return this.data.sequence;
             },
             adjacant() {
                 return this.sequence.adj;
