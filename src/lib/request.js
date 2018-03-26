@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-export const serverUrl = 'http://http://nezil.me/NarrativeMOOCAPI/';
+export const serverUrl = 'http://nezil.me/NarrativeMOOCAPI/';
 
 const cache = {};
 
