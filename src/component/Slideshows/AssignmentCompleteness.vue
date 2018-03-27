@@ -90,7 +90,7 @@
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", context.assignment_color)
-                    .animated(true)
+                    
                     .addDataset(new Plottable.Dataset(assignment_activies));
 
                 var watchTimeLabel = new Plottable.Components.AxisLabel("minutes", "0");
@@ -121,11 +121,17 @@
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", context.color_schema[2])
-                    .animated(true)
+                    
                     .addDataset(new Plottable.Dataset(problem_activies));
                 
                 this.plots.push(plots);
-                this.attachMousemove(plots, x => `value: ${Number(x.completeness * 100).toFixed(1)}%`);
+                this.attachMousemove(
+                    plots,
+                    x => `value: ${Number(x.completeness * 100).toFixed(1)}%`,
+                    () => ({
+                        x: this.$refs.graph2.getBoundingClientRect().x - this.$refs.graph1.getBoundingClientRect().x,
+                        y: this.$refs.graph2.getBoundingClientRect().y - this.$refs.graph1.getBoundingClientRect().y,
+                    }));
                 this.attachClick(plots);
 
                 var completenessLabel = new Plottable.Components.AxisLabel("completeness", "0");

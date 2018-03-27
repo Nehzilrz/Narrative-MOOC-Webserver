@@ -13,7 +13,6 @@ export default {
         this.$bus.$on("refresh-chart", this.refreshChart);
     },
     updated() {
-        console.log('updated');
         var elements = this.$el.getElementsByClassName('graph');
         for (let i = 0; i < elements.length && i < this.tables.length; ++i) {
             this.tables[i].renderTo(elements[i]);
@@ -48,7 +47,7 @@ export default {
             };
             this.$emit('showtooltip', event);
         },
-        attachMousemove(plots, message) {
+        attachMousemove(plots, message, offset = () => ({x: 0, y: 0})) {
             const interaction = new Plottable.Interactions.Pointer();
             message = message || (() => 'No Content');
             interaction.onPointerMove(point => {
@@ -58,8 +57,8 @@ export default {
                 if (!selection) return;
                 const x = selection.datum();
                 this.showTooltip(message(x), {
-                    x: point.x + plots.origin().x,
-                    y: point.y + plots.origin().y,
+                    x: point.x + plots.origin().x + offset().x,
+                    y: point.y + plots.origin().y + offset().y,
                 });
                 if (!this.context.enable_highlight_chart) {
                     plots.selections().attr("opacity", 0.8);

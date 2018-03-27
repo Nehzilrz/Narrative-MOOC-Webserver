@@ -61,7 +61,7 @@
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", context.color_schema[2])
-                    .animated(true)
+                    
                     .addDataset(new Plottable.Dataset(problem_activies));
 
                 this.plots.push(plots);

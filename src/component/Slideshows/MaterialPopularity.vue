@@ -94,7 +94,7 @@
                     .attr("stroke", "none")
                     .attr("fill", (d, i, dataset) => dataset.metadata(), colorScale)
                     .attr("opacity", 0.8)
-                    .animated(true)
+                    
                     .addDataset(new Plottable.Dataset(video_activies).metadata('video'))
                     .addDataset(new Plottable.Dataset(problem_activies).metadata('assignment'));
 

@@ -19,14 +19,19 @@
             </multiselect>
           </div>
         </div>
+        <div class="tooltip" :class="{ active: tooltip_show} " ref="tooltip">
+          <p>{{ tooltip_message }}</p>
+        </div>
+        <!--
         <div class="p-2 nm-tooltip base" :id="'tooltip' + _id" ref="tooltip">
         </div>
         <b-tooltip :show="tooltip_show" :target="'tooltip' + _id">
             {{ tooltip_message }}
         </b-tooltip>
+        -->
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
         <div class="component-container">
-          <component ref="left" class="nm-block main-content"
+          <component ref="left" v-show="!comparison" class="nm-block main-content"
             v-bind:is="current_view"
             :context="context" :item="item" :data="item.data"
               @showtooltip="showTooltip">
@@ -34,7 +39,7 @@
           <component ref="right" v-if="comparison" class="nm-block main-content"
             v-bind:is="current_view"
             :context="context" :item="item" :data="item._data"
-              @showtooltip="showTooltip">
+              @showtooltip="showTooltipWithOffset">
           </component>
         </div>
         <follow-up :item="item" :context="context"></follow-up>
@@ -42,33 +47,33 @@
 </template>
 
 <script>
-import AssignmentTimeSpendSlide from "./AssignmentTimeSpend.vue";
-import VideoPeaksSlide from "./VideoPeaks.vue";
-import VideoCompletenessSlide from "./VideoCompleteness.vue";
-import VideoFrequencySlide from "./VideoFrequency.vue";
-import VideoTimeSpendSlide from "./VideoTimeSpend.vue";
-import VideoStartFinishSlide from "./VideoStartFinish.vue";
-import VideoDiscussedSlide from "./VideoDiscussed.vue";
-import VideoTimeSpendDistributionSlide from "./VideoTimeSpendDistribution.vue";
-import MaterialPopularitySlide from "./MaterialPopularity.vue";
-import MaterialFrequencySlide from "./MaterialFrequency.vue";
-import MaterialTimeSpendSlide from "./MaterialTimeSpend.vue";
-import MaterialSequenceSlide from "./MaterialSequence.vue";
-import AssignmentCorrectnessSlide from "./AssignmentCorrectness.vue";
-import AssignmentCompletenessSlide from "./AssignmentCompleteness.vue";
-import AssignmentAttemptsSlide from "./AssignmentAttempts.vue";
-import AssignmentStartFinishSlide from "./AssignmentStartFinish.vue";
-import AssignmentDiscussedSlide from "./AssignmentDiscussed.vue";
-import ForumDiscussedSlide from "./ForumDiscussed.vue";
-import ForumMostUpvotedSlide from "./ForumMostUpvoted.vue";
-import ForumQuestionerSlide from "./ForumQuestioner.vue";
-import AssignmentSequenceSlide from "./AssignmentSequence.vue";
-import LearnerProfileSlide from "./LearnerProfile.vue";
-import LearnerDifficultiesSlide from "./LearnerDifficulties.vue";
-import EmptySlide from "./Empty.vue";
+import AssignmentTimeSpendSlide from "./Slideshows/AssignmentTimeSpend.vue";
+import VideoPeaksSlide from "./Slideshows/VideoPeaks.vue";
+import VideoCompletenessSlide from "./Slideshows/VideoCompleteness.vue";
+import VideoFrequencySlide from "./Slideshows/VideoFrequency.vue";
+import VideoTimeSpendSlide from "./Slideshows/VideoTimeSpend.vue";
+import VideoStartFinishSlide from "./Slideshows/VideoStartFinish.vue";
+import VideoDiscussedSlide from "./Slideshows/VideoDiscussed.vue";
+import VideoTimeSpendDistributionSlide from "./Slideshows/VideoTimeSpendDistribution.vue";
+import MaterialPopularitySlide from "./Slideshows/MaterialPopularity.vue";
+import MaterialFrequencySlide from "./Slideshows/MaterialFrequency.vue";
+import MaterialTimeSpendSlide from "./Slideshows/MaterialTimeSpend.vue";
+import MaterialSequenceSlide from "./Slideshows/MaterialSequence.vue";
+import AssignmentCorrectnessSlide from "./Slideshows/AssignmentCorrectness.vue";
+import AssignmentCompletenessSlide from "./Slideshows/AssignmentCompleteness.vue";
+import AssignmentAttemptsSlide from "./Slideshows/AssignmentAttempts.vue";
+import AssignmentStartFinishSlide from "./Slideshows/AssignmentStartFinish.vue";
+import AssignmentDiscussedSlide from "./Slideshows/AssignmentDiscussed.vue";
+import ForumDiscussedSlide from "./Slideshows/ForumDiscussed.vue";
+import ForumMostUpvotedSlide from "./Slideshows/ForumMostUpvoted.vue";
+import ForumQuestionerSlide from "./Slideshows/ForumQuestioner.vue";
+import AssignmentSequenceSlide from "./Slideshows/AssignmentSequence.vue";
+import LearnerProfileSlide from "./Slideshows/LearnerProfile.vue";
+import LearnerDifficultiesSlide from "./Slideshows/LearnerDifficulties.vue";
+import EmptySlide from "./Slideshows/Empty.vue";
 import { setTimeout } from 'plottable/build/src/utils/windowUtils';
 import Multiselect from 'vue-multiselect';
-import { request } from "../../lib/request";
+import { request } from "../lib/request";
 
 export default {
   data() {
@@ -200,10 +205,15 @@ export default {
         }
         this.tooltip_message = e.message;
         const parent = this.$el.getBoundingClientRect();
-        this.$refs.tooltip.style.left = `${e.position.x + parent.left - 3}px`;
-        this.$refs.tooltip.style.top = `${e.position.y + parent.top - 10}px`;
+        this.$refs.tooltip.style.left = `${e.position.x - 40}px`;
+        this.$refs.tooltip.style.top = `${e.position.y - 20}px`;
         this.tooltip_show = true;
-    }
+    },
+    showTooltipWithOffset(e) {
+      e.position.x += this.$refs.right.$el.getBoundingClientRect().left - 
+        this.$refs.left.$el.getBoundingClientRect().left;
+      this.showTooltip(e);
+    },
   },
   props: ["context", "item"]
 };
@@ -257,20 +267,18 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: space-around;
-  min-width: 45%;
+  flex-shrink: 2;
+  flex-grow: 2;
 }
 
 .component-container {
-  margin: 1em;
-  display: flex;
+  display: inline-flex;
   flex-wrap: nowrap;
   flex-direction: row;
   align-items: center;
   align-content: space-around;
   height: 100%;
+  width: 100%;
 }
 
 .slide-page .text.nm-block {
@@ -278,28 +286,28 @@ export default {
 }
 
 .b1w {
-  max-width: 16em;
+  flex-basis: 16em;
   padding-left: .5em;
   padding-right: .5em;
   margin-left: .5em;
   margin-right: .5em;
 }
 .b2w {
-  max-width: 32em;
+  flex-basis: 32em;
   padding-left: .5em;
   padding-right: .5em;
   margin-left: .5em;
   margin-right: .5em;
 }
 .b3w {
-  max-width: 48em;
+  flex-basis: 48em;
   padding-left: .75em;
   padding-right: .75em;
   margin-left: .75em;
   margin-right: .75em;
 }
 .b4w {
-  max-width: 64em;
+  flex-basis: 64em;
   padding-left: 1em;
   padding-right: 1em;
   margin-left: 1em;
@@ -341,6 +349,65 @@ export default {
   height: 400px;
   margin-bottom: 3em;
 }
+
+
+
+.tooltip {
+  visibility: hidden;
+  z-index: 1;
+  opacity: .40;
+  
+  padding: 5px 10px 0px 10px;
+
+  background: #333;
+  color: #eeeeee;
+  
+  position: absolute;
+
+  border-radius: 9px;
+  font-size: 16px;
+  font-weight: 500;
+
+  transform: translateY(9px);
+  transition: all 0.3s ease-in-out;
+  
+  box-shadow: 0 0 3px rgba(56, 54, 54, 0.86);
+}
+
+
+/* tooltip  after*/
+.tooltip::after {
+  content: " ";
+  width: 0;
+  height: 0;
+  
+  border-style: solid;
+  border-width: 12px 12.5px 0 12.5px;
+  border-color: #333 transparent transparent transparent;
+
+  position: absolute;
+  left: 40%;
+
+}
+
+.tooltip.active {
+  visibility: visible;
+  transform: translateY(-10px);
+  opacity: 1;
+    transition: .3s linear;
+  animation: odsoky 1s ease-in-out infinite alternate;
+}
+
+@keyframes odsoky {
+  0%{
+    transform: translateY(6px);	
+  }
+  100%{
+    transform: translateY(1px);	
+  }
+}
+/*hover ToolTip*/
+.top:hover {transform: translateY(-6px);  }
 
 </style>
 

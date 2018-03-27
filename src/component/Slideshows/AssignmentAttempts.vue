@@ -61,7 +61,7 @@
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", context.color_schema[3])
-                    .animated(true)
+                    
                     .addDataset(new Plottable.Dataset(problem_activies));
 
                 if (this.lastElement) {
@@ -71,7 +71,7 @@
                 var attemptsLabel = new Plottable.Components.AxisLabel("attempts", "0");
                 var plotsLabel = new Plottable.Components.AxisLabel("attempts", "0");
 
-                this.plots = plots;
+                this.plots.push(plots);
                 this.attachClick(plots);
                 this.attachMousemove(plots, d => `value: ${Number(d.attempts).toFixed(2)}`);
 

@@ -132,11 +132,11 @@
             </b-button-group>
           </b-button-toolbar>
         </div>
-        <div class="screen-bottom-tips" 
-          v-if="pages && presentation_mode && bottom_tip_enabled"
-          @click="bottom_tip_enabled = false">
-          <h3> {{ page_index == 0 ? 'Press ↓ to Next' : 'Press ← to Back'}} </h3>
-        </div>
+      </div>
+      <div class="screen-bottom-tips" 
+        v-if="pages && presentation_mode && bottom_tip_enabled"
+        @click="bottom_tip_enabled = false">
+        <h3> {{ page_index == 0 ? 'Press ↓ to Next' : 'Press ← to Back'}} </h3>
       </div>
       <div class="sidebar-container tool" :class="{ open: sidebar_active }">
         <div class="overview">
@@ -253,6 +253,7 @@ export default {
   name: "app",
   data() {
     return {
+      is_painting: false,
       stories: JSON.parse(localStorage.getItem('narrative_mooc_stories') || '[]'),
       page_index: 0,
       bottom_tip_enabled: true,
@@ -261,6 +262,7 @@ export default {
       enable_highlight_text: false,
       current_color: "#fff",
       current_element_id: null,
+      overview_graph: null,
       colors: colors,
       pages: [],
       page: null,
@@ -274,18 +276,7 @@ export default {
       // current_problem: null,
       current_chapter: null,
       trigger_counter: 0,
-      color_schema: [
-        "#a6cee3",
-        "#1f78b4",
-        "#b2df8a",
-        "#33a02c",
-        "#fb9a99",
-        "#e31a1c",
-        "#fdbf6f",
-        "#ff7f00",
-        "#cab2d6",
-        "#6a3d9a"
-      ],
+      color_schema: color_schema,
       enable_highlight_chart: false,
       course_name: "Introduction to Computing with Java",
       course_id: "HKUSTx_COMP102x_2T2014",
@@ -632,7 +623,7 @@ export default {
           })
         : null;
     },
-    overview_graph() {
+    get_overview_graph() {
       /*
 
       const init_nodes = [0, 1, 2, 3, 8];
@@ -680,6 +671,8 @@ export default {
         nodes[x.group_id].push(x);
       }
 */
+
+/*
       let nodes = [];
       let edges = [];
       let nodes_num = 0;
@@ -762,6 +755,85 @@ export default {
         );
       }
       const max_depth = Math.max(...depth) + 1;
+
+      */
+
+      let nodes = [];
+      let edges = [];
+      let nodes_num = 0;
+      let root = null;
+      let Q = [];
+      if (this.page.find(d => d.id == 'O1')) {
+        root = this.page.find(d => d.id == 'O1');
+      } else {
+        root = {
+            name: SlideTemplate.questions['O1'],
+            abbrname: SlideTemplate.abbr_questions['O1'],
+            type: 'student',
+            id: 'O1',
+            _id: -1,
+            resource_id: this.current_chapter.id,
+        };
+      }
+      Q.push(root);
+      nodes_num += 1;
+      let current_node = -1;
+      const depth = [0];
+      while (Q.length > 0) {
+        const u = Q[0];
+        Q.shift();
+        if (nodes.find(elements => elements.find(d => d.id == u.id && d.resource_id == u.resource_id))) {
+          continue;
+        }
+        current_node += 1;
+        const gid = SlideTemplate.relation.groupIdOf(u.id);
+        const group = SlideTemplate.relation.groups[gid];
+        const elements = [u];
+        for (const id of group) if (id != u.id) {
+          const element = this.page.find(d => d.id == id && d.resource_id == u.resource_id)
+            || {
+              name: SlideTemplate.questions[id],
+              abbrname: SlideTemplate.abbr_questions[id],
+              type: SlideTemplate.relation.grouptype[gid],
+              id: id,
+              _id: -1,
+              resource_id: u.resource_id,
+            };
+          elements.push(element);
+        }
+        nodes.push(elements);
+        if (!elements.find(d => d._id != -1) && nodes_num > 1) continue;
+
+        SlideTemplate.relation.edges.filter(e => e.source == gid)
+          .forEach(e => {
+            const target_group = SlideTemplate.relation.groups[e.target];
+            if (SlideTemplate.scopeOf(target_group[0]) == SlideTemplate.scopeOf(u.id)) {
+              const target = this.page.find(d => target_group.includes(d.id) && d.resource_id == u.resource_id)
+              || {
+                name: SlideTemplate.questions[target_group[0]],
+                abbrname: SlideTemplate.abbr_questions[target_group[0]],
+                type: SlideTemplate.relation.grouptype[e.target],
+                id: target_group[0],
+                _id: -1,
+                resource_id: u.resource_id,
+              };
+              Q.push(target);
+              edges.push({ source: current_node, target: nodes_num });
+              depth[nodes_num] = depth[current_node] + 1;
+              nodes_num += 1;
+            }
+
+            this.page.filter(d => target_group.includes(d.id) && d.resource_id != u.resource_id)
+              .forEach(d => {
+                Q.push(d);
+                edges.push({ source: current_node, target: nodes_num });
+                depth[nodes_num] = depth[current_node] + 1;
+                nodes_num += 1;
+              });
+          });
+      }
+      const max_depth = Math.max(...depth) + 1;
+
       nodes = nodes.map((d, i) => {
         const padding = 25;
         const data = d.map(item => ({
@@ -887,7 +959,7 @@ export default {
         d.top = d.background[0];
         d.bottom = d.background[d.background.length - 1];
       });
-
+      console.log(nodes, edges);
       return {
         nodes,
         edges,
@@ -905,7 +977,7 @@ export default {
       const time = +new Date();
       this.stories.push(time);
       localStorage.setItem('narrative_mooc_stories', JSON.stringify(this.stories));
-      localStorage.setItem(`narrative_mooc_${time}`, JSON.stringify(data));
+      localStorage.setItem(`narrative_mooc_${time}`, data);
       alert('Save successful!');
     },
     loadStory(id) {
@@ -931,7 +1003,12 @@ export default {
       localStorage.setItem('narrative_mooc_stories', JSON.stringify(this.stories));
     },
     paintOverview() {
-      const graph = this.overview_graph();
+      if (this.is_painting) {
+        return;
+      }
+      this.is_painting = true;
+      this.overview_graph = this.get_overview_graph();
+      const graph = this.overview_graph;
       const svg = this.overview.svg;
       svg.selectAll("*").remove();
 
@@ -1004,36 +1081,24 @@ export default {
         .attr("fill", d => edge_color_scale(d))
         .attr("opacity", 0.2);
 
-      const color_schema = type => {
-        const schema = [
-          "#a6cee3",
-          "#1f78b4",
-          "#b2df8a",
-          "#33a02c",
-          "#fb9a99",
-          "#e31a1c",
-          "#fdbf6f",
-          "#ff7f00",
-          "#cab2d6",
-          "#6a3d9a"
-        ];
+      const get_color_schema = type => {
         if (type == "video") {
-          return schema.slice(0, 2);
+          return color_schema.slice(0, 2);
         } else if (type == "assignment") {
-          return schema.slice(2, 4);
+          return color_schema.slice(2, 4);
         } else if (type == "student") {
-          return schema.slice(4, 6);
+          return color_schema.slice(4, 6);
         } else if (type == "forum") {
-          return schema.slice(6, 8);
+          return color_schema.slice(6, 8);
         } else {
-          return schema.slice(8, 10);
+          return color_schema.slice(8, 10);
         }
       };
 
       const text_dx = 25;
       const text_dy = 14;
-      const color_scale = d => color_schema(d.type)[0];
-      const type_color_scale = type => color_schema(type)[0];
+      const color_scale = d => get_color_schema(d.type)[0];
+      const type_color_scale = type => get_color_schema(type)[0];
 
       const outerArea = d3
         .area()
@@ -1057,11 +1122,11 @@ export default {
         .attr("transform", d => `translate(${d.x},${d.y})`)
         .on("click", d => {
           if (d._id == -1) {
-            const parent = this.page.find(e => e._id == d.parent_id);
-            this.findNext(parent, {
+            this.findNext(null, {
               id: d.id,
-              resource_id: null,
-              group: parent.group
+              resource_id: d.resource_id,
+              group: 0,
+              item: null,
             });
           } else {
             this.findNext(null, this.page.find(e => e._id == d._id));
@@ -1093,6 +1158,7 @@ export default {
         .style("font-size", "12px")
         .style("font-family", "Arial")
         .style("fill", d => (d._id == -1 ? "#bbbbbb" : "white"));
+      this.is_painting = false;
     },
     async findNext(state1, state2) {
       // jump
@@ -1223,7 +1289,7 @@ export default {
     removeCurrentPage() {
       const current = this.pages.indexOf(this.page);
       this.pages.splice(current);
-      this.page = this.pages[this.pages.length > current ? current : current - 1];
+      this.page = this.pages[this.pages.length > current ? current : Math.max(0, current - 1)];
     },
     onChartHighlight() {
       this.enable_highlight_chart = !this.enable_highlight_chart;
@@ -1247,7 +1313,7 @@ export default {
       } else {
         item = item || this.getSlide();
         if (!item) return;
-        const node = this.overview_graph().nodes.find(d =>
+        const node = this.overview_graph.nodes.find(d =>
           d.data.map(e => e._id).includes(item._id)
         );
         if (!node) return;
@@ -1620,9 +1686,6 @@ body {
   padding: 0;
 }
 
-
-.screen-left-tips {
-}
 
 .screen-bottom-tips {
   z-index: 5;

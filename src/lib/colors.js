@@ -38,14 +38,14 @@ export const colors = [
 ];
 
 export const color_schema = [
-  "#a6cee3",
+  "#7fb9d7",
   "#1f78b4",
-  "#b2df8a",
+  "#98d462",
   "#33a02c",
   "#fb9a99",
   "#e31a1c",
-  "#fdbf6f",
+  "#fdb456",
   "#ff7f00",
-  "#cab2d6",
+  "#bfa1cd",
   "#6a3d9a",
 ];

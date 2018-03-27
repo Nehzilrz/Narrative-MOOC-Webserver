@@ -1,7 +1,7 @@
 <template>
     <div class="slide nm-block text" v-if="item.follow_ups.length > 0">
         <h5>
-            Related questions:
+            Follow up questions:
         </h5>
         <ul>
             <li v-for="q in followupSlides(item)">

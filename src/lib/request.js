@@ -1,8 +1,8 @@
 
 import axios from 'axios';
 
-export const serverUrl = 'http://nezil.me/NarrativeMOOCAPI/';
-// export const serverUrl = 'http://10.89.83.202:3000/';
+// export const serverUrl = 'http://nezil.me/NarrativeMOOCAPI/';
+export const serverUrl = 'http://10.89.83.202:3000/';
 
 const cache = {};
 

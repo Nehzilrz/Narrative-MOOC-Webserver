@@ -8,7 +8,7 @@
 
 <script>
 
-import Slideshow from "./Slideshows/Slideshow.vue";
+import Slideshow from "./Slideshow.vue";
 export default {
   data() {
     return {

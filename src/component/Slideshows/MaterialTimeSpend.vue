@@ -81,7 +81,7 @@
                     .sectorValue(d => d.val)
                     .attr("fill", d => d.type, color_scale)
                     .attr("opacity", 0.8)
-                    .animated(true)
+                    
                     .labelsEnabled(true)
                     .labelFormatter((d) => Number(d / sum * 100).toFixed(1) + '%')
                     .outerRadius(80)
@@ -96,7 +96,7 @@
                     .sectorValue(d => d.val)
                     .attr("fill", d => d.type, color_scale)
                     .attr("opacity", 0.8)
-                    .animated(true)
+                    
                     .labelsEnabled(true)
                     .labelFormatter((d) => Number(d / sum * 100).toFixed(1) + '%')
                     .outerRadius(80)

@@ -82,7 +82,7 @@
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", (d, i, dataset) => dataset.metadata(), colorScale)
-                    .animated(true)
+                    
                     .addDataset(new Plottable.Dataset(assignment_activies).metadata('delay'))
                     .addDataset(new Plottable.Dataset(assignment_activies).metadata('duration'));
 

@@ -3,7 +3,7 @@
 <div>
     <div class="b4w b5h nm-block graph">
     </div>
-    <div class="slide nm-block text">
+    <div class="bh nm-block text">
         <template v-if="item.data.video_peaks && item.data.video_peaks.length">
             <div class="b4w bh nm-block text" v-for="peak, i in showed_peaks">
                 <styled-text :context="context">
@@ -33,7 +33,7 @@
             </div>
         </template>
     </div>
-    <div class="slide nm-block text">
+    <div class="b4w bh nm-block text">
         <b-form-row v-show="show_video">
             <b-col cols="5">
                 <h6 style="font-weight: 600"> Screenshot of this peak: </h6>

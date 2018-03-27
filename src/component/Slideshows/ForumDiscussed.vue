@@ -7,7 +7,7 @@
             </h5>
         </div>
         <template v-for="(thread, i) in threads">
-            <div class="content-block nm-block" style="padding-left: 3vw;">
+            <div class="content-block nm-block">
                 <styled-text style="width: 25vw;" :context="context">
                     {{ thread.title }}
                 </styled-text>
@@ -16,7 +16,7 @@
                     padding-top: .5em;">
                     discussed {{ thread.comment_count }} times
                 </h5>
-                <ul style="width: 30vw; padding-top: 0.5vh;">
+                <ul style="width: 30vw; padding-top: 1em;">
                     <li :style="{
                         background : context.color_schema[i],
                         width: thread.comment_count < 50 ? '15px' : '12px',
@@ -39,7 +39,7 @@
             </b-card>
         </div>
     </div>
-    <div class="slide nm-block keyword">
+    <div class="b4w bh nm-block keyword">
         <div class="content-block nm-block">
             <h5> 
                 Popular keywords:
@@ -133,7 +133,6 @@
 .slide.keyword {
     padding-top: 1vh;
     padding-bottom: 1vh;
-    height: 30vh;
     flex-direction: column;
     display: flex;
 }

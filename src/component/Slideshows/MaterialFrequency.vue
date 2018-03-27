@@ -89,7 +89,7 @@
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", (d, i, dataset) => dataset.metadata(), colorScale)
-                    .animated(true)
+                    
                     .addDataset(new Plottable.Dataset(video_activies).metadata('video'))
                     .addDataset(new Plottable.Dataset(problem_activies).metadata('assignment'));
 

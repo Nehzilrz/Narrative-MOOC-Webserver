@@ -59,7 +59,7 @@
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", context.color_schema[0])
-                    .animated(true)
+                    
                     .addDataset(new Plottable.Dataset(video_activies));
 
                 this.plots.push(plots);

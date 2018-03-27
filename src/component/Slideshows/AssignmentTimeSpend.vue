@@ -61,7 +61,7 @@
                     .x(d => d.name, xScale)
                     .attr("stroke", "none")
                     .attr("fill", context.assignment_color)
-                    .animated(true)
+                    
                     .addDataset(new Plottable.Dataset(assignment_activies));
                 if (this.lastElement) {
                     plots.attr("opacity", d => d.id == this.lastElement ? 1 : 0.5);

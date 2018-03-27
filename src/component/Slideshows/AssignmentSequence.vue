@@ -1,7 +1,7 @@
 <template>
 <div>
     <div class="b4w bh nm-block sequence">
-        <div class="graph nm-block">
+        <div class="graph nm-block" ref="graph">
             <svg></svg>
         </div>
         <div class="patterns">
@@ -55,8 +55,130 @@
             };
         },
         extends: SlideshowBase,
+        created() {
+            const table = () => {
+                return {
+                    renderTo: (el) => {
+                        el.innerHTML = '';
+                        const svg = d3.select(el).append('svg');
+                        const element = el.getElementsByTagName('svg')[0];
+
+                        const height = element.getBoundingClientRect().height;
+                        const width = element.getBoundingClientRect().width;
+
+                        const padding = 50;
+                        const node_width = 14;
+                        const node_height = 14;
+                        const gap = (width - padding * 2) / (n - 1);
+
+                        const data = this.elements;
+                        const n = data.length;
+                        const scalex = d3.scaleLinear()
+                            .domain([data[0].time, data[n - 1].time])
+                            .range([padding, width - padding]);
+
+
+                        const scaleR = d3.scaleLinear()
+                            .domain([Math.min(...data.map(d => d.val)), Math.max(...data.map(d => d.val))])
+                            .range([14, 14]);
+
+
+                        const x = data.map(d => scalex(d.time));
+                        for (let i = n - 2; i >= 0; --i) {
+                            if (x[i + 1] - x[i] < scaleR(data[i].val) * 1.2) {
+                                x[i] = x[i + 1] - scaleR(data[i].val) * 1.2;
+                            }
+                        }
+
+                        const x1 = (i) => x[~~(i / n)];
+                        const x2 = (i) => x[(i % n)];
+                        const radius = (i) => (x2(i) - x1(i)) * 0.4;
+                        const y = height * 0.5;
+                        const arc_data = [].concat(...this.adjacant);
+                        const max_adjacant = Math.max(...arc_data);
+                        const max_val = Math.max(...data.map(d => d.val));
+
+                        svg.append("line")
+                            .attr("x1", padding)
+                            .attr("x2", width - padding)
+                            .attr("y1", y)
+                            .attr("y2", y)
+                            .attr("stroke", "#cccccc");
+
+                        var last = -1e10;
+                        for (var i = 0; i < n; ++i)
+                            if (x[i] - last > 100) {
+                                svg.append("line")
+                                    .attr("x1", x[i])
+                                    .attr("x2", x[i])
+                                    .attr("y1", y)
+                                    .attr("y2", y + 20)
+                                    .attr("stroke", "#cccccc");
+                                
+                                const date = new Date(data[i].time * 1000);
+                                svg.append("text")
+                                    .attr("x", x[i] - 30)
+                                    .attr("y", y + 30)
+                                    .text(date.toISOString().slice(5, 16).replace('T', ' '))
+                                    .attr("color", "#333333")
+                                    .attr("font-size", "10px");
+                                last = x[i];
+                            }
+
+                        const arcs = svg.selectAll(".arc")
+                            .data(arc_data)
+                            .enter()
+                            .append("path")
+                            .attr("class", "arc")
+                            .attr("d", (d, i) => {
+                                return `M${x1(i)} ${y}
+                                Q${(x1(i) + x2(i)) / 2} ${y - radius(i)}
+                                ${x2(i)} ${y}`;
+                            })
+                            .attr("opacity", (d, i) => d / max_adjacant)
+                            .attr("fill", "none")
+                            .attr("stroke-width", 1)
+                            .attr("stroke", "#1f78b4");
+                        
+                        const nodes = svg.selectAll(".node")
+                            .data(this.elements)
+                            .enter()
+                            .append("g")
+                            .attr("class", "node")
+                            .attr("opacity", d => {
+                                if (d.type == 'problem') {
+                                    return 1;
+                                } else {
+                                    return (d.val / max_val) * (d.val / max_val);
+                                }
+                            })
+                            .attr("transform", (d, i) => `translate(${x[i] - node_width / 2},${y - node_height / 2})`);
+
+                        nodes.append("rect")
+                            .attr("width", d => scaleR(d.val))
+                            .attr("height", d => scaleR(d.val))
+                            .style("stroke", (d, i) => {
+                                return d.type == 'video' ? 
+                                    this.context.color_schema[0] :
+                                    this.context.color_schema[2];
+                            })
+                            .style("fill", d => d.type == 'video' ? 
+                                this.context.color_schema[1] :
+                                this.context.color_schema[3]
+                            );
+                        nodes.append("text")
+                            .attr("dx", (d, i) => (d.type == 'problem' || i < 10) ?
+                                scaleR(d.val) / 4 : 0)
+                            .attr("dy", node_height - 2)
+                            .attr("font-size", "12px")
+                            .attr("fill", "white")
+                            .text((d, i) => d.type == 'video' ? i : 1);
+                    }
+                }
+            }
+            this.tables.push(table());
+        },
         mounted() {
-            this.render();
             this.$refs.content.innerHTML = this.assignment.content;
         },
         computed: {
@@ -111,9 +233,9 @@
         methods: {
             click(i) {
                 this.current = this.current == i ? null : i;
-                this.render(); 
+                this.$forceUpdate();
             },
-            render() {
+            rectrender() {
                 const svg = d3.select(this.$el)
                     .select(".sequence .graph svg");
                 svg.selectAll("*").remove();
@@ -217,7 +339,6 @@
                         this.context.color_schema[1] :
                         this.context.color_schema[3]
                     );
-
                 nodes.append("text")
                     .attr("dx", (d, i) => (d.type == 'problem' || i < 10) ?
                         node_width / 4 : 0)

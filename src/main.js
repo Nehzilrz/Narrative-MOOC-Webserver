@@ -10,7 +10,6 @@ import TextBox from './component/Widgets/TextBox.vue';
 import "./css/medium-editor.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import 'eagle.js/dist/eagle.css';
 import 'plottable/plottable.css';
 import App from './App.vue';
 
@@ -29,5 +28,5 @@ Vue.component('text-box', TextBox);
 
 new Vue({
   el: '#app',
-  render: h => h(App)
+  render: h => h(App),
 })

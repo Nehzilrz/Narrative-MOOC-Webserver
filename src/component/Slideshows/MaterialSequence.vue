@@ -11,7 +11,7 @@
                     S{{p + 1}}
                 </span>
                 <span v-for="i in pattern.path" class="node" 
-                    :class="{ active: lastElement == i }"
+                    :class="{ active: last_element == i }"
                     @click="click(i)"
                     :style="{ 'background-color':
                     elements[i].type == 'video' ? context.color_schema[1] : context.color_schema[3]
@@ -124,7 +124,7 @@
         },
         methods: {
             click(i) {
-                this.lastElement = this.lastElement == i ? null : i;
+                this.last_element = this.last_element == i ? null : i;
                 this.render(); 
             },
             render() {
@@ -150,10 +150,10 @@
                 const y = height * 0.5;
                 const arc_data = [].concat(...this.adjacant);
                 const highlight = [];
-                const lastElement = this.lastElement;
-                if (lastElement) {
+                const last_element = this.last_element;
+                if (last_element) {
                     for (let i = 0; i < n; ++i) {
-                        if (this.filtered_adj[lastElement][i] > 0) {
+                        if (this.filtered_adj[last_element][i] > 0) {
                             highlight[i] = true;
                         }
                     }
@@ -171,7 +171,7 @@
                         ${x2(i)} ${y}`;
                     })
                     .attr("opacity", (d, i) => {
-                        if (lastElement && (i % n == lastElement || ~~(i / n) == lastElement)) {
+                        if (last_element && (i % n == last_element || ~~(i / n) == last_element)) {
                             return Math.min(1, d / max_adjacant * 2);
                         } else {
                             return d / max_adjacant;
@@ -179,15 +179,15 @@
                     })
                     .attr("fill", "none")
                     .attr("stroke-width", (d, i) => {
-                        if (lastElement && (i % n == lastElement || ~~(i / n) == lastElement)) {
+                        if (last_element && (i % n == last_element || ~~(i / n) == last_element)) {
                             return 3;
                         } else {
                             return 1;
                         }
                     })
                     .attr("stroke", (d, i) => {
-                        if (lastElement) {
-                            if ((i % n == lastElement || ~~(i / n) == lastElement)) {
+                        if (last_element) {
+                            if ((i % n == last_element || ~~(i / n) == last_element)) {
                                 return '#1f78b4';
                             } else {
                                 return 'gray';
@@ -223,7 +223,7 @@
                             this.context.color_schema[2];
                     })
                     .style("stroke-width", (d, i) => {
-                        if (lastElement == i) {
+                        if (last_element == i) {
                             return 5;
                         } else if (highlight[i]) {
                             return 3;
