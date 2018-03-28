@@ -8,6 +8,7 @@
             <b-progress class="mt-1" height="2.5rem" :max="country.n">
                 <b-progress-bar v-for="item, i in country_list"
                     @mouseover.native="mouseover"
+                    @click.native="mouseover"
                     :style="{'background-color': color_schema[i]}"
                     :value="item.val"
                     :label="item.name"
@@ -63,8 +64,8 @@
                     @mouseover.native="mouseover"
                     :style="{'background-color': color_schema[i]}"
                     :value="item.val"
-                    :label="item.name"
-                    :title="`${item.val} ${item.name} learners, ${Number(item.val/drop.n*100).toFixed(2)}%`">
+                    :label="drop_mapping(item.name)"
+                    :title="`${item.val} ${drop_mapping(item.name)} learners, ${Number(item.val/drop.n*100).toFixed(2)}%`">
                 </b-progress-bar>
                 <b-progress-bar
                     :value="drop.n - drop_list.map(d => d.val).reduce((a, b) => a + b)"
@@ -82,8 +83,8 @@
                     @mouseover.native="mouseover"
                     :style="{'background-color': color_schema[i]}"
                     :value="item.val"
-                    :label="item.name"
-                    :title="`${item.val} ${item.name} learners, ${Number(item.val/mode.n*100).toFixed(2)}%`">
+                    :label="mode_mapping(item.name)"
+                    :title="`${item.val} ${mode_mapping(item.name)} learners, ${Number(item.val/mode.n*100).toFixed(2)}%`">
                 </b-progress-bar>
             </b-progress>
         </div>
@@ -198,10 +199,12 @@
         },
         methods: {
             mouseover(e) {
+                const title = e.target.attributes.title;
+                if (!title) return;
                 const message = e.target.attributes.title.nodeValue;
                 const element = this.$el.getBoundingClientRect();
                 const position = {
-                    x: e.clientX - element.left,
+                    x: e.clientX - element.left - 50,
                     y: e.clientY - element.top,
                 };
                 const event = {
@@ -235,41 +238,33 @@
                 } else name = 'other';
                 return name;
             },
+            drop_mapping(name) {
+                if (name == 'drop') {
+                    return 'Dropped';
+                } else {
+                    return 'Continued';
+                }
+            },
+            mode_mapping(name) {
+                return name.charAt(0).toUpperCase() + name.slice(1);
+            }
         },
     };
 </script>
 
 <style scope>
 
-.content-block div.circle {
-    list-style: none;
-    float: left;
-    position: relative;
-    cursor: pointer;
+.progress-bar {
+    opacity: 0.9!important;
 }
-
-.content-block svg {
-    width: 20px;
-    height: 20px;
+.progress-bar:hover,.progress-bar.active {
+    border: rgba(0, 0, 0, 0.3);
+    border-width: 4px;
+    border-style: solid;
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.5);
 }
-
-.content-block {
-    display: inline-flex;
-    flex-direction: row;
-    transition: 0.2s;
-    transition-timing-function: ease-in-out;
-}
-.content-block.detail {
-    padding-left: 5vw;
-}
-
-.slide.learner-profile {
-    padding-top: 2vh;
-    padding-bottom: 1vh;
-    padding-left: 2vh;
-    flex-direction: column;
-    display: flex;
-    position: relative;
+.progress-bar:hover {
+    opacity: 1!important;
 }
 
 </style>

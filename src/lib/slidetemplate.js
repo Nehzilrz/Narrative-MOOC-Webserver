@@ -334,13 +334,13 @@ const templates = {
       chapter_id,
       "A6"
     ),
-  S1: video_id =>
+  S1: chapter_id =>
     initTemplate(
       "student",
       "user_info",
       "S2",
       "barchart",
-      video_id,
+      chapter_id,
       "S1"
     ),
   S2: chapter_id =>

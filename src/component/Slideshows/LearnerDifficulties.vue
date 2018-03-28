@@ -1,69 +1,100 @@
 <template>
 <div>
     <div class="b4w bh nm-block learner-profile">
-        <div class="content-block nm-block">
-            <h3 :style="{ color : context.color_schema[0] }"
-                style="padding-left:1vw;padding-right:2vw">
-                {{ difficulties.length }} students
-            </h3>
-            <h5>
-            spend
-                {{ ~~(difficulties.map(d => d.time).reduce((a, b) => a + b, 0) / difficulties.length / 60) }}
-                minutes in average but got grade less than 2 in this chapter.
-            </h5>
-        </div>
-        <div class="content-block nm-block">
-            <h3 :style="{ color : context.color_schema[1] }"
-                style="padding-left:1vw;padding-right:2vw">
-                {{ difficulties2.length }} students
-            </h3>
-            <h5>
-            spend
-                {{~~(difficulties2.map(d => d.time).reduce((a, b) => a + b, 0) / difficulties2.length / 60)}} minutes
-                in average but got grade zero in this chapter.
-            </h5>
-        </div>
+        <styled-text :context="context">
+            No enough practice:
+        </styled-text>
+        <b-progress class="mt-1" height="2.5rem" :max="nopractice.n">
+            <b-progress-bar v-for="item, i in nopractice.list"
+                @mouseover.native="mouseover"
+                @click.native="mouseover"
+                :style="{'background-color': color_schema[i]}"
+                :value="item.val"
+                :label="item.name"
+                :title="`${item.val} ${item.name} learners, ${Number(item.val/nopractice.n*100).toFixed(2)}%`">
+            </b-progress-bar>
+        </b-progress>
+    </div>
+    <div class="b4w bh nm-block learner-profile">
+        <styled-text :context="context">
+            Having difficulties:
+        </styled-text>
+        <b-progress class="mt-1" height="2.5rem" :max="difficulties.n">
+            <b-progress-bar v-for="item, i in difficulties.list"
+                @mouseover.native="mouseover"
+                @click.native="mouseover"
+                :style="{'background-color': color_schema[i]}"
+                :value="item.val"
+                :label="item.name"
+                :title="`${item.val} ${item.name} learners, ${Number(item.val/difficulties.n*100).toFixed(2)}%`">
+            </b-progress-bar>
+        </b-progress>
     </div>
 </div>
 </template>
 
 <script>
-    import Plottable from "plottable";
+    import { color_schema } from "../../lib/colors";
     import SlideshowBase from "./SlideshowBase.vue";
 
     export default {
         data() {
             return {
+                color_schema,
             };
         },
         extends: SlideshowBase,
+        methods: {
+            mouseover(e) {
+                const title = e.target.attributes.title;
+                if (!title) return;
+                const message = e.target.attributes.title.nodeValue;
+                const element = this.$el.getBoundingClientRect();
+                const position = {
+                    x: e.clientX - element.left - 50,
+                    y: e.clientY - element.top,
+                };
+                const event = {
+                    message,
+                    position,
+                    time: new Date(),
+                };
+                this.$emit('showtooltip', event);
+            },
+        },
         computed: {
-            useless() {
-                /*
-                data.education_highest_name = education_data[0].name;
-                data.education_highest_val = Number(education_data[0].val / education_data_sum * 100).toFixed(1) + '%';
-
-                data.gender_highest_name = gender_data[0].name;
-                data.gender_highest_val = Number(gender_data[0].val / gender_data_sum * 100).toFixed(1) + '%';
-*/
-            },
             info() {
-                return this.data.difficulties;
+                return this.data.difficulties.sort((a, b) => a.time - b.time);
             },
-            users() {
-                return this.info.users;
+            nopractice() {
+                const users = this.info.slice(0, this.info.length * 0.2);
+                const count = {};
+                for (const user of users) {
+                    let val;
+                    val = user.grade || 0;
+                    if (!count[val]) count[val] = 0;
+                    count[val] += 1;
+                }
+                const list = Object.keys(count).map(d => ({ name: d, val: count[d] }));
+                return {
+                    list,
+                    n: list.map(d => d.val).reduce((a, b) => a + b),
+                };
             },
             difficulties() {
-                const avg_time = this.users.map(d => d.time).reduce((a, b) => a + b, 0) / this.users.length;
-                return this.users.filter(
-                    d => d.grade <= 2 && d.time > avg_time * 1.2
-                );
-            },
-            difficulties2() {
-                const avg_time = this.users.map(d => d.time).reduce((a, b) => a + b, 0) / this.users.length;
-                return this.users.filter(
-                    d => d.grade == 0 && d.time > avg_time
-                );
+                const users = this.info.slice(this.info.length * 0.8);
+                const count = {};
+                for (const user of users) {
+                    let val;
+                    val = user.grade || 0;
+                    if (!count[val]) count[val] = 0;
+                    count[val] += 1;
+                }
+                const list = Object.keys(count).map(d => ({ name: d, val: count[d] }));
+                return {
+                    list,
+                    n: list.map(d => d.val).reduce((a, b) => a + b),
+                };
             },
         },
     };
