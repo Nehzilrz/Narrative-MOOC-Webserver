@@ -135,6 +135,8 @@ export default {
                         index: gid + u.resource_id,
                     });
                     u.parent = gid + u.resource_id;
+                } else if (u.resource_id != chapter_id) {
+                    u.parent = gid + u.resource_id;
                 }
                 if (u.data && u.data.comparison_name) {
                     P.push({
@@ -200,7 +202,6 @@ export default {
                 .id(d => d.index)
                 .parentId(d => d.parent);
             const root = stratify(data);
-
             return root;
         }
     },

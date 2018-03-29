@@ -1,21 +1,6 @@
 <template>
-<div>
-    <div class="b4w bh nm-block text">
-        <b-alert show variant="info">
-            <h6 class="alert-heading">{{ assignment.name }} </h6>
-            <p ref="content">
-            </p>
-            <hr>
-            <p>
-                The weight of this assignment is {{ assignment.weight }}. 
-                Assignment released on {{ assignment_release_date }}.
-            </p>
-        </b-alert>
-    </div>
+<div class="b4w bh">
     <div class="b4w bh nm-block sequence">
-        <div class="nm-block subtitle">
-            <h5> What are the most frequent actions between start and finish of this assignment? </h5>
-        </div>
         <div class="graph nm-block" ref="graph">
             <svg></svg>
         </div>
@@ -190,9 +175,6 @@
             }
             this.tables.push(table());
         },
-        mounted() {
-            this.$refs.content.innerHTML = this.assignment.content;
-        },
         computed: {
             assignment_release_date() {
                 return new Date(this.assignment.chapter_start)
@@ -366,11 +348,6 @@
 <style scope>
 .subtitle {
     text-align: center;
-}
-
-.nm-block.text {
-    margin-top: 2em;
-    margin-bottom: 2em;
 }
 
 .sequence {

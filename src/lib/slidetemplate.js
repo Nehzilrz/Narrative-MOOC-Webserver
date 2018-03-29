@@ -64,7 +64,7 @@ export const questions = {
     S3: "Which learners have not engaged in enough practice?",
     V1: "How much video content have learners completed?",
     V2: "How much time do learners spend on each video?",
-    V3: "How often do learners review each video?",
+    V3: "How often do learners watch each video?",
     V4: "When do learners start/finish the videos?",
     V5: "Where in the video are learners struggling with?",
     V6: "Which videos are most discussed in the forum?",
@@ -331,7 +331,7 @@ const templates = {
     initTemplate(
       "assignment",
       "assignment_sequence",
-      "",
+      "A7",
       "barchart",
       chapter_id,
       "A6"

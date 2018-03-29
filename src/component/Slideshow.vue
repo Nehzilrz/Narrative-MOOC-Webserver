@@ -1,10 +1,15 @@
 <template>
     <div class="slide-page">
         <div class="nm-block title">
-          <div class="left-group">
-            <b-alert show variant="secondary">
-              ← back
-            </b-alert>
+          <div class="left-group" >
+            <b-button-group  size="sm">
+              <b-button :class="{ active: mode == 'comp' }" 
+                @click="changeMode('comp')"
+                variant="outline-secondary">Comparison</b-button>
+              <b-button :class="{ active: mode == 'digin' }"
+                @click="changeMode('digin')"
+                variant="outline-secondary">Dig-In</b-button>
+            </b-button-group>
           </div>
           <h4> {{ item.name }} </h4>
           <div class="right-group">
@@ -30,8 +35,10 @@
         </b-tooltip>
         -->
         <text-box v-for="note in item.notes" v-model="note.value"></text-box>
-        <div class="component-container">
-          <component ref="left" v-show="!comparison" class="nm-block main-content"
+        <div class="component-container"
+          :style="{ 'flex-wrap': sidebyside ? 'nowrap': 'wrap' }">
+          <component ref="left" v-show="!comparison || mode == 'comp'"
+            class="nm-block main-content"
             v-bind:is="current_view"
             :context="context" :item="item" :data="item.data"
               @showtooltip="showTooltip">
@@ -67,6 +74,7 @@ import AssignmentDiscussedSlide from "./Slideshows/AssignmentDiscussed.vue";
 import ForumDiscussedSlide from "./Slideshows/ForumDiscussed.vue";
 import ForumMostUpvotedSlide from "./Slideshows/ForumMostUpvoted.vue";
 import ForumQuestionerSlide from "./Slideshows/ForumQuestioner.vue";
+import AssignmentContentSlide from "./Slideshows/AssignmentContent.vue";
 import AssignmentSequenceSlide from "./Slideshows/AssignmentSequence.vue";
 import LearnerProfileSlide from "./Slideshows/LearnerProfile.vue";
 import LearnerDifficultiesSlide from "./Slideshows/LearnerDifficulties.vue";
@@ -79,12 +87,15 @@ export default {
   data() {
     return {
       _id: -1,
+      status: false,
       comparison: false,
       current_view: "EmptySlide",
       tooltip_show: false,
       tooltip_message: 'Hello world',
       last_trigger_time: 0,
       filter: [],
+      mode: 'digin',
+      sidebyside: false,
     };
   },
   computed: {
@@ -106,7 +117,8 @@ export default {
       A3: "AssignmentAttemptsSlide",
       A4: "AssignmentStartFinishSlide",
       A5: "AssignmentDiscussedSlide",
-      A6: "AssignmentSequenceSlide",
+      A6: "AssignmentContentSlide",
+      A7: "AssignmentSequenceSlide",
       V1: "VideoCompletenessSlide",
       V2: "VideoTimeSpendSlide",
       V3: "VideoFrequencySlide",
@@ -172,6 +184,7 @@ export default {
     VideoCompletenessSlide,
     VideoStartFinishSlide,
     VideoDiscussedSlide,
+    AssignmentContentSlide,
     AssignmentCorrectnessSlide,
     AssignmentCompletenessSlide,
     AssignmentAttemptsSlide,
@@ -186,6 +199,14 @@ export default {
     EmptySlide
   },
   methods: {
+    changeMode(mode) {
+      if (mode == 'comp' && this.mode == 'comp') {
+        this.sidebyside = !this.sidebyside;
+      }
+      this.mode = mode;
+      this.$refs.left.$forceUpdate();
+      this.$refs.right && this.$refs.right.$forceUpdate();
+    },
     handle_addtext(_id) {
       if (_id == this.item._id) {
         this.item.notes = this.item.notes.filter(d => d.value.text);
@@ -247,7 +268,10 @@ export default {
 .slide-page .title {
   display: inline-flex;
   flex-direction: row;
+  position: relative;
   width: 100%;
+  margin-bottom: .5em;
+  padding-bottom: 1em;
 }
 .slide-page .title h4 {
   font-weight: 800;
@@ -256,12 +280,18 @@ export default {
 }
 .slide-page .title .right-group {
   position: absolute;
+  opacity: 1;
+  bottom: 0%;
   right: 2%;
 }
 .slide-page .title .left-group {
   position: absolute;
-  opacity: 0;
+  opacity: 0.5;
+  bottom: 0%;
   left: 0%;
+}
+.slide-page .title .left-group:hover {
+  opacity: 1;
 }
 .slide-page h5,h6 {
   font-weight: 600;
@@ -277,7 +307,6 @@ export default {
 
 .component-container {
   display: inline-flex;
-  flex-wrap: nowrap;
   flex-direction: row;
   align-items: center;
   align-content: space-around;
@@ -319,27 +348,27 @@ export default {
 }
 .bh {
   height: 100%;
-  margin-bottom: .5em;
+  margin-bottom: .3em;
 }
 .b1h {
   height: 50px;
-  margin-bottom: 1em;
+  margin-bottom: .5em;
 }
 .b2h {
   height: 100px;
-  margin-bottom: 1em;
+  margin-bottom: .5em;
 }
 .b3h {
   height: 150px;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 .b4h {
   height: 200px;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 .b5h {
   height: 250px;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 }
 .b6h {
   height: 300px;
@@ -351,7 +380,7 @@ export default {
 }
 .b8h {
   height: 400px;
-  margin-bottom: 3em;
+  margin-bottom: 2em;
 }
 
 
