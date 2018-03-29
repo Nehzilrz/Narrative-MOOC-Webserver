@@ -1,6 +1,21 @@
 <template>
 <div>
+    <div class="b4w bh nm-block text">
+        <b-alert show variant="info">
+            <h6 class="alert-heading">{{ assignment.name }} </h6>
+            <p ref="content">
+            </p>
+            <hr>
+            <p>
+                The weight of this assignment is {{ assignment.weight }}. 
+                Assignment released on {{ assignment_release_date }}.
+            </p>
+        </b-alert>
+    </div>
     <div class="b4w bh nm-block sequence">
+        <div class="nm-block subtitle">
+            <h5> What are the most frequent actions between start and finish of this assignment? </h5>
+        </div>
         <div class="graph nm-block" ref="graph">
             <svg></svg>
         </div>
@@ -32,14 +47,6 @@
                 </span>
             </div>
         </div>
-    </div>
-    <div class="slide nm-block text">
-        <styled-text :context="context" style="margin-left: 3vw;">
-            The current assignment is {{ assignment.name }}, the weight of this assignment is {{ assignment.weight }}. 
-            Assignment released on {{ assignment_release_date }}.
-        </styled-text>
-    </div>
-    <div class="nm-block" ref="content">
     </div>
 </div>
 </template>
@@ -152,7 +159,12 @@
                                     return (d.val / max_val) * (d.val / max_val);
                                 }
                             })
-                            .attr("transform", (d, i) => `translate(${x[i] - node_width / 2},${y - node_height / 2})`);
+                            .attr("transform", (d, i) => `translate(${x[i] - node_width / 2},${y - node_height / 2})`)
+                            .on("click", d => {
+                                if (d.type == 'video') {
+                                    this.$bus.$emit('select_video', d, null);
+                                }
+                            });
 
                         nodes.append("rect")
                             .attr("width", d => scaleR(d.val))
@@ -352,6 +364,15 @@
 </script>
 
 <style scope>
+.subtitle {
+    text-align: center;
+}
+
+.nm-block.text {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
 .sequence {
     position: relative;
     height: 100%;

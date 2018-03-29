@@ -48,7 +48,7 @@ export default {
   width: 0px;
   height: 5px;
   z-index: 10;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 </style>
 

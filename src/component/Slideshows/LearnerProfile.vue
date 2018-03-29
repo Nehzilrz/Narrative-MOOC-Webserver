@@ -8,7 +8,8 @@
             <b-progress class="mt-1" height="2.5rem" :max="country.n">
                 <b-progress-bar v-for="item, i in country_list"
                     @mouseover.native="mouseover"
-                    @click.native="mouseover"
+                    :class="{}"
+                    @click.native="select_country = item == select_country ? null : item"
                     :style="{'background-color': color_schema[i]}"
                     :value="item.val"
                     :label="item.name"
@@ -43,6 +44,7 @@
             <b-progress class="mt-1" height="2.5rem" :max="country.n">
                 <b-progress-bar v-for="item, i in gender_list"
                     @mouseover.native="mouseover"
+                    @click.native="select_gender = item == select_gender ? null : item"
                     :style="{'background-color': color_schema[i]}"
                     :value="item.val"
                     :label="gender_mapping(item.name)"
@@ -62,6 +64,7 @@
             <b-progress class="mt-1" height="2.5rem" :max="drop.n">
                 <b-progress-bar v-for="item, i in drop_list"
                     @mouseover.native="mouseover"
+                    @click.native="select_drop = item == select_drop ? null : item"
                     :style="{'background-color': color_schema[i]}"
                     :value="item.val"
                     :label="drop_mapping(item.name)"
@@ -81,6 +84,7 @@
             <b-progress class="mt-1" height="2.5rem" :max="mode.n">
                 <b-progress-bar v-for="item, i in mode_list"
                     @mouseover.native="mouseover"
+                    @click.native="select_mode = item == select_mode ? null : item"
                     :style="{'background-color': color_schema[i]}"
                     :value="item.val"
                     :label="mode_mapping(item.name)"
@@ -95,6 +99,7 @@
             <b-progress class="mt-1" height="2.5rem" :max="education.n">
                 <b-progress-bar v-for="item, i in education_list"
                     @mouseover.native="mouseover"
+                    @click.native="select_education = item == select_education ? null : item"
                     :style="{'background-color': color_schema[i]}"
                     :value="item.val"
                     :label="item.val > education.n * 0.05 ? education_mapping(item.name): ''"
@@ -114,6 +119,7 @@
             <b-progress class="mt-1" height="2.5rem" :max="age.n">
                 <b-progress-bar v-for="item, i in age_list"
                     @mouseover.native="mouseover"
+                    @click.native="select_age = item == select_age ? null : item"
                     :style="{'background-color': color_schema[i]}"
                     :value="item.val"
                     :title="`${item.val} ${item.name*10-10} - ${item.name*10} learners, ${Number(item.val/age.n*100).toFixed(2)}%`">
@@ -141,6 +147,12 @@
                 counter: 45,
                 max: 100,
                 color_schema: color_schema,
+                select_age: null,
+                select_education: null,
+                select_gender: null,
+                select_country: null,
+                select_mode: null,
+                select_drop: null,
             };
         },
         extends: SlideshowBase,

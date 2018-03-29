@@ -17,6 +17,7 @@
         },
         computed: {
             item() {
+                console.log(this.id, this.$mapping[this.id]);
                 return this.$mapping[this.id];
             },
             style() {

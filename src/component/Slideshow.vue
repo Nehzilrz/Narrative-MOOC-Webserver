@@ -10,7 +10,7 @@
           <div class="right-group">
             <multiselect
               v-model="filter"
-              :options="options"
+              :options="context.options"
               :multiple="true"
               :close-on-select="true"
               label="name"
@@ -20,7 +20,7 @@
           </div>
         </div>
         <div class="tooltip" :class="{ active: tooltip_show} " ref="tooltip">
-          <p>{{ tooltip_message }}</p>
+          <p>{{ formatted_tooltip_msg }}</p>
         </div>
         <!--
         <div class="p-2 nm-tooltip base" :id="'tooltip' + _id" ref="tooltip">
@@ -85,14 +85,12 @@ export default {
       tooltip_message: 'Hello world',
       last_trigger_time: 0,
       filter: [],
-      options: [
-        { name: 'top students', value: { key: 'grade', rule: { $gt: 0.80 } }},
-        { name: 'poor students', value: { key: 'grade', rule: { $lt: 0.20 } }},
-        { name: 'certificated', value: { key: 'mode', rule: 'honor' }},
-        { name: 'audited', value: { key: 'mode', rule: 'audit' }},
-        { name: 'drop out', value: { key: 'last_login', rule: { $lt: this.context.current_chapter.start / 1000 + 86400 * 7 }}},
-      ],
     };
+  },
+  computed: {
+    formatted_tooltip_msg() {
+      return this.tooltip_message.replace(/\d+\.\d+/g, d => Number(+d).toFixed(2));
+    }
   },
   created() {
     this._id = ~~(Math.random() * 65536);
@@ -126,13 +124,17 @@ export default {
   watch: {
     filter(vec) {
       const condition = {};
+      let comparison_name = '';
       for (const x of vec) {
-        condition[x.value.key] = x.value.rule;
+        condition[x.value().key] = x.value().rule;
+        comparison_name += ', ' + x.name; 
       }
+      comparison_name = comparison_name.slice(2);
       this.item.condition = condition;
       this.comparison = false;
       this.item._data = {};
       this.item.comparison = true;
+      this.item.comparison_name = comparison_name;
       if (vec.length > 0) {
         return Promise.all(
           this.item.resources.map(type => {
@@ -141,6 +143,7 @@ export default {
         ).then(async () => {
           this.comparison = true;
           this.$refs.left.$forceUpdate();
+          this.$bus.$emit("refresh_overview");
         });
       } else {
         this.item.comparison = false;
@@ -148,6 +151,7 @@ export default {
         if (this.comparison) {
           this.comparison = false;
         }
+        this.$bus.$emit("refresh_overview");
       }
     }
   },

@@ -8,7 +8,7 @@
             <b-progress-bar v-for="item, i in nopractice.list"
                 @mouseover.native="mouseover"
                 @click.native="mouseover"
-                :style="{'background-color': color_schema[i]}"
+                :style="{'background-color': color_schema[i % color_schema.length]}"
                 :value="item.val"
                 :label="item.name"
                 :title="`${item.val} ${item.name} learners, ${Number(item.val/nopractice.n*100).toFixed(2)}%`">
@@ -23,7 +23,7 @@
             <b-progress-bar v-for="item, i in difficulties.list"
                 @mouseover.native="mouseover"
                 @click.native="mouseover"
-                :style="{'background-color': color_schema[i]}"
+                :style="{'background-color': color_schema[i % color_schema.length]}"
                 :value="item.val"
                 :label="item.name"
                 :title="`${item.val} ${item.name} learners, ${Number(item.val/difficulties.n*100).toFixed(2)}%`">

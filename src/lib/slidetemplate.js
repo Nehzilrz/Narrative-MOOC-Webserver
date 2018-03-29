@@ -17,7 +17,7 @@ const groups = [
     "V6",
     "A5",
     "V5 V7",
-    "A6",
+    "A6 A7",
     "S1 S2 S3"
 ].map(d => d.split(" "));
   
@@ -30,9 +30,9 @@ const grouptype = [
     "assignment",
     "video",
     "assignment",
+    "learner",
     "student",
-    "student",
-    "student"
+    "learner"
 ];
   
 const groupId = {};
@@ -57,24 +57,25 @@ export const questions = {
     // 'O0': 'How often do learners access materials?',
     O1: "What are the popularity of different materials?",
     O2: "How often do learners access different materials?",
-    O3: "How much time do students spend on different materials?",
-    O4: "What materials have students accessed between start/end of assignment?",
+    O3: "How much time do learners spend on different materials?",
+    O4: "What materials have learners accessed between start/end of assignment?",
     S1: "General distribution on education, age, gender, country",
-    S2: "Which students are having difficulties?",
-    S3: "Which students have not engaged in enough practice?",
-    V1: "How much video content have students completed?",
-    V2: "How much time do students spend on each video?",
-    V3: "How often do students review each video?",
-    V4: "When do students start/finish the videos?",
-    V5: "Where in the video are students struggling with?",
+    S2: "Which learners are having difficulties?",
+    S3: "Which learners have not engaged in enough practice?",
+    V1: "How much video content have learners completed?",
+    V2: "How much time do learners spend on each video?",
+    V3: "How often do learners review each video?",
+    V4: "When do learners start/finish the videos?",
+    V5: "Where in the video are learners struggling with?",
     V6: "Which videos are most discussed in the forum?",
     V7: "What is the content of the interested video segment?",
-    A1: "How well do students perform? (correctness)",
-    A2: "How many assignments do students finish?",
-    A3: "Which assignments have the greatest number of attempts?",
-    A4: "When do students start/finish the assignments?",
+    A1: "How well do learners perform? (correctness)",
+    A2: "How many assignments do learners finish?",
+    A3: "Which is the average number of attempts for each assignment?",
+    A4: "When do learners start/finish the assignments?",
     A5: "Which assignments are most discussed in the forum?",
     A6: "What is the content of an interested assignment?",
+    A7: "What are the most frequent actions between start and finish of this assignment?",
     F1: "Which are the most discussed topics/threads/keywords?",
     F2: "Which are the most upvoted replies?",
     F3: "Who are the top questioners/responders?",   
@@ -85,7 +86,7 @@ export const scopeOf = type => {
     return 0;
   } else if ('V5 V7'.includes(type)) {
     return 1;
-  } else if ('A6'.includes(type)) {
+  } else if ('A6 A7'.includes(type)) {
     return 2;
   } else {
     return 3;
@@ -114,6 +115,7 @@ export const abbr_questions = {
     A4: "assignment start/finish time",
     A5: "arguable assignment",
     A6: "interested assignment",
+    A7: "actions in-between",
     F1: "popular topics/threads/keywords",
     F2: "upvoted replies",
     F3: "top forum participants",
@@ -334,9 +336,18 @@ const templates = {
       chapter_id,
       "A6"
     ),
+  A7: chapter_id =>
+    initTemplate(
+      "assignment",
+      "assignment_sequence",
+      "",
+      "barchart",
+      chapter_id,
+      "A7"
+    ),
   S1: chapter_id =>
     initTemplate(
-      "student",
+      "learner",
       "user_info",
       "S2",
       "barchart",
@@ -345,7 +356,7 @@ const templates = {
     ),
   S2: chapter_id =>
     initTemplate(
-      "student",
+      "learner",
       "user_difficulties",
       "S3",
       "barchart",
@@ -354,7 +365,7 @@ const templates = {
     ),
   S3: chapter_id =>
     initTemplate(
-      "student",
+      "learner",
       "user_info",
       "",
       "barchart",

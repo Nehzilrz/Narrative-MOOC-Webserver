@@ -1,4 +1,3 @@
-
 import * as Slide from "./SlideTemplate";
 import textwidth from "./text-width";
 import { color_schema } from "./colors";

@@ -271,12 +271,17 @@
             },
             onVideoPeakChangeTime(peak) {
                 this.show_video = true;
-                this.$el.getElementsByClassName('peak_embed_video')[0].currentTime = peak.time;
+                const video = this.$el.getElementsByClassName('peak_embed_video')[0];
+                video.currentTime = peak.time;
                 const table = this.peak_render(peak);
                 this.$nextTick(() => {
                     const element = this.$el.getElementsByClassName('peak_embed_chart')[0];
-                    element.innerHTML = '';     
+                    element.innerHTML = '';
                     table.renderTo(element);
+                    video.play();
+                    setTimeout(() => {
+                        video.pause();
+                    }, 10000);
                 });
             },
         },

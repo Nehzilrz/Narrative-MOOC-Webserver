@@ -82,7 +82,7 @@ export default {
     },
     fill: {
       type: String,
-      default: "#ffffff",
+      default: "#000000",
     }
   },
   methods: {

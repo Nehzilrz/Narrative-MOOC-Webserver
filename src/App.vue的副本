@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-  <!--
     <b-navbar toggleable="md" class="nm-navbar"
       :sticky="true">
       <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
@@ -24,12 +23,11 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    -->
     <div class="page-container">
       <div class="sidebar-container slideshow">
         <div class="header">
           <h5 class="title"> History </h5>
-          <n-svg type="history" fill="#777" class="icon"></n-svg>
+          <n-svg type="history" class="icon"></n-svg>
         </div>
         <div class="content">
           <template v-for="page, index in pages">
@@ -147,18 +145,18 @@
         <div class="overview">
           <div class="header">
             <h5 class="title"> Overview </h5>
-            <n-svg class="expand" type="expand" v-if="!sidebar_active" @click="onChangeSidebar()"></n-svg>
-            <n-svg class="expand" type="shrink" v-if="sidebar_active" @click="onChangeSidebar()"></n-svg>
+            <n-svg class="expand" type="expand" v-if="!sidebar_active" @click="sidebar_active = !sidebar_active"></n-svg>
+            <n-svg class="expand" type="shrink" v-if="sidebar_active" @click="sidebar_active = !sidebar_active"></n-svg>
             <n-svg class="icon" type="overview" fill="#555"></n-svg>
           </div>
           <div class="content">
-            <overview ref="overview" :page="page" :active="sidebar_active"></overview>
+            <overview :page="page" :active="sidebar_active"></overview>
           </div>
         </div>
         <div class="marktool">
           <div class="header">
             <h5 class="title"> Mark </h5>
-            <n-svg class="icon" fill="#333" type="pencil"></n-svg>
+            <n-svg class="icon" type="pencil"></n-svg>
           </div>
           <div class="content">
             <div class="vc-compact" v-if="!presentation_mode">
@@ -170,16 +168,16 @@
                 </li>
               </ul>
             </div>
-            <div class="box text-highlighter" v-if="!presentation_mode">
+            <div class="text-highlighter" v-if="!presentation_mode">
               <p>
               Text Highlighter
               </p>
               <svg @click="enable_highlight_text = enable_highlight_text == 1 ? 0 : 1" viewBox="0 0 512 512">
-                  <path fill="#333" :opacity="enable_highlight_text == 1 ? 1 : 0.3" d="M488.96,34.56c-28.16-30.72-76.8-30.72-107.52,0L133.12,282.88l107.52,110.08l248.32-250.88    C519.68,113.92,519.68,65.28,488.96,34.56z"/>
+                  <path fill="#fff" :opacity="enable_highlight_text == 1 ? 1 : 0.3" d="M488.96,34.56c-28.16-30.72-76.8-30.72-107.52,0L133.12,282.88l107.52,110.08l248.32-250.88    C519.68,113.92,519.68,65.28,488.96,34.56z"/>
                   <polygon :fill="current_color" :opacity="enable_highlight_text == 1 ? 1 : 0.6" points="97.28,321.28 23.04,392.96 40.96,446.72 0,500.48 51.2,500.48 79.36,482.56 133.12,500.48 204.8,428.8   "/>
               </svg>
               <svg @click="enable_highlight_text = enable_highlight_text == 2 ? 0 : 2; current_color = 'rgba(0, 0, 0, 0)';" viewBox="0 0 512 512">
-                <path fill="#333" :opacity="enable_highlight_text == 2 ? 1 : 0.3" d="M497.941 273.941c18.745-18.745 18.745-49.137 0-67.882l-160-160c-18.745-18.745-49.136-18.746-67.883 0l-256 256c-18.745 18.745-18.745 49.137 0 67.882l96 96A48.004 48.004 0 0 0 144 480h356c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12H355.883l142.058-142.059zm-302.627-62.627l137.373 137.373L265.373 416H150.628l-80-80 124.686-124.686z"/>
+                <path fill="#fff" :opacity="enable_highlight_text == 2 ? 1 : 0.3" d="M497.941 273.941c18.745-18.745 18.745-49.137 0-67.882l-160-160c-18.745-18.745-49.136-18.746-67.883 0l-256 256c-18.745 18.745-18.745 49.137 0 67.882l96 96A48.004 48.004 0 0 0 144 480h356c6.627 0 12-5.373 12-12v-40c0-6.627-5.373-12-12-12H355.883l142.058-142.059zm-302.627-62.627l137.373 137.373L265.373 416H150.628l-80-80 124.686-124.686z"/>
               </svg>
             </div>
             <div class="box chart-highlighter" :class="{ active: enable_highlight_chart }"  v-if="!presentation_mode">
@@ -188,7 +186,7 @@
               </p>
               <n-svg @click="onChartHighlight" type="chart"></n-svg>
             </div>
-            <div class="box text-box" @click="addTextbox"  v-if="!presentation_mode">
+            <div class="text-box" @click="addTextbox"  v-if="!presentation_mode">
               <p>
               Add Textbox
               </p>
@@ -240,31 +238,23 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
+import Vue from "vue";
 import * as d3 from "d3";
 import * as MoveTo from "moveto";
 import * as SlideTemplate from "./lib/slidetemplate";
 import draggable from "vuedraggable";
+import { request, serverUrl } from "./lib/request";
 import Overview from "./component/Overview.vue";
 import SlideshowContainer from "./component/SlideshowContainer.vue";
-import { request, serverUrl } from "./lib/request";
 import { colors, color_schema } from "./lib/colors";
+import { local } from "d3";
 import NSvg from "./component/Widgets/NSvg.vue";
-import { setTimeout } from 'plottable/build/src/utils/windowUtils';
 
 export default {
   name: "app",
   data() {
     return {
-      options: [        
-        { name: 'Quit', value: () => ({ key: 'last_login', rule: { $lt: this.chapters.find(d => d.name == 'Final Exam').start / 1000 }})},
-        { name: 'Audited', value: () => ({ key: 'mode', rule: 'audit' })},
-        { name: 'Drop out', value: () => ({ key: 'last_login', rule: { $lt: this.current_chapter.start / 1000 + 86400 * 7 }})},
-        { name: 'Top students', value: () => ({ key: 'grade', rule: { $gt: 0.80 }})},
-        { name: 'Poor students', value: () => ({ key: 'grade', rule: { $lt: 0.20 }})},
-        { name: 'Certificated', value: () => ({ key: 'mode', rule: 'honor' })},
-      ],
       is_painting: false,
       stories: JSON.parse(localStorage.getItem('narrative_mooc_stories') || '[]'),
       page_index: 0,
@@ -321,10 +311,6 @@ export default {
       };
     };
 
-    this.$bus.$on("refresh_overview", () => {
-      this.$refs.overview.paint();
-    });
-
     this.$bus.$on("select_chapter", item => {
       if (!this.current_chapter) {
         this.current_chapter = item;
@@ -335,6 +321,7 @@ export default {
       this.findNext(parent, {
         id: "V5",
         resource_id: item.id,
+        group: parent.group
       });
     });
 
@@ -342,22 +329,25 @@ export default {
       this.findNext(parent, {
         id: "A6",
         resource_id: item.id,
+        group: parent.group
       });
     });
 
     this.$bus.$on("select_student", (item, parent) => {
       this.groups.push(item.users);
-      this.findNext(null, {
+      this.findNext(parent, {
         id: "S1",
         resource_id: this.current_chapter.id,
         condition: item.users,
+        group: this.groups.length - 1
       });
     });
 
     this.$bus.$on("load_slide", (id, resource_id, parent) => {
-      this.findNext(null, {
+      this.findNext(parent, {
         id,
         resource_id,
+        group: parent.group
       });
     });
 
@@ -434,7 +424,6 @@ export default {
     },
     context() {
       return {
-        options: this.options,
         presentation_mode: this.presentation_mode,
         current_element_id: this.current_element_id,
         current_chapter: this.current_chapter,
@@ -451,14 +440,13 @@ export default {
         enable_highlight_text: this.enable_highlight_text,
         enable_highlight_chart: this.enable_highlight_chart,
         current_color: this.current_color,
-        moveto: this.moveto,
+        moveto: this.moveto
       };
     }
   },
   watch: {
     page(val) {
       this.page_index = this.pages.indexOf(val);
-      this.$refs.overview.adjust(this.slide);
     },
     current_color(val) {},
     presentation_mode(val) {
@@ -558,10 +546,6 @@ export default {
     }
   },
   methods: {
-    onChangeSidebar() {
-      this.sidebar_active = !this.sidebar_active;
-      this.$refs.overview.adjust(this.slide);
-    },
     getSlide() {
       if (this.page && this.page.length == 1) {
         return this.page[0];
@@ -638,8 +622,9 @@ export default {
           (item = this.history.find(
             d =>
               d.resource_id == state2.resource_id &&
-              d.id == state2.id          
-            )))
+              d.id == state2.id &&
+              d.group == state2.group
+          )))
       ) {
         var index = -1;
         if ((index = this.page.indexOf(item)) != -1) {
@@ -691,6 +676,8 @@ export default {
         item = SlideTemplate.create(state2.id, state2.resource_id);
         item.resource_data =
           state2.resource_data || (state1 && state1.resource_data);
+        item.group =
+          state2.group || state2.group == 0 ? state2.group : state1.group;
         return Promise.all(
           item.resources.map(type => request(this, item, type))
         ).then(async () => {
@@ -699,7 +686,9 @@ export default {
           const last =
             this.page && this.page.length && this.page[this.page.length - 1];
           if (
-            !this.page
+            !this.page ||
+            // (last && !SlideTemplate.relation.isAdjacent(last.id, item.id)) ||
+            (last && last.group != item.group)
           ) {
             this.page = [];
             this.pages.push(this.page);
@@ -744,7 +733,6 @@ export default {
       }
     },
     addTextbox() {
-      const slide = this.getSlide();
       if (this.slide) {
         this.$bus.$emit("add-textbox", this.slide._id);
       }
@@ -767,7 +755,7 @@ body {
 }
 :root {
   --background-color: linear-gradient(rgb(222, 222, 227), rgb(207, 207, 210));
-  --header-background-color: radial-gradient(circle at top, #e9e9e9, #dfdfdf);
+  --header-background-color: radial-gradient(circle at top, rgb(234, 234, 234), rgb(224, 224, 224));
   --header-color: rgb(154, 162, 169);
   --header-border-color: rgb(204, 207, 211);
   --radial-background-color: radial-gradient(circle at top, #e6e4e6, #d2d0d2);
@@ -813,6 +801,7 @@ body {
   height: 100%;
   overflow-y: hidden;
   z-index: 2;
+  top: 56px;
   display: inline-flex;
   flex-direction: column;
   opacity: 1;
@@ -821,12 +810,10 @@ body {
 .sidebar-container.tool {
   width: 20%;
   left: 80%;
-  background: rgb(247, 247, 247);
+  background: rgb(240, 240, 240);
   border: var(--border-color);
   border-width: 1px;
-  border-style: solid;    
-  box-shadow: -1px 0px 10px rgba(0, 0, 0, 0.08), 
-            -1px 0px 5px rgba(0, 0, 0, 0.12);
+  border-style: solid;
   position: fixed;
   transition: 0.2s;
   overflow-y: hidden;
@@ -834,12 +821,11 @@ body {
 }
 
 .sidebar-container.tool.open {
-  width: 80%;
-  left: 20%;
+  width: 60%;
+  left: 40%;
 }
 
 .sidebar-container.tool .header {
-  background: var(--header-background-color);
   position: relative;
 }
 
@@ -876,6 +862,11 @@ body {
 .sidebar-container.tool.open .header svg.expand {
   left: 96%;
 }
+
+.sidebar-container.tool .content {
+  background: rgb(254, 254, 254);
+}
+
 .sidebar-container.tool .overview .content {
   height: 40vh;
   border-width: 0 0 1px 0;
@@ -901,11 +892,13 @@ body {
   padding-top: 5px;
   padding-left: 5px;
   border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .sidebar-container.tool .text-highlighter p {
   font-size: 16px;
-  font-weight: 00;
+  font-weight: 400;
   padding-left: 1vw;
   margin-top: 0.7vh;
   margin-bottom: 0.4vh;
@@ -924,12 +917,13 @@ body {
   padding-top: 5px;
   padding-left: 5px;
   border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
   background-color: rgba(0, 0, 0, 0);
 }
 
 .sidebar-container.tool .text-box p {
   font-size: 16px;
-  font-weight: 00;
+  font-weight: 400;
   padding-left: 1vw;
   margin-top: 0.7vh;
   margin-bottom: 0.4vh;
@@ -949,18 +943,16 @@ body {
 .sidebar-container.tool .box {
   display: inline-flex;
   width: 100%;
-  border-width: 0 0 1px 0;
-  border-style: solid;
-  border-color: var(--header-border-color);
   padding-top: 5px;
   padding-left: 5px;
   border-radius: 2px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.16);
   background-color: rgba(0, 0, 0, 0);
 }
 
 .sidebar-container.tool .box p {
   font-size: 16px;
-  font-weight: 00;
+  font-weight: 400;
   padding-left: 1vw;
   margin-top: 0.7vh;
   margin-bottom: 0.4vh;
@@ -999,10 +991,6 @@ body {
 
 .sidebar-container .header {
   position: static;
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.12);
-  border-width: 0px .5px 0px .5px;
-  border-style: solid;
-  border-color: var(--header-border-color);
   z-index: 3;
   top: 0px; 
   transition: 0.2s;
@@ -1010,7 +998,7 @@ body {
 }
 
 .sidebar-container .header .title {
-  background-color: inherit;
+  background-color: var(--header-background-color);
   border-width: 0 0 1px 0;
   border-style: solid;
   border-color: var(--header-border-color);
@@ -1026,7 +1014,8 @@ body {
 .sidebar-container .content {
   transition: 0.5s;
   transition-timing-function: ease-in-out;
-  border-width: 0 0px 0px 0px;
+  background: rgb(254, 254, 254);
+  border-width: 0 1px 1px 1px;
   border-style: solid;
   border-color: var(--header-border-color);
 }
@@ -1057,13 +1046,18 @@ body {
 .sidebar-container.slideshow .header {
   position: sticky;
   width: 15.9vw;
-  background: var(--header-background-color);
+  background-color: var(--header-background-color);
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: var(--header-border-color);
 }
 
 .sidebar-container.slideshow .header .icon {
   position: absolute;
-  right: 3%;
+  left: 85%;
   top: 0vh;
+  transition: 0.2s;
+  transition-timing-function: ease-in-out;
 }
 
 .sidebar-container.slideshow:hover .header {
@@ -1071,19 +1065,20 @@ body {
   transition-delay: 0.5s;
 }
 
+.sidebar-container.slideshow:hover .header .icon {
+  left: 80%;
+  transition-delay: 0.5s;
+}
+
 .sidebar-container.slideshow .content {
   left: 0vw;
   width: 14vw;
   height: 100%;
+  background-color: #eeeeee;
   padding-bottom: 7vh;
   padding-top: 1vh;
   overflow-x: hidden;
   overflow-y: scroll;
-  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.12);
-  background: rgb(247, 247, 247);
-  border-width: 0px 1px 1px 1px;
-  border-style: solid;
-  border-color: var(--header-border-color);
 }
 
 ::-webkit-scrollbar {
@@ -1153,7 +1148,7 @@ body {
   display: inline-flex;
   flex-direction: column;
   text-align: center;
-  border-color: #bbb;
+  border-color: #525252;
   background-color: white;
   border-style: solid;
   border-width: 1.5px;
@@ -1176,13 +1171,13 @@ body {
 }
 
 .sidebar-container.slideshow .page.active {
-  border-color: #525252;
+  border-color: #aaaaaa;
   border-width: 1.5px;
   opacity: 1;
 }
 
 .sidebar-container.slideshow .page:hover {
-  border-color: #525252;
+  border-color: #a0a0a0;
   border-width: 1.5px;
   opacity: 1;
 }
