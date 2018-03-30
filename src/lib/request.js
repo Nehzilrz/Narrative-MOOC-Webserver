@@ -171,7 +171,7 @@ export async function request(self, item, type) {
             }
         },
         'top_questioner_responser': async (data, filter = null) => {
-            if (!data.keywords) {
+            if (!data.threads) {
                 const params = {
                     chapter: item.resource_id,
                 };
@@ -262,7 +262,13 @@ export async function request(self, item, type) {
     };
     await convert_map[type](item.data);
     if (item.comparison) {
-        await convert_map[type](item._data, item.condition);
+        if (!item._data[item.comparison_name]) {
+            item._data[item.comparison_name] = {};
+        }
+        await convert_map[type](
+            item._data[item.comparison_name],
+            item.condition
+        );
     }
     return;
 }

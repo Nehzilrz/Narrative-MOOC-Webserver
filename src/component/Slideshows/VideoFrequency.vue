@@ -6,14 +6,14 @@
             <styled-text :context="context">
                 The most watched video was
                 <entity-link :id="max_video_activies.id" :parent="item"></entity-link>
-                , each student watched the video {{ Number(max_video_activies.attempts).toFixed(1) }} times.
+                , each learners watched the video {{ Number(max_video_activies.attempts).toFixed(1) }} times.
             </styled-text>
         </div>
         <div class="b4w bh nm-block text">
             <styled-text :context="context">
                 The least watched video was 
                 <entity-link :id="min_video_activies.id" :parent="item"></entity-link>
-                , each student watched the video {{ Number(min_video_activies.attempts).toFixed(1) }} times.
+                , each learners watched the video {{ Number(min_video_activies.attempts).toFixed(1) }} times.
             </styled-text>
         </div>
     </div>

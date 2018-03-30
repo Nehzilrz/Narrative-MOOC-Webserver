@@ -89,7 +89,7 @@
               </ul>
               <h5> Forum Questions </h5>
               <ul>
-                <li v-for="id in 'F1 F2 F3'.split(' ')">
+                <li v-for="id in 'F1 F2 F4'.split(' ')">
                   <b-link href="javascript:void(0);"
                   @click="startPage(id)">
                     {{ questions[id] }}
@@ -152,7 +152,8 @@
             <n-svg class="icon" type="overview" fill="#555"></n-svg>
           </div>
           <div class="content">
-            <overview ref="overview" :page="page" :active="sidebar_active"></overview>
+            <overview ref="overview" :page="page" :active="sidebar_active"
+              :trigger="trigger_counter"></overview>
           </div>
         </div>
         <div class="marktool">
@@ -257,13 +258,14 @@ export default {
   name: "app",
   data() {
     return {
-      options: [        
-        { name: 'Quit', value: () => ({ key: 'last_login', rule: { $lt: this.chapters.find(d => d.name == 'Final Exam').start / 1000 }})},
+      options: [
+        { name: 'Compared with' },
         { name: 'Audited', value: () => ({ key: 'mode', rule: 'audit' })},
+        { name: 'Certificated', value: () => ({ key: 'mode', rule: 'honor' })},
+        { name: 'Quit', value: () => ({ key: 'last_login', rule: { $lt: this.chapters.find(d => d.name == 'Final Exam').start / 1000 }})},
         { name: 'Drop out', value: () => ({ key: 'last_login', rule: { $lt: this.current_chapter.start / 1000 + 86400 * 7 }})},
         { name: 'Top students', value: () => ({ key: 'grade', rule: { $gt: 0.80 }})},
         { name: 'Poor students', value: () => ({ key: 'grade', rule: { $lt: 0.20 }})},
-        { name: 'Certificated', value: () => ({ key: 'mode', rule: 'honor' })},
       ],
       is_painting: false,
       stories: JSON.parse(localStorage.getItem('narrative_mooc_stories') || '[]'),
@@ -322,7 +324,9 @@ export default {
     };
 
     this.$bus.$on("refresh_overview", () => {
-      this.$refs.overview.paint();
+      setTimeout(() => {
+          this.trigger_counter += 1;
+      }, 2000);
     });
 
     this.$bus.$on("select_chapter", item => {
@@ -706,7 +710,6 @@ export default {
           }
           this.page.push(item);
           // this.overview_graph = this.get_overview_graph();
-          this.trigger_counter += 1;
           this.$nextTick(() => {
             this.findNext(null, item);
           });

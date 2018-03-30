@@ -14,13 +14,13 @@
                             {{i}}
                         </span>
                     </b-link>
-                    of students' operation appears at the 
+                    of learners' operation appears at the 
                     <b-link href="javascript:void(0);" @click="onVideoPeakChangeTime(peak)">
                         {{ ~~(peak.time / 60) }}:{{ ~~(peak.time % 60 / 10) }}{{ peak.time % 10 }} 
                     </b-link>
                     of the video, with 
                     <b-link href="javascript:void(0);" @click="onSelectStudents(item.data.video_peaks[i].users, ' in Peak#' + i)">
-                        {{ peak.student_num }} students
+                        {{ peak.student_num }} learners
                     </b-link>
                     , 
                     which including {{ peak.operations.map(d => `${~~d.value} ${d.name.split('_').join(' ')} operations`).join(', ') }}.
@@ -35,7 +35,7 @@
     </div>
     <div class="b4w bh nm-block text">
         <b-form-row v-show="show_video">
-            <b-col cols="5">
+            <b-col cols="12">
                 <h6 style="font-weight: 600"> Screenshot of this peak: </h6>
                 <b-embed v-if="item.data.video"
                         type="video"
@@ -44,14 +44,13 @@
                         class="peak_embed_video"
                 ></b-embed>
             </b-col>
-            <b-col cols="1">
-            </b-col>
-            <b-col cols="6">
+            <!--b-col cols="6">
                 <h6 style="font-weight: 600; padding-bottom: 2vh;"> A comparison of these students' in this peak with the average: </h6>
                 <div class="peak_embed_chart" 
                     style="width: 100%; height: 30vh; padding-left: 2vw;">
                 </div>
             </b-col>
+            -->
         </b-form-row>
     </div>
 </div>

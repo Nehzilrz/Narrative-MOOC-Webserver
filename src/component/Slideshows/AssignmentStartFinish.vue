@@ -5,14 +5,14 @@
     <div class="b2w b4h text nm-block">
         <div class="nm-block">
             <styled-text :context="context">
-                The assignment the student started at the latest was 
+                The assignment the learners started at the latest was 
                 <entity-link :id="max_delay.id" :parent="item"></entity-link>
                 , and they started it {{ Number(max_delay.delay).toFixed(1) }} days after the assignment was released.
             </styled-text>
         </div>
         <div class="nm-block">
             <styled-text :context="context">
-                The longest assignment for the student working cycle is <entity-link :id="max_duration.id" :parent="item"></entity-link>.
+                The longest assignment for the learners working cycle is <entity-link :id="max_duration.id" :parent="item"></entity-link>.
                     {{ Number(max_duration.duration).toFixed(1) }} days.
             </styled-text>
         </div>

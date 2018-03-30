@@ -2,13 +2,13 @@
     <div class="slide-page">
         <div class="nm-block title">
           <div class="left-group" >
-            <b-button-group  size="sm">
-              <b-button :class="{ active: mode == 'comp' }" 
-                @click="changeMode('comp')"
-                variant="outline-secondary">Comparison</b-button>
-              <b-button :class="{ active: mode == 'digin' }"
-                @click="changeMode('digin')"
-                variant="outline-secondary">Dig-In</b-button>
+            <b-button-group size="sm">
+              <b-button :class="{ active: sidebyside }" 
+                @click="sidebyside = !sidebyside"
+                variant="outline-secondary">Left-Right</b-button>
+              <b-button :class="{ active: !sidebyside }"
+                @click="sidebyside = !sidebyside"
+                variant="outline-secondary">Top-Bottom</b-button>
             </b-button-group>
           </div>
           <h4> {{ item.name }} </h4>
@@ -45,7 +45,7 @@
           </component>
           <component ref="right" v-if="comparison" class="nm-block main-content"
             v-bind:is="current_view"
-            :context="context" :item="item" :data="item._data"
+            :context="context" :item="item" :data="data2"
               @showtooltip="showTooltipWithOffset">
           </component>
         </div>
@@ -74,6 +74,7 @@ import AssignmentDiscussedSlide from "./Slideshows/AssignmentDiscussed.vue";
 import ForumDiscussedSlide from "./Slideshows/ForumDiscussed.vue";
 import ForumMostUpvotedSlide from "./Slideshows/ForumMostUpvoted.vue";
 import ForumQuestionerSlide from "./Slideshows/ForumQuestioner.vue";
+import ForumParticipantSlide from "./Slideshows/ForumParticipant.vue";
 import AssignmentContentSlide from "./Slideshows/AssignmentContent.vue";
 import AssignmentSequenceSlide from "./Slideshows/AssignmentSequence.vue";
 import LearnerProfileSlide from "./Slideshows/LearnerProfile.vue";
@@ -101,7 +102,10 @@ export default {
   computed: {
     formatted_tooltip_msg() {
       return this.tooltip_message.replace(/\d+\.\d+/g, d => Number(+d).toFixed(2));
-    }
+    },
+    data2() {
+      return this.item._data[this.item.comparison_name];
+    },
   },
   created() {
     this._id = ~~(Math.random() * 65536);
@@ -128,18 +132,35 @@ export default {
       F1: "ForumDiscussedSlide",
       F2: "ForumMostUpvotedSlide",
       F3: "ForumQuestionerSlide",
+      F4: "ForumParticipantSlide",
       S1: "LearnerProfileSlide",
       S2: "LearnerDifficultiesSlide",
     };
     this.current_view = component_mapping[this.item.id] || "EmptySlide";
   },
   watch: {
+    sidebyside(val) {
+      this.$refs.left.$forceUpdate();
+      this.$refs.right && this.$refs.right.$forceUpdate();
+    },
     filter(vec) {
       const condition = {};
       let comparison_name = '';
+      this.mode = 'digin';
       for (const x of vec) {
-        condition[x.value().key] = x.value().rule;
-        comparison_name += ', ' + x.name; 
+        if (!x.value) {
+          this.mode = 'comp';
+          continue;
+        }
+        if (Array.isArray(x.value())) {
+          for (const y of x.value()) {
+            condition[y.key] = y.rule;
+          }
+          comparison_name += ', ' + x.name; 
+        } else {
+          condition[x.value().key] = x.value().rule;
+          comparison_name += ', ' + x.name; 
+        }
       }
       comparison_name = comparison_name.slice(2);
       this.item.condition = condition;
@@ -196,6 +217,7 @@ export default {
     AssignmentSequenceSlide,
     LearnerProfileSlide,
     LearnerDifficultiesSlide,
+    ForumParticipantSlide,
     EmptySlide
   },
   methods: {
@@ -204,8 +226,6 @@ export default {
         this.sidebyside = !this.sidebyside;
       }
       this.mode = mode;
-      this.$refs.left.$forceUpdate();
-      this.$refs.right && this.$refs.right.$forceUpdate();
     },
     handle_addtext(_id) {
       if (_id == this.item._id) {
@@ -286,7 +306,7 @@ export default {
 }
 .slide-page .title .left-group {
   position: absolute;
-  opacity: 0.5;
+  opacity: 0;
   bottom: 0%;
   left: 0%;
 }

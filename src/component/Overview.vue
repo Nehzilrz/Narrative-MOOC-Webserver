@@ -14,9 +14,13 @@ import { setTimeout } from 'plottable/build/src/utils/windowUtils';
 export default {
     data() {
         return {
+            root: null,
             width: 600,
             height: 900,
             padding: 50,
+            prev_p: null,
+            next_p: null,
+            has_p: false,
             question_offset_x: 10,
             question_offset_y: 22,
             first_layer_compress: 0.55,
@@ -43,28 +47,51 @@ export default {
             .attr("transform", `translate(${this.padding},${this.padding})`);
 
         for (let i = 0; i < color_schema.length; ++i) {
-            for (let j = 0; j < color_schema.length; ++j) {
-                const defs = colors.append("defs");
-                const grad = defs
-                    .append("linearGradient")
-                    .attr("id", `c${i}${j}`)
-                    .attr("x1", 0)
-                    .attr("x2", 0)
-                    .attr("y1", 0)
-                    .attr("y2", 1);
-                grad
-                    .append("stop")
-                    .attr("offset", "0%")
-                    .attr("stop-color", color_schema[i]);
-                grad
-                    .append("stop")
-                    .attr("offset", "100%")
-                    .attr("stop-color", color_schema[j]);
-            }
+            for (let j = 0; j < color_schema.length; ++j)
+                for (let k = 0; k < 4; ++k) {
+                    const defs = colors.append("defs");
+                    const grad = defs
+                        .append("linearGradient")
+                        .attr("id", `c${i}${j}${k}`)
+                        .attr("x1", +(k == 0))
+                        .attr("x2", +(k == 1))
+                        .attr("y1", +(k == 2))
+                        .attr("y2", +(k == 3));
+                    grad
+                        .append("stop")
+                        .attr("offset", "0%")
+                        .attr("stop-color", color_schema[i]);
+                    grad
+                        .append("stop")
+                        .attr("offset", "100%")
+                        .attr("stop-color", color_schema[j]);
+                }
         }
     },
-    computed: {
-        root() {
+    watch: {
+        trigger(val) {
+            if (this.page && this.page.length > 0) {
+                this.paint();
+            }
+        },
+        page(val) {
+            if (val && val.length > 0) {
+                this.paint();
+            }
+        },
+        position(val) {
+            if (!this.svg) return;
+            d3.select(this.$el).select("g.view").attr(
+                    "transform",
+                    `translate(${this.position.x}, ${this.position.y})`
+                )
+                .transition()
+                .duration(500)
+                .attr("transform", `translate(${val.x}, ${val.y})`);
+        }
+    },
+    methods: {
+        getRoot() {
             if (!this.page || this.page.length == 0) {
                 return [];
             }
@@ -139,11 +166,13 @@ export default {
                     u.parent = gid + u.resource_id;
                 }
                 if (u.data && u.data.comparison_name) {
-                    P.push({
-                        parent: u.index,
-                        abbrname: u.data.comparison_name,// u.type,
-                        type: u.type,
-                        index: gid + 'dig' + u.resource_id,
+                    u.data.comparison_name.split(",").forEach(name => {
+                        P.push({
+                            parent: u.index,
+                            abbrname: name,// u.type,
+                            type: u.type,
+                            index: gid + 'dig' + u.resource_id,
+                        });
                     });
                 }
                 for (const id of group)
@@ -203,26 +232,7 @@ export default {
                 .parentId(d => d.parent);
             const root = stratify(data);
             return root;
-        }
-    },
-    watch: {
-        page(val) {
-            if (val && val.length > 0) {
-                this.paint();
-            }
         },
-        position(val) {
-            if (!this.svg) return;
-            d3.select(this.$el).select("g.view").attr(
-                    "transform",
-                    `translate(${this.position.x}, ${this.position.y})`
-                )
-                .transition()
-                .duration(500)
-                .attr("transform", `translate(${val.x}, ${val.y})`);
-        }
-    },
-    methods: {
         find(item) {
             return this.root.descendants().find(d => d.data.data == item);
         },
@@ -239,6 +249,7 @@ export default {
             g.selectAll("*").remove();
 
             var tree = d3.tree().size([this.width, this.height]);
+            this.root = this.getRoot();
             const root = this.root;
             tree(root);
             const x0 = root.descendants().find(d => d.depth == 0).y;
@@ -253,6 +264,7 @@ export default {
                     d.y -= first_layer_reduction;
                 }
             });
+            this.has_p = false;
 
             this.page.map(d => this.find(d)).forEach(d => {
                 while (d != null) {
@@ -352,7 +364,21 @@ export default {
                 else a = a * 2;
                 if (b == -1) b = 8;
                 else b = b * 2;
-                return `url(#c${a}${b})`;
+                let c;
+                if (Math.abs(e.source.y - e.target.y) > Math.abs(e.source.x - e.target.x)) {
+                    if (e.source.y > e.target.y) {
+                        c = 0;
+                    } else {
+                        c = 1;
+                    }
+                } else {
+                    if (e.source.x > e.target.x) {
+                        c = 2;
+                    } else {
+                        c = 3;
+                    }
+                }
+                return `url(#c${a}${b}${c})`;
             };
             const pathwidth = 15;
             const m = path_edges.length - 1;
@@ -415,9 +441,58 @@ export default {
                 .style("fill", color_scale(end))
                 .attr("d", "M155.799,234.678c11.766-14.877,18.798-33.661,18.798-54.058c0-48.136-39.162-87.298-87.298-87.298S0,132.484,0,180.621   c0,20.397,7.032,39.18,18.798,54.058l68.5,86.124L155.799,234.678z M67.298,180.621c0-11.028,8.972-20,20-20s20,8.972,20,20   s-8.972,20-20,20S67.298,191.649,67.298,180.621z");
                 
+            const draw_p = () => {
+                const prev = this.prev_p;
+                const d = this.next_p;
+                const x1 = (prev.y + d.y) * 0.5 + (d.y - prev.y) * 0.2 + 75;
+                const y1 = (prev.x + d.x) * 0.5;
+                g.append("path")
+                    .attr("class", "related")
+                    .attr("d", `M${prev.y + 5},${prev.x} Q${x1} ${y1} ${d.y + 5},${d.x}`)
+                    .attr("stroke", color_scale(d))
+                    .attr("stroke-width", 5)
+                    .attr("stroke-dasharray", "20, 10")
+                    .attr("opacity", 0.4)
+                    .attr("fill", "none");
+            }
+
+            let prev = null;
+            const handle = (d) => {
+                if (d3.event.altKey) {
+                    if (!this.prev_p) {
+                        this.prev_p = d;
+                    } else if (!this.next_p) {
+                        this.next_p = d;
+                        g.selectAll(".related").remove();
+                        draw_p();
+                        this.has_p = true;
+                    } else {
+                        this.has_p = false;
+                        g.selectAll(".related").remove();
+                        this.prev_p = this.next_p = null;
+                    }
+                    return;
+                }
+                this.$bus.$emit('load_slide', d.data.id, d.data.resource_id, null);
+            };
+
+            if (this.prev_p && this.next_p) {
+                this.has_p = true;
+                draw_p();
+            }
+            
+            g.append("circle")
+                .attr("class", "ending")
+                .attr("opacity", 0.4)
+                .attr("r", 10) 
+                .attr("transform", () => {
+                    return "translate(" + (end.y + 5) + "," + end.x + ")";
+                })
+                .style("fill", color_scale(end))
+
             const node_circle = g
-                .selectAll(".node")
-                .data(root.descendants())
+                .selectAll("circle.node")
+                .data(root.descendants().filter(d => d.data.type != "learner"))
                 .enter()
                 .append("g")
                 .attr("transform", (d) => {
@@ -431,12 +506,32 @@ export default {
                         + (d.data.index.includes('dig') ? " node--dig" : "")
                         + (d.tag ? " node--active" : "");
                 })
+                .attr("x", 5)
                 .attr("cx", 5)
                 .attr("cy", 0)
                 .style("fill", d => color_scale(d))
-                .on('click', d => {
-                    this.$bus.$emit('load_slide', d.data.id, d.data.resource_id, null);
+                .on('click', handle);
+
+            const node_rect = g
+                .selectAll("rect.node")
+                .data(root.descendants().filter(d => d.data.type == "learner"))
+                .enter()
+                .append("g")
+                .attr("transform", (d) => {
+                    return "translate(" + d.y + "," + d.x + ")";
+                });
+
+            node_rect
+                .append("rect")
+                .attr("class", (d) => {
+                    return "node" + (d.data.data ? " node--visited" : "")
+                        + (d.data.index.includes('dig') ? " node--dig" : "")
+                        + (d.tag ? " node--active" : "");
                 })
+                .attr("x", 0)
+                .attr("y", -5)
+                .style("fill", d => color_scale(d))
+                .on('click', handle);
 
             function diagonal(d) {
                 return ("M" + d.y + "," + d.x +
@@ -461,7 +556,7 @@ export default {
             }, 50);
         }
     },
-    props: ['active', 'page']
+    props: ['active', 'page', 'trigger']
 };
 </script>
 
@@ -476,13 +571,21 @@ export default {
             inset -4px 0px 5px rgba(0, 0, 0, 0.08);
 }
 
-.overview-map circle.node {
-    r: 5px;
+.overview-map .node {
     fill-opacity: 0.2;
     transition: 0.2s;
     transition-timing-function: ease-in-out;
 }
-.overview-map circle.node.node--visited {
+
+.overview-map rect.node {
+    width: 10px;
+    height: 10px;
+}
+
+.overview-map circle.node {
+    r: 5px;
+}
+.overview-map .node.node--visited {
     fill-opacity: 1;
 }
 
@@ -497,23 +600,30 @@ export default {
     transition-timing-function: ease-in-out;
 }
 
-.overview-map circle.node.node--dig {
+.overview-map .node.node--dig {
     stroke: #999;
     fill-opacity: 0.4;
     stroke-width: 2px;
 }
 
-.overview-map circle.node.node--active {
+.overview-map .node.node--active {
     fill-opacity: 0.7;
     stroke: #999;
     stroke-width: 1px;
 }
 
-.overview-map circle.node:hover {
-    r: 10px;
+.overview-map .node:hover,.node.node--ending {
     fill-opacity: 1;
     stroke: #777;
     stroke-width: 1px;
+}
+
+.overview-map circle.node:hover,.node.node--ending {
+    r: 10px;
+}
+.overview-map rect.node:hover,.node.node--ending {
+    height: 15px;
+    width: 15px;
 }
 
 .overview-map .nodebg text {

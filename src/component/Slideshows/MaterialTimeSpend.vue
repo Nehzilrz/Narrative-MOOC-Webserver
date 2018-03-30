@@ -4,7 +4,7 @@
     </div>
     <div class="b4w bh text nm-block">
         <styled-text :context="context" v-if="video_time > 0 || assignment_time > 0">
-            Students spend an average of {{ Number(video_time / 60).toFixed(1) }} minutes watching the video 
+            Learners spend an average of {{ Number(video_time / 60).toFixed(1) }} minutes watching the video 
                 and {{ Number(assignment_time / 60).toFixed(1) }} minutes completing the assignment.
         </styled-text>
     </div>

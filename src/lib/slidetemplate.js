@@ -3,8 +3,6 @@ const edges = [
     { source: 0, target: 1 },
     { source: 0, target: 2 },
     { source: 0, target: 3 },
-    { source: 1, target: 4 },
-    { source: 2, target: 5 },
     { source: 1, target: 6 },
     { source: 2, target: 7 },
 ];
@@ -13,7 +11,7 @@ const groups = [
     "O1 O2 O3 O4",
     "V1 V2 V3 V4",
     "A1 A2 A3 A4",
-    "F1 F2 F3",
+    "F1 F2 F4",
     "V6",
     "A5",
     "V5 V7",
@@ -52,74 +50,74 @@ export const relation = {
     groupIdOf: x => groupId[x],
     isAdjacent: isAdjacent,
 };
-  
 export const questions = {
-    // 'O0': 'How often do learners access materials?',
-    O1: "What are the popularity of different materials?",
-    O2: "How often do learners access different materials?",
-    O3: "How much time do learners spend on different materials?",
-    O4: "What materials have learners accessed between start/end of assignment?",
-    S1: "General distribution on education, age, gender, country",
-    S2: "Which learners are having difficulties?",
-    S3: "Which learners have not engaged in enough practice?",
-    V1: "How much video content have learners completed?",
-    V2: "How much time do learners spend on each video?",
-    V3: "How often do learners watch each video?",
-    V4: "When do learners start/finish the videos?",
-    V5: "Where in the video are learners struggling with?",
-    V6: "Which videos are most discussed in the forum?",
-    V7: "What is the content of the interested video segment?",
-    A1: "How well do learners perform? (correctness)",
-    A2: "How many assignments do learners finish?",
-    A3: "Which is the average number of attempts for each assignment?",
-    A4: "When do learners start/finish the assignments?",
-    A5: "Which assignments are most discussed in the forum?",
-    A6: "What is the content of an interested assignment?",
-    A7: "What are the most frequent actions between start and finish of this assignment?",
-    F1: "Which are the most discussed topics/threads/keywords?",
-    F2: "Which are the most upvoted replies?",
-    F3: "Who are the top questioners/responders?",   
+  // 'O0': 'How often do learners access materials?',
+  O1: "What are the popularity of different materials?",
+  O2: "How often do learners access different materials?",
+  O3: "How much time do learners spend on different materials?",
+  O4: "What materials have learners accessed between start/finish of assignment?",
+  S1: "What is the demographic distribution of learners?",
+  S2: "What is the learner distribution based on performance?",
+  S3: "What is the learner distribution based on participation?",
+  V1: "How much video content have learners completed?",
+  V2: "How much time do learners spend on each video?",
+  V3: "How often do learners watch each video?",
+  V4: "When do learners start/finish the videos?",
+  V5: "Where in the video are learners struggling with?",
+  V6: "Which videos are most discussed in the forum?",
+  V7: "What is the content of the interested video segment?",
+  A1: "How well do learners perform? (correctness)",
+  A2: "How many assignments do learners finish?",
+  A3: "Which is the average number of attempts for each assignment?",
+  A4: "When do learners start/finish the assignments?",
+  A5: "Which assignments are most discussed in the forum?",
+  A6: "What is the content of an interested assignment?",
+  A7: "What are the most frequent actions between start and finish of this assignment?",
+  F1: "Which are the most discussed topics/threads/keywords?",
+  F2: "Which are the most upvoted replies?",
+  //F3: "Who are the top questioners/responders?",
+  F4: "What is the forum activeness of learners?",   
 };
 
 export const scopeOf = type => {
-  if ('O1 O2 O3 O4 V1 V2 V3 V4 V6 A1 A2 A3 A4 A5 F1 F2 F3 F4'.includes(type)) {
-    return 0;
-  } else if ('V5 V7'.includes(type)) {
-    return 1;
-  } else if ('A6 A7'.includes(type)) {
-    return 2;
-  } else {
-    return 3;
-  }
+if ('O1 O2 O3 O4 V1 V2 V3 V4 V6 A1 A2 A3 A4 A5 F1 F2 F3 F4'.includes(type)) {
+  return 0;
+} else if ('V5 V7'.includes(type)) {
+  return 1;
+} else if ('A6 A7'.includes(type)) {
+  return 2;
+} else {
+  return 3;
+}
 };
 
 export const abbr_questions = {
-    O1: "material popularity",
-    O2: "access frequency",
-    O3: "total time-cost",
-    O4: "activity sequence",
-    S1: "learner profile",
-    S2: "struggling learners",
-    S3: "disengaged learners",
-    V1: "video completeness",
-    V2: "video time-cost",
-    V3: "video review frequency",
-    V4: "video start/finish time",
-    V5: "difficult video concept",
-    V6: "arguable video",
-    V7: "interested video segment",
-    A0: "assignment time-cost",
-    A1: "assignment correctness",
-    A2: "assignment completeness",
-    A3: "assignment attempts",
-    A4: "assignment start/finish time",
-    A5: "arguable assignment",
-    A6: "interested assignment",
-    A7: "actions in-between",
-    F1: "popular topics/threads/keywords",
-    F2: "upvoted replies",
-    F3: "top forum participants",
-    F4: "popular keywords",
+  O1: "material popularity",
+  O2: "access frequency",
+  O3: "total time-cost",
+  O4: "activity sequence",
+  S1: "learner demographics",
+  S2: "learner performance",
+  S3: "learner participation",
+  V1: "video completeness",
+  V2: "video time-cost",
+  V3: "video watch frequency",
+  V4: "video start/finish time",
+  V5: "video clickstream",
+  //V6: "arguable video",
+  V7: "video segment content",
+  A0: "assignment time-cost",
+  A1: "assignment correctness",
+  A2: "assignment completeness",
+  A3: "assignment attempts",
+  A4: "assignment start/finish time",
+  //A5: "arguable assignment",
+  A6: "assignment content",
+  A7: "actions in-between",
+  F1: "popular topics/keywords",
+  F2: "upvoted replies",
+  //F3: "top forum participants",
+  F4: "forum activeness",
 };
 
 function initTemplate(
@@ -241,7 +239,7 @@ const templates = {
     initTemplate(
       "video",
       "chapter_video_activies",
-      "V6",
+      "",
       "barchart",
       chapter_id,
       "V4"
@@ -313,7 +311,7 @@ const templates = {
     initTemplate(
       "assignment",
       "chapter_problem_activies",
-      "A5",
+      "",
       "barchart",
       chapter_id,
       "A4"
@@ -357,8 +355,8 @@ const templates = {
   S2: chapter_id =>
     initTemplate(
       "learner",
-      "user_difficulties",
-      "S3",
+      "user_difficulties user_info",
+      "",
       "barchart",
       chapter_id,
       "S2"
@@ -395,7 +393,7 @@ const templates = {
     initTemplate(
       "forum",
       "most_upvoted_threads",
-      "F3",
+      "F4",
       "barchart",
       chapter_id,
       "F2"
@@ -404,11 +402,20 @@ const templates = {
     initTemplate(
       "forum",
       "top_questioner_responser",
-      "",
+      "F4",
       "barchart",
       chapter_id,
       "F3"
-    )
+    ),
+  F4: chapter_id =>
+    initTemplate(
+      "forum",
+      "top_questioner_responser",
+      "",
+      "barchart",
+      chapter_id,
+      "F4"
+    ),
 };
 /*
     for (const id of chapter.videos) {

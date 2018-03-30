@@ -4,14 +4,14 @@
     </div>
     <div class="b4w bh nm-block text">
         <styled-text :context="context">
-            The video the student started watching at the latest was 
+            The video the learner started watching at the latest was 
             <entity-link :id="max_video_delay.id" :parent="item"></entity-link>
             , and they started watching it {{ Number(max_video_delay.delay).toFixed(1) }} days after the video was released.
         </styled-text>    
     </div>
     <div class="b4w bh nm-block text">    
         <styled-text :context="context">
-            The longest video for the student viewing cycle is <entity-link :id="max_video_duration.id" :parent="item"></entity-link>.
+            The longest video for the learner viewing cycle is <entity-link :id="max_video_duration.id" :parent="item"></entity-link>.
                 They watched for {{ Number(max_video_duration.duration).toFixed(1) }} days.
         </styled-text>
     </div>

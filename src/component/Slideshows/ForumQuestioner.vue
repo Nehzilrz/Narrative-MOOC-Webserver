@@ -51,7 +51,7 @@
                 </h5>
                 <ul style="width: 30vw; padding-top: 0.5vh;">
                     <li :style="{
-                        background : context.color_schema[i],
+                        background : context.color_schema[i + questioners.length],
                         width: user.posts.length < 50 ? '15px' : '12px',
                         height: user.posts.length < 50 ? '15px' : '12px',
                         'margin-right': user.posts.length < 50 ? '5px' : '3px',
@@ -91,10 +91,10 @@
         },
         computed: {
             questioners() {
-                return this.data.threads.questioners;
+                return this.data.threads.questioners.slice(0, 3);
             },
             responders() {
-                return this.data.threads.responders;
+                return this.data.threads.responders.slice(0, 3);
             },
         },
     };
@@ -105,10 +105,44 @@
     font-weight: 600;
 }
 
-.slide.upvoted {
+.content-block li.circle {
+    list-style: none;
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgba(255,255,255,0.0);
+    float: left;
+    position: relative;
+    cursor: pointer;
+}
+
+.content-block li.circle:hover {
+    border-width: 2px;
+    border-style: solid;
+    border-color: #555555;
+    transition: 0.2s;
+    transition-timing-function: ease-in-out;
+}
+
+.content-block li.circle.active {
+    border-width: 2px;
+    border-style: solid;
+    border-color: #555555;
+    transition: 0.2s;
+    transition-timing-function: ease-in-out;
+}
+
+.slide.discussed {
     padding-top: 2vh;
     padding-bottom: 1vh;
     height: 100%;
+    flex-direction: column;
+    display: flex;
+}
+
+.slide.keyword {
+    padding-top: 1vh;
+    padding-bottom: 1vh;
     flex-direction: column;
     display: flex;
 }

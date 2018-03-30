@@ -4,7 +4,7 @@
         </div>
         <div class="slide nm-block text" v-for="student, i in students">
             <styled-text :context="context">
-                {{ student.name }} students pay more attention on these video, which including
+                {{ student.name }} learners pay more attention on these video, which including
                 <entity-link :id="student.videos[0].id" :parent="item"></entity-link>
                 and
                 <entity-link :id="student.videos[1].id" :parent="item"></entity-link>
