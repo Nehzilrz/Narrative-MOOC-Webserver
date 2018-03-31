@@ -23,8 +23,8 @@ export default {
             has_p: false,
             question_offset_x: 10,
             question_offset_y: 22,
-            first_layer_compress: 0.55,
-            second_layer_compress: 0.7,
+            first_layer_compress: 0.5,
+            second_layer_compress: 0.63,
             area_width: 200,
             margin: 50,
             fontsize: 12,
@@ -221,7 +221,7 @@ export default {
             }
             P.push({
                 parent: null,
-                abbrname: "",
+                abbrname: "homepage",
                 type: "root",
                 index: chapter_id,
             });
@@ -249,6 +249,7 @@ export default {
             g.selectAll("*").remove();
 
             var tree = d3.tree().size([this.width, this.height]);
+            const chapter_id = this.page[0].resource_id;
             this.root = this.getRoot();
             const root = this.root;
             tree(root);
@@ -273,8 +274,13 @@ export default {
                 }
             });
 
+            var node_group = g.append("g")
+                .attr("class", "nodes");
 
-            var link = g
+            var legend_group = g.append("g")
+                .attr("class", "legend");
+
+            var link = node_group
                 .selectAll(".link")
                 .data(root.descendants().slice(1))
                 .enter()
@@ -287,7 +293,7 @@ export default {
             const text_dx = 25;
             const text_dy = 14;
 
-            var node = g
+            var node = node_group
                 .selectAll(".nodebg")
                 .data(root.descendants())
                 .enter()
@@ -343,7 +349,7 @@ export default {
                 .text(d => d.data.abbrname)
                 .attr("dx", d => 15)
                 .attr("dy", d => 3)
-                .style("font-size", "12px")
+                .style("font-size", "14px")
                 .style("font-family", "Arial")
                 .style("fill", d => {
                     return (d.data.data ? "#222" : "#ccc")
@@ -383,11 +389,59 @@ export default {
             const pathwidth = 15;
             const m = path_edges.length - 1;
 
-            const path = g.selectAll(".path")
+//"learner"
+            const legend = legend_group.selectAll(".legend")
+                .data(["student", "video", "assignment", "forum"])
+                .enter()
+                .append("g")
+                .attr("class", "legend")
+                .attr("transform", (d, i) => `translate(${0}, ${i * 20})`);
+
+            legend
+                .append("circle")
+                .attr("class", "node node--visited node--active")
+                .attr("cx", 5)
+                .attr("cy", 0)
+                .style("fill", d => get_color_schema(d)[0]);
+
+            legend
+                .append("text")
+                .text(d => d == "student" ? "overall" : d)
+                .attr("dx", d => 15)
+                .attr("dy", d => 4)
+                .style("font-size", "14px")
+                .style("font-family", "Arial")
+                .style("fill", "#222");
+
+            const learner_legend = legend_group
+                .append("g")
+                .attr("class", "legend")
+                .attr("transform", (d, i) => `translate(${0}, ${80})`);
+
+            learner_legend
+                .append("rect")
+                .attr("class", "node node--visited node--active")
+                .attr("x", 0)
+                .attr("y", -5)
+                .style("fill", get_color_schema('learner')[0]);
+
+            learner_legend
+                .append("text")
+                .text('learner oriented')
+                .attr("dx", d => 15)
+                .attr("dy", d => 4)
+                .style("font-size", "14px")
+                .style("font-family", "Arial")
+                .style("fill", "#222");
+
+            const path = node_group.selectAll(".path")
                 .data(path_edges)
                 .enter()
                 .append("path")
                 .attr("d", (d, i) => {
+                    if (d.source.data.type == 'assignment' && d.target.data.type == 'video' &&
+                        d.target.data.resource_id != chapter_id &&
+                        d.source.data.resource_id != chapter_id) return '';
                     if (Math.abs(d.source.x - d.target.x) > Math.abs(d.source.y - d.target.y)) {
                         const x0 = d.source.y + 5 - pathwidth / 2;
                         const y0 = d.source.x;
@@ -428,14 +482,14 @@ export default {
                 .attr("opacity", 0.4); 
 
             const start = path_nodes[0];
-            g.append("path")
+            node_group.append("path")
                 .attr("class", "starting")
                 .attr("transform", `translate(${start.y - 8},${start.x - 58}) scale(0.15)`)
                 .style("fill", color_scale(start))
                 .attr("d", "M155.799,234.678c11.766-14.877,18.798-33.661,18.798-54.058c0-48.136-39.162-87.298-87.298-87.298S0,132.484,0,180.621   c0,20.397,7.032,39.18,18.798,54.058l68.5,86.124L155.799,234.678z M67.298,180.621c0-11.028,8.972-20,20-20s20,8.972,20,20   s-8.972,20-20,20S67.298,191.649,67.298,180.621z");
                 
             const end = path_nodes[path_nodes.length - 1];
-            g.append("path")
+            node_group.append("path")
                 .attr("class", "ending")
                 .attr("transform", `translate(${end.y - 8},${end.x - 58}) scale(0.15)`)
                 .style("fill", color_scale(end))
@@ -446,7 +500,7 @@ export default {
                 const d = this.next_p;
                 const x1 = (prev.y + d.y) * 0.5 + (d.y - prev.y) * 0.2 + 75;
                 const y1 = (prev.x + d.x) * 0.5;
-                g.append("path")
+                node_group.append("path")
                     .attr("class", "related")
                     .attr("d", `M${prev.y + 5},${prev.x} Q${x1} ${y1} ${d.y + 5},${d.x}`)
                     .attr("stroke", color_scale(d))
@@ -463,12 +517,12 @@ export default {
                         this.prev_p = d;
                     } else if (!this.next_p) {
                         this.next_p = d;
-                        g.selectAll(".related").remove();
+                        node_group.selectAll(".related").remove();
                         draw_p();
                         this.has_p = true;
                     } else {
                         this.has_p = false;
-                        g.selectAll(".related").remove();
+                        node_group.selectAll(".related").remove();
                         this.prev_p = this.next_p = null;
                     }
                     return;
@@ -481,7 +535,7 @@ export default {
                 draw_p();
             }
             
-            g.append("circle")
+            node_group.append("circle")
                 .attr("class", "ending")
                 .attr("opacity", 0.4)
                 .attr("r", 10) 
@@ -490,7 +544,7 @@ export default {
                 })
                 .style("fill", color_scale(end))
 
-            const node_circle = g
+            const node_circle = node_group
                 .selectAll("circle.node")
                 .data(root.descendants().filter(d => d.data.type != "learner"))
                 .enter()
@@ -512,7 +566,7 @@ export default {
                 .style("fill", d => color_scale(d))
                 .on('click', handle);
 
-            const node_rect = g
+            const node_rect = node_group
                 .selectAll("rect.node")
                 .data(root.descendants().filter(d => d.data.type == "learner"))
                 .enter()

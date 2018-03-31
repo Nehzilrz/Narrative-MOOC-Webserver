@@ -36,7 +36,7 @@
     <div class="b4w bh nm-block text">
         <b-form-row v-show="show_video">
             <b-col cols="12">
-                <h6 style="font-weight: 600"> Screenshot of this peak: </h6>
+                <h6 style="font-weight: 600"> Video segment of this peak: </h6>
                 <b-embed v-if="item.data.video"
                         type="video"
                         aspect="16by9"

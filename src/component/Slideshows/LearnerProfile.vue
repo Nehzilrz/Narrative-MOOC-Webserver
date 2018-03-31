@@ -481,11 +481,12 @@
                 return table;
             },
             addGroup() {
+                const rules = JSON.parse(JSON.stringify(Object.keys(this.cond).map(
+                    d => ({ key: d, rule: this.cond[d] })
+                )));
                 this.context.options.push(   
                     { name: this.group_name, 
-                        value: () => Object.keys(this.cond).map(
-                            d => ({ key: d, rule: this.cond[d] })
-                        )
+                        value: () => rules
                     });
             },
             countCondition() {

@@ -34,9 +34,10 @@
         <div class="content">
           <template v-for="page, index in pages">
             <draggable :list="page">
-              <div v-for="item in page" class="page" @click="findNext(null, item)" :class="{ active: item == slide }">
+              <div v-for="(item, index) in page" class="page" :class="{ active: item == slide }">
                 <div> {{`${item.name}`}} </div>
-                <n-svg :type="item.chart_type" style="opacity:0.15"></n-svg>
+                <n-svg class="background" :type="item.chart_type" @click.native="findNext(null, item)" ></n-svg>
+                <n-svg class="closebtn" type="close" @click.native="page.splice(index, 1)"></n-svg>
               </div>
             </draggable>
             <hr v-if="index != pages.length - 1">
@@ -1170,12 +1171,22 @@ body {
   padding-top: 0.5vh;
 }
 
-.sidebar-container.slideshow .page svg {
+.sidebar-container.slideshow .page svg.background {
   width: 8vh;
   height: 8vh;
   position: absolute;
   left: 35%;
   top: 2vh;
+  opacity: 0.15;
+}
+
+.sidebar-container.slideshow .page svg.closebtn {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  right: 5%;
+  top: 5%;
+  opacity: 0.03;
 }
 
 .sidebar-container.slideshow .page.active {
@@ -1188,6 +1199,10 @@ body {
   border-color: #525252;
   border-width: 1.5px;
   opacity: 1;
+}
+
+.sidebar-container.slideshow .page:hover svg.closebtn {
+  opacity: 0.8;
 }
 
 .vc-compact {

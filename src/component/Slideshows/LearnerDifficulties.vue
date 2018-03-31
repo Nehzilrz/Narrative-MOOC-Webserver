@@ -250,11 +250,12 @@
         },
         methods: {
             addGroup() {
+                const rules = JSON.parse(JSON.stringify(Object.keys(this.cond).map(
+                    d => ({ key: d, rule: this.cond[d] })
+                )));
                 this.context.options.push(   
                     { name: this.group_name, 
-                        value: () => Object.keys(this.cond).map(
-                            d => ({ key: d, rule: this.cond[d] })
-                        )
+                        value: () => rules
                     });
             },
             countCondition() {
@@ -337,7 +338,7 @@
                     if (d == 0) {
                         return 'No Grade';
                     } else {
-                        return d;
+                        return '' + ~~((d + 0.01) / 10);
                     };
                 });
 
@@ -421,7 +422,7 @@
                 const count = {};
                 for (const user of users) {
                     let val;
-                    val = user.grade || 0;
+                    val = ~~(user.grade + 0.01) || 0;
                     if (!count[val]) count[val] = 0;
                     count[val] += 1;
                 }

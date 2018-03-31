@@ -27,7 +27,11 @@
         },
         extends: SlideshowBase,
         mounted() {
-            this.$refs.content.innerHTML = this.assignment.content;
+            if (this.item.resource_id == "i4x://HKUSTx/COMP102x/problem/67f04dce356846219650e2514958f048") {
+                this.$refs.content.innerHTML = "<p>What is the result of each of the following expressions?<br /><br />Expression X:&#160;&#160;&#160;&#160;3 % 4 - 10 * 5<br />Expression Y:&#160;&#160;&#160;&#160;5 + 11 / 2 * 2.0<br />Expression Z:&#160;&#160;&#160;&#160;100 / 0\n</p>\n  ";
+            } else {
+                this.$refs.content.innerHTML = this.assignment.content;
+            }
         },
         computed: {
             assignment_release_date() {
