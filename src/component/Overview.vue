@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import * as Slide from "../lib/SlideTemplate";
+import * as Slide from "../lib/slidetemplate";
 import textwidth from "../lib/text-width";
 import { color_schema } from "../lib/colors";
 import * as d3 from "d3";

@@ -366,6 +366,7 @@ export default {
       });
     });
 
+    console.log('hello world');
     axios
       .get(`${serverUrl}getVideoList`, {
         params: {

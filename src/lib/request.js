@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-export const serverUrl = 'http://nezil.me/introtojava-api/';
+export const serverUrl = 'http://localhost:3000/';
 // export const serverUrl = 'http://10.89.83.202:3000/';
 
 const cache = {};
